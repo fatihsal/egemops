@@ -1,25 +1,16 @@
-import { Icon } from "@iconify/react";
-
 import { NavList } from "@/components/layout/nav-list";
 import { EnerjiIllustrasyon } from "@/components/layout/enerji-illustrasyon";
+import { MarkaLogo } from "@/components/layout/marka-logo";
 
 export function AppSidebar() {
   return (
     <aside className="sticky top-0 hidden h-screen w-52 shrink-0 border-r bg-sidebar text-sidebar-foreground md:flex md:flex-col">
       {/* Logo / marka */}
-      <div className="flex h-14 items-center gap-2.5 border-b px-4">
-        <div className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm">
-          <Icon icon="solar:box-bold-duotone" className="size-5" />
-        </div>
-        <div className="leading-tight">
-          <div className="font-heading text-sm font-bold text-primary">EGEM</div>
-          <div className="text-[10px] font-medium tracking-[0.15em] text-muted-foreground">
-            AMBALAJ
-          </div>
-        </div>
+      <div className="flex h-20 items-center justify-center border-b px-4">
+        <MarkaLogo />
       </div>
 
-      <div className="flex-1 overflow-y-auto p-3">
+      <div className="flex-1 overflow-y-auto p-3 [scrollbar-color:rgb(148_163_184_/_0.4)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/30 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-1.5 hover:[&::-webkit-scrollbar-thumb]:bg-muted-foreground/50">
         <NavList />
       </div>
 

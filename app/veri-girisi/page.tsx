@@ -1,4 +1,3 @@
-import { Icon } from "@iconify/react";
 
 import { YilAySecim } from "@/components/veri-girisi/yil-ay-secim";
 import { DonemBar } from "@/components/veri-girisi/donem-bar";
@@ -15,14 +14,8 @@ import { AksiyonAlani } from "@/components/veri-girisi/aksiyon-alani";
 export default function VeriGirisiPage() {
   return (
     <div className="space-y-6">
-      {/* Başlık + yıl/ay seçimi */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="flex items-center gap-2.5 text-2xl font-semibold tracking-tight">
-          <span className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-            <Icon icon="solar:pen-new-square-bold-duotone" className="size-5" />
-          </span>
-          Aylık Enerji Veri Girişi
-        </h1>
+      {/* Yıl/ay seçimi */}
+      <div className="flex flex-wrap items-center justify-end gap-4">
         <YilAySecim />
       </div>
 

@@ -28,13 +28,6 @@ export default function RaporOnizlemePage() {
       {/* Başlık + aksiyonlar */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="space-y-1">
-          <nav className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Link href="/" className="transition-colors hover:text-foreground">Enerji Yönetimi</Link>
-            <Icon icon="solar:alt-arrow-right-linear" className="size-3.5" />
-            <Link href="/raporlar" className="transition-colors hover:text-foreground">Raporlar</Link>
-            <Icon icon="solar:alt-arrow-right-linear" className="size-3.5" />
-            <span className="text-foreground">Önizleme</span>
-          </nav>
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-2xl font-semibold tracking-tight">{isLoading ? "Yükleniyor…" : ad}</h1>
             {kategori ? (

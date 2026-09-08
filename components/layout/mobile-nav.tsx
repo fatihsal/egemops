@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { Menu } from "lucide-react";
-import { Icon } from "@iconify/react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +12,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { NavList } from "@/components/layout/nav-list";
+import { MarkaLogo } from "@/components/layout/marka-logo";
 
 export function MobileNav() {
   const [acik, setAcik] = React.useState(false);
@@ -32,18 +32,9 @@ export function MobileNav() {
         <Menu className="size-5" />
       </SheetTrigger>
       <SheetContent side="left" className="flex w-64 flex-col p-0">
-        <SheetHeader className="h-14 shrink-0 flex-row items-center gap-2.5 border-b px-4">
-          <div className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Icon icon="solar:box-bold-duotone" className="size-5" />
-          </div>
-          <SheetTitle className="leading-tight">
-            <span className="block font-heading text-sm font-bold text-primary">
-              EGEM
-            </span>
-            <span className="block text-[10px] font-medium tracking-[0.15em] text-muted-foreground">
-              AMBALAJ
-            </span>
-          </SheetTitle>
+        <SheetHeader className="h-16 shrink-0 flex-row items-center border-b px-4">
+          <SheetTitle className="sr-only">EGEM Ambalaj menüsü</SheetTitle>
+          <MarkaLogo />
         </SheetHeader>
         <div className="flex-1 overflow-y-auto p-3">
           <NavList onNavigate={() => setAcik(false)} />

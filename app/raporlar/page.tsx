@@ -1,5 +1,3 @@
-import Link from "next/link";
-import { Icon } from "@iconify/react";
 
 import { RaporFiltreler } from "@/components/raporlar/filtreler";
 import { RaporKpiKartlari } from "@/components/raporlar/kpi";
@@ -14,20 +12,8 @@ export default function RaporlarPage() {
   return (
     <RaporFiltreProvider>
       <div className="space-y-6">
-        {/* Başlık + filtreler */}
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="space-y-1">
-            <nav className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Link href="/" className="transition-colors hover:text-foreground">Enerji Yönetimi</Link>
-              <Icon icon="solar:alt-arrow-right-linear" className="size-3.5" />
-              <span className="text-foreground">Raporlar</span>
-            </nav>
-            <h1 className="text-2xl font-semibold tracking-tight">Raporlar</h1>
-            <p className="text-sm text-muted-foreground">
-              Enerji verilerinizi analiz edin ve ihtiyacınıza uygun raporları oluşturup dışa aktarın.
-            </p>
-          </div>
-
+        {/* Filtreler */}
+        <div className="flex flex-wrap items-center justify-end gap-3">
           <RaporFiltreler />
         </div>
 
