@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Icon } from "@iconify/react";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,12 +27,21 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { DURUM_META, KAYNAK_ETIKET } from "@/components/projeler/stiller";
+import { queryKeys } from "@/lib/queries/keys";
 import { sayi } from "@/lib/format";
-import type { Proje } from "@/lib/types";
+import type { Proje, ProjeAnaliz, ProjeDurum, ProjeKaynak } from "@/lib/types";
 
 const TURLER = ["Elektrik", "Doğalgaz", "Akaryakıt"];
 const DURUMLAR = Object.values(DURUM_META).map((d) => d.etiket);
 const SORUMLULAR = ["Bakım Onarım", "Enerji Ekibi", "Üretim", "Proje Ofisi"];
+
+function kaynakAnahtar(etiket: string): ProjeKaynak {
+  return ((Object.keys(KAYNAK_ETIKET) as ProjeKaynak[]).find((k) => KAYNAK_ETIKET[k] === etiket)) ?? "elektrik";
+}
+function durumAnahtar(etiket: string): ProjeDurum {
+  return ((Object.keys(DURUM_META) as ProjeDurum[]).find((k) => DURUM_META[k].etiket === etiket)) ?? "planlama";
+}
+const sayiCoz = (s: string) => Number(s.replace(/\./g, "").replace(",", ".").replace(/[^\d.]/g, "")) || 0;
 
 function Alan({ etiket, htmlFor, children, tam }: { etiket: string; htmlFor?: string; children: React.ReactNode; tam?: boolean }) {
   return (
@@ -44,6 +54,7 @@ function Alan({ etiket, htmlFor, children, tam }: { etiket: string; htmlFor?: st
 
 export function ProjeFormDrawer({ proje, trigger }: { proje?: Proje; trigger: React.ReactElement }) {
   const duzenle = !!proje;
+  const qc = useQueryClient();
 
   const [acik, setAcik] = React.useState(false);
   const [ad, setAd] = React.useState(proje?.ad ?? "");
@@ -80,6 +91,23 @@ export function ProjeFormDrawer({ proje, trigger }: { proje?: Proje; trigger: Re
       toast.error("Proje adı zorunludur");
       return;
     }
+    const kaynak = kaynakAnahtar(tur);
+    const durumK = durumAnahtar(durum);
+    const butceN = sayiCoz(butce);
+    const tasarrufN = sayiCoz(tasarruf);
+    qc.setQueryData(queryKeys.projeler.analiz, (old?: ProjeAnaliz) => {
+      if (!old) return old;
+      if (duzenle && proje) {
+        return { ...old, projeler: old.projeler.map((p) => p.id === proje.id ? { ...p, ad, aciklama, kaynak, durum: durumK, sorumlu, baslangic, hedefBitis, butce: butceN, beklenenTasarruf: tasarrufN } : p) };
+      }
+      const yeni: Proje = {
+        id: `p-${Date.now()}`, ad, aciklama, kaynak, durum: durumK, ilerleme: 0,
+        baslangic, hedefBitis, sorumlu, butce: butceN, harcanan: 0,
+        beklenenTasarruf: tasarrufN, dogrulananTasarruf: null, geriDonus: 0,
+        saglik: { zaman: "yok", butce: "yok", tasarruf: "yok" },
+      };
+      return { ...old, projeler: [yeni, ...old.projeler] };
+    });
     toast.success(duzenle ? `${ad} güncellendi` : `${ad} oluşturuldu`);
     setAcik(false);
   };

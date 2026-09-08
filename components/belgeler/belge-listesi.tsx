@@ -4,6 +4,7 @@ import * as React from "react";
 import { Icon } from "@iconify/react";
 import { MoreVertical, Search } from "lucide-react";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -35,7 +36,9 @@ import { DURUM_META, FORMAT_STIL, KATEGORI_META } from "@/components/belgeler/st
 import { BelgeDetayDrawer } from "@/components/belgeler/belge-detay-drawer";
 import { useBelgeFiltre } from "@/components/belgeler/filtre-store";
 import { useBelgeAnaliz } from "@/lib/queries/belgeler";
+import { queryKeys } from "@/lib/queries/keys";
 import { cn } from "@/lib/utils";
+import type { BelgeAnaliz } from "@/lib/types";
 
 const KATEGORILER = ["Tümü", "Yasal & Mevzuat", "Sertifikalar", "Sözleşmeler", "Etüt & Raporlar", "Teknik Dökümanlar", "Faturalar"];
 const DURUMLAR = ["Tümü", "Geçerli", "Süresi Yaklaşıyor", "Süresi Doldu", "Taslak"];
@@ -58,7 +61,10 @@ function FiltreSelect({ etiket, deger, secenekler, onChange, genislik }: {
 export function BelgeListesi() {
   const { data, isLoading } = useBelgeAnaliz();
   const { arama, kategori, durum, set, aktifMi, sifirla } = useBelgeFiltre();
+  const qc = useQueryClient();
   const [sayfa, setSayfa] = React.useState(1);
+
+  const sil = (id: string) => qc.setQueryData(queryKeys.belgeler.analiz, (old?: BelgeAnaliz) => old ? { ...old, belgeler: old.belgeler.filter((b) => b.id !== id) } : old);
 
   const tumu = data?.belgeler ?? [];
   const filtreli = tumu.filter((b) => {
@@ -182,7 +188,7 @@ export function BelgeListesi() {
                                   Yeniden Adlandır
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={() => toast(`${b.ad} silindi`)}>
+                                <DropdownMenuItem onClick={() => { sil(b.id); toast.success(`${b.ad} silindi`); }}>
                                   <Icon icon="solar:trash-bin-trash-bold-duotone" className="size-4" />
                                   Sil
                                 </DropdownMenuItem>

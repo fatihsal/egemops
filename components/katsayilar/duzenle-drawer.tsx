@@ -25,11 +25,12 @@ export interface DuzenleAlan {
   birim?: string;
 }
 
-export function KatsayiDuzenleDrawer({ baslik, aciklama, alanlar, trigger }: {
+export function KatsayiDuzenleDrawer({ baslik, aciklama, alanlar, trigger, onKaydet }: {
   baslik: string;
   aciklama: string;
   alanlar: DuzenleAlan[];
   trigger: React.ReactElement;
+  onKaydet?: (degerler: Record<string, string>) => void;
 }) {
   const [acik, setAcik] = React.useState(false);
   const [degerler, setDegerler] = React.useState<Record<string, string>>({});
@@ -37,6 +38,7 @@ export function KatsayiDuzenleDrawer({ baslik, aciklama, alanlar, trigger }: {
   const sifirla = () => setDegerler(Object.fromEntries(alanlar.map((a) => [a.anahtar, a.deger])));
 
   const kaydet = () => {
+    onKaydet?.(degerler);
     toast.success(`${baslik} güncellendi`);
     setAcik(false);
   };

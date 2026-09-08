@@ -2,6 +2,7 @@
 
 import { Icon } from "@iconify/react";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -16,9 +17,12 @@ import {
 } from "@/components/ui/table";
 import { KatsayiDuzenleDrawer } from "@/components/katsayilar/duzenle-drawer";
 import { useKatsayiAnaliz } from "@/lib/queries/katsayilar";
+import { queryKeys } from "@/lib/queries/keys";
+import type { KatsayiAnaliz } from "@/lib/types";
 
 export function TepKatsayiTablo() {
   const { data, isLoading } = useKatsayiAnaliz();
+  const qc = useQueryClient();
 
   return (
     <Card>
@@ -70,6 +74,7 @@ export function TepKatsayiTablo() {
                           { anahtar: "tep", label: `TEP Katsayısı (${r.birim})`, deger: r.tep },
                           { anahtar: "referans", label: "Referans", deger: r.referans },
                         ]}
+                        onKaydet={(d) => qc.setQueryData(queryKeys.katsayilar.analiz, (old?: KatsayiAnaliz) => old ? { ...old, tep: old.tep.map((x) => x.id === r.id ? { ...x, ...d } : x) } : old)}
                         trigger={
                           <Button variant="ghost" size="icon-sm" aria-label="Düzenle">
                             <Icon icon="solar:pen-2-bold-duotone" className="size-4 text-muted-foreground" />

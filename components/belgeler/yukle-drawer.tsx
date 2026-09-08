@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Icon } from "@iconify/react";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,11 +27,24 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { KATEGORI_META } from "@/components/belgeler/stiller";
-import type { BelgeKategoriAnahtar } from "@/lib/types";
+import { queryKeys } from "@/lib/queries/keys";
+import type { Belge, BelgeAnaliz, BelgeFormat, BelgeKategoriAnahtar } from "@/lib/types";
 
 const KATEGORILER = Object.entries(KATEGORI_META) as [BelgeKategoriAnahtar, { etiket: string }][];
 
+function kategoriAnahtar(etiket: string): BelgeKategoriAnahtar {
+  return (KATEGORILER.find(([, m]) => m.etiket === etiket)?.[0]) ?? "yasal";
+}
+function dosyaFormat(dosya: string): BelgeFormat {
+  const d = dosya.toLocaleLowerCase("tr");
+  if (d.endsWith(".xlsx") || d.endsWith(".xls")) return "Excel";
+  if (d.endsWith(".doc") || d.endsWith(".docx")) return "Word";
+  if (d.endsWith(".png") || d.endsWith(".jpg") || d.endsWith(".jpeg")) return "Görsel";
+  return "PDF";
+}
+
 export function BelgeYukleDrawer({ trigger, varsayilanKategori }: { trigger: React.ReactElement; varsayilanKategori?: string }) {
+  const qc = useQueryClient();
   const [acik, setAcik] = React.useState(false);
   const [ad, setAd] = React.useState("");
   const [kategori, setKategori] = React.useState(varsayilanKategori ?? "Yasal & Mevzuat");
@@ -45,6 +59,15 @@ export function BelgeYukleDrawer({ trigger, varsayilanKategori }: { trigger: Rea
   const yukle = () => {
     if (!dosya) { toast.error("Lütfen bir dosya seçin"); return; }
     if (!ad.trim()) { toast.error("Belge adı zorunludur"); return; }
+    qc.setQueryData(queryKeys.belgeler.analiz, (old?: BelgeAnaliz) => {
+      if (!old) return old;
+      const yeni: Belge = {
+        id: `b-${Date.now()}`, ad, kategori: kategoriAnahtar(kategori), format: dosyaFormat(dosya),
+        boyut: "1,4 MB", yukleyen: "Uğur Melih", tarih: "07.09.2026",
+        durum: "gecerli", gecerlilik: gecerlilik.trim() || null, aciklama: aciklama.trim() || "Yeni yüklenen belge.",
+      };
+      return { ...old, belgeler: [yeni, ...old.belgeler] };
+    });
     toast.success(`${ad} yüklendi`);
     setAcik(false);
   };

@@ -4,6 +4,7 @@ import * as React from "react";
 import { Icon } from "@iconify/react";
 import { MoreVertical, Search } from "lucide-react";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -35,7 +36,9 @@ import { DURUM_META, ROL_META } from "@/components/kullanicilar/stiller";
 import { KullaniciFormDrawer } from "@/components/kullanicilar/kullanici-form-drawer";
 import { useKullaniciFiltre } from "@/components/kullanicilar/filtre-store";
 import { useKullaniciAnaliz } from "@/lib/queries/kullanicilar";
+import { queryKeys } from "@/lib/queries/keys";
 import { cn } from "@/lib/utils";
+import type { KullaniciAnaliz } from "@/lib/types";
 
 const ROLLER = ["Tümü", "Yönetici", "Editör", "Görüntüleyici"];
 const DURUMLAR = ["Tümü", "Aktif", "Pasif", "Davet Bekliyor"];
@@ -58,7 +61,11 @@ function FiltreSelect({ etiket, deger, secenekler, onChange, genislik }: {
 export function KullaniciListesi() {
   const { data, isLoading } = useKullaniciAnaliz();
   const { arama, rol, durum, set, aktifMi, sifirla } = useKullaniciFiltre();
+  const qc = useQueryClient();
   const [sayfa, setSayfa] = React.useState(1);
+
+  const durumDegistir = (id: string, yeni: "aktif" | "pasif") =>
+    qc.setQueryData(queryKeys.kullanicilar.analiz, (old?: KullaniciAnaliz) => old ? { ...old, kullanicilar: old.kullanicilar.map((u) => u.id === id ? { ...u, durum: yeni } : u) } : old);
 
   const tumu = data?.kullanicilar ?? [];
   const filtreli = tumu.filter((u) => {
@@ -164,10 +171,17 @@ export function KullaniciListesi() {
                                   İzinleri Yönet
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={() => toast(`${u.ad} devre dışı bırakıldı`)}>
-                                  <Icon icon="solar:user-block-bold-duotone" className="size-4" />
-                                  Devre Dışı Bırak
-                                </DropdownMenuItem>
+                                {u.durum === "pasif" ? (
+                                  <DropdownMenuItem onClick={() => { durumDegistir(u.id, "aktif"); toast.success(`${u.ad} aktifleştirildi`); }}>
+                                    <Icon icon="solar:user-check-bold-duotone" className="size-4" />
+                                    Aktifleştir
+                                  </DropdownMenuItem>
+                                ) : (
+                                  <DropdownMenuItem onClick={() => { durumDegistir(u.id, "pasif"); toast(`${u.ad} devre dışı bırakıldı`); }}>
+                                    <Icon icon="solar:user-block-bold-duotone" className="size-4" />
+                                    Devre Dışı Bırak
+                                  </DropdownMenuItem>
+                                )}
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </div>

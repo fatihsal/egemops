@@ -1,16 +1,20 @@
 "use client";
 
 import { Icon } from "@iconify/react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { KatsayiDuzenleDrawer } from "@/components/katsayilar/duzenle-drawer";
 import { useKatsayiAnaliz } from "@/lib/queries/katsayilar";
+import { queryKeys } from "@/lib/queries/keys";
 import { cn } from "@/lib/utils";
+import type { KatsayiAnaliz } from "@/lib/types";
 
 export function GenelParametreler() {
   const { data, isLoading } = useKatsayiAnaliz();
+  const qc = useQueryClient();
 
   return (
     <Card>
@@ -41,6 +45,7 @@ export function GenelParametreler() {
                   baslik={p.ad}
                   aciklama="Parametre değerini güncelleyin."
                   alanlar={[{ anahtar: "deger", label: p.ad, deger: p.deger }]}
+                  onKaydet={(d) => qc.setQueryData(queryKeys.katsayilar.analiz, (old?: KatsayiAnaliz) => old ? { ...old, genel: old.genel.map((x) => x.id === p.id ? { ...x, ...d } : x) } : old)}
                   trigger={
                     <Button variant="ghost" size="icon-sm" aria-label="Düzenle" className="shrink-0 opacity-0 transition-opacity group-hover:opacity-100">
                       <Icon icon="solar:pen-2-bold-duotone" className="size-4 text-muted-foreground" />

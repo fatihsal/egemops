@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Icon } from "@iconify/react";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,13 +26,24 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { ROL_META } from "@/components/kullanicilar/stiller";
-import type { Kullanici } from "@/lib/types";
+import { queryKeys } from "@/lib/queries/keys";
+import type { Kullanici, KullaniciAnaliz, KullaniciRol } from "@/lib/types";
 
 const ROLLER = Object.entries(ROL_META).map(([k, m]) => ({ k, e: m.etiket }));
 const DEPARTMANLAR = ["Enerji Yönetimi", "Bakım Onarım", "Üretim", "Satın Alma", "Finans", "Kalite", "Yönetim"];
+const RENKLER = ["#0d9488", "#2563eb", "#f59e0b", "#8b5cf6", "#0891b2", "#ec4899", "#16a34a", "#dc2626"];
+
+function basHarfleri(ad: string) {
+  const p = ad.trim().split(/\s+/);
+  return ((p[0]?.[0] ?? "") + (p[1]?.[0] ?? "")).toLocaleUpperCase("tr");
+}
+function rolAnahtar(etiket: string): KullaniciRol {
+  return ((Object.keys(ROL_META) as KullaniciRol[]).find((k) => ROL_META[k].etiket === etiket)) ?? "editor";
+}
 
 export function KullaniciFormDrawer({ kullanici, trigger }: { kullanici?: Kullanici; trigger: React.ReactElement }) {
   const duzenle = !!kullanici;
+  const qc = useQueryClient();
   const [acik, setAcik] = React.useState(false);
   const [ad, setAd] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -47,6 +59,19 @@ export function KullaniciFormDrawer({ kullanici, trigger }: { kullanici?: Kullan
 
   const kaydet = () => {
     if (!ad.trim() || !email.trim()) { toast.error("Ad ve e-posta zorunludur"); return; }
+    const rolK = rolAnahtar(rol);
+    qc.setQueryData(queryKeys.kullanicilar.analiz, (old?: KullaniciAnaliz) => {
+      if (!old) return old;
+      if (duzenle && kullanici) {
+        return { ...old, kullanicilar: old.kullanicilar.map((u) => u.id === kullanici.id ? { ...u, ad, email, rol: rolK, departman } : u) };
+      }
+      const yeni: Kullanici = {
+        id: `u-${Date.now()}`, ad, email, bas: basHarfleri(ad) || "?",
+        renk: RENKLER[old.kullanicilar.length % RENKLER.length], rol: rolK,
+        departman, durum: "davet", sonGiris: "—",
+      };
+      return { ...old, kullanicilar: [yeni, ...old.kullanicilar] };
+    });
     toast.success(duzenle ? `${ad} güncellendi` : `${email} adresine davet gönderildi`);
     setAcik(false);
   };

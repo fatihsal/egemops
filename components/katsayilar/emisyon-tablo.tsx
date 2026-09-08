@@ -2,6 +2,7 @@
 
 import { Icon } from "@iconify/react";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -16,7 +17,9 @@ import {
 } from "@/components/ui/table";
 import { KatsayiDuzenleDrawer } from "@/components/katsayilar/duzenle-drawer";
 import { useKatsayiAnaliz } from "@/lib/queries/katsayilar";
+import { queryKeys } from "@/lib/queries/keys";
 import { cn } from "@/lib/utils";
+import type { EmisyonFaktor, KatsayiAnaliz } from "@/lib/types";
 
 const KAPSAM_STIL: Record<string, string> = {
   "Kapsam 1": "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300",
@@ -25,6 +28,7 @@ const KAPSAM_STIL: Record<string, string> = {
 
 export function EmisyonTablo() {
   const { data, isLoading } = useKatsayiAnaliz();
+  const qc = useQueryClient();
 
   return (
     <Card>
@@ -75,6 +79,7 @@ export function EmisyonTablo() {
                           { anahtar: "faktor", label: `Emisyon Faktörü (${r.birim})`, deger: r.faktor },
                           { anahtar: "kapsam", label: "Kapsam", deger: r.kapsam },
                         ]}
+                        onKaydet={(d) => qc.setQueryData(queryKeys.katsayilar.analiz, (old?: KatsayiAnaliz) => old ? { ...old, emisyon: old.emisyon.map((x) => x.id === r.id ? { ...x, ...d } as EmisyonFaktor : x) } : old)}
                         trigger={
                           <Button variant="ghost" size="icon-sm" aria-label="Düzenle">
                             <Icon icon="solar:pen-2-bold-duotone" className="size-4 text-muted-foreground" />

@@ -7,6 +7,7 @@ import type { DateRange } from "react-day-picker";
 import { format } from "date-fns";
 import { tr } from "date-fns/locale";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -20,12 +21,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { queryKeys } from "@/lib/queries/keys";
+import type { Rapor, RaporAnaliz, RaporFormat, RaporKategoriAnahtar } from "@/lib/types";
 
 const TURLER = ["Tüketim Raporu", "Performans Raporu", "Maliyet Raporu", "TEP Raporu", "Karşılaştırma Raporu", "Özel Rapor"];
 const FORMATLAR = ["PDF", "Excel"];
 const VARSAYILAN: DateRange = { from: new Date(2026, 0, 1), to: new Date(2026, 7, 26) };
+const TUR_KATEGORI: Record<string, RaporKategoriAnahtar> = {
+  "Tüketim Raporu": "tuketim", "Performans Raporu": "performans", "Maliyet Raporu": "maliyet",
+  "TEP Raporu": "tep", "Karşılaştırma Raporu": "karsilastirma", "Özel Rapor": "ozel",
+};
 
 export function RaporOlusturForm({ onSubmitted }: { onSubmitted?: () => void }) {
+  const qc = useQueryClient();
   const [tur, setTur] = React.useState("");
   const [ad, setAd] = React.useState("");
   const [format2, setFormat2] = React.useState("PDF");
@@ -41,7 +49,17 @@ export function RaporOlusturForm({ onSubmitted }: { onSubmitted?: () => void }) 
       toast.error("Rapor türü seçiniz");
       return;
     }
-    toast.success(`${ad.trim() || tur} oluşturuluyor (${format2})`);
+    const raporAdi = ad.trim() || tur;
+    qc.setQueryData(queryKeys.raporlar.analiz, (old?: RaporAnaliz) => {
+      if (!old) return old;
+      const yeni: Rapor = {
+        id: `r-${Date.now()}`, ad: raporAdi, kategori: TUR_KATEGORI[tur] ?? "ozel",
+        aciklama: `${donemEtiket} dönemi için oluşturulan ${tur.toLocaleLowerCase("tr")}.`,
+        format: format2 as RaporFormat, siklik: "Talebe göre", sonOlusturma: "07.09.2026", durum: "aktif",
+      };
+      return { ...old, raporlar: [yeni, ...old.raporlar] };
+    });
+    toast.success(`${raporAdi} oluşturuldu (${format2})`);
     onSubmitted?.();
   };
 
