@@ -31,8 +31,8 @@ export function MobileNav() {
       >
         <Menu className="size-5" />
       </SheetTrigger>
-      <SheetContent side="left" className="w-64 p-0">
-        <SheetHeader className="h-14 flex-row items-center gap-2.5 border-b px-4">
+      <SheetContent side="left" className="flex w-64 flex-col p-0">
+        <SheetHeader className="h-14 shrink-0 flex-row items-center gap-2.5 border-b px-4">
           <div className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <Icon icon="solar:box-bold-duotone" className="size-5" />
           </div>
@@ -45,7 +45,7 @@ export function MobileNav() {
             </span>
           </SheetTitle>
         </SheetHeader>
-        <div className="p-3">
+        <div className="flex-1 overflow-y-auto p-3">
           <NavList onNavigate={() => setAcik(false)} />
         </div>
       </SheetContent>

@@ -28,7 +28,7 @@ export function EnerjiDashboard() {
 
         {/* Sol 2/3: TEP ve Şebeke/GES alt alta (eşit boyut) ·
             Sağ 1/3: donut + GES paneli */}
-        <div className="grid gap-6 xl:grid-cols-3">
+        <div className="grid gap-6 xl:grid-cols-3 [&>*]:min-w-0">
           <div className="space-y-6 xl:col-span-2">
             <YillikTepGrafik />
             <SebekeGesGrafik />
@@ -40,14 +40,14 @@ export function EnerjiDashboard() {
         </div>
 
         {/* Alt satır 1: yoğunluk · performans · fırsatlar */}
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid gap-6 lg:grid-cols-3 [&>*]:min-w-0">
           <EnerjiYogunluk />
           <EnerjiHedef />
           <EnerjiFirsatlari />
         </div>
 
         {/* Alt satır 2: veri durumu · son güncellemeler */}
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid gap-6 lg:grid-cols-3 [&>*]:min-w-0">
           <VeriDurumKarti />
           <div className="lg:col-span-2">
             <SonGuncellemeler />

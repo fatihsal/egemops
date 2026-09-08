@@ -17,14 +17,14 @@ export function VeriInput({
   className?: string;
 }) {
   return (
-    <div className={cn("space-y-1.5", className)}>
+    <div className={cn("min-w-0 space-y-1.5", className)}>
       <Label className="text-xs font-medium text-muted-foreground">
         {etiket}
       </Label>
-      <div className="flex">
+      <div className="flex min-w-0">
         <Input
           defaultValue={deger}
-          className="rounded-r-none border-r-0 font-medium tabular-nums"
+          className="min-w-0 rounded-r-none border-r-0 font-medium tabular-nums"
         />
         <span className="flex items-center rounded-r-md border border-input bg-muted px-3 text-xs font-medium text-muted-foreground">
           {birim}

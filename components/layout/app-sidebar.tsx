@@ -5,7 +5,7 @@ import { EnerjiIllustrasyon } from "@/components/layout/enerji-illustrasyon";
 
 export function AppSidebar() {
   return (
-    <aside className="hidden w-52 shrink-0 border-r bg-sidebar text-sidebar-foreground md:flex md:flex-col">
+    <aside className="sticky top-0 hidden h-screen w-52 shrink-0 border-r bg-sidebar text-sidebar-foreground md:flex md:flex-col">
       {/* Logo / marka */}
       <div className="flex h-14 items-center gap-2.5 border-b px-4">
         <div className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm">

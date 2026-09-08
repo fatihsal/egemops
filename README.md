@@ -2,6 +2,11 @@
 
 Kurumsal bir enerji yönetimi yönetim panelinin **frontend** uygulaması. Tüketim, üretim, TEP, maliyet, verimlilik fırsatları, projeler ve raporlamayı tek bir açık temalı arayüzde toplar.
 
+**🌐 Canlı demo:** https://egemops.vercel.app
+**📦 Kaynak kod:** https://github.com/fatihsal/egemops
+
+> Not: Canlı adres farklıysa Vercel panelindeki gerçek URL ile değiştir.
+
 > **Not:** Bu aşamada uygulama **yalnızca frontend**'tir. Backend, veritabanı, API, gerçek PDF/Excel üretimi veya kimlik doğrulama içermez. Tüm veriler `lib/data/` altındaki **mock (sahte) veri** katmanından gelir. Yükleme/kaydetme/indirme gibi eylemler `sonner` toast bildirimleriyle taklit edilir.
 
 ---

@@ -5,7 +5,6 @@ import { Icon } from "@iconify/react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { KAYNAK_ETIKET } from "@/components/firsatlar/stiller";
-import { TumFirsatlarDrawer } from "@/components/firsatlar/tum-firsatlar-drawer";
 import { useFirsatAnaliz } from "@/lib/queries/firsatlar";
 import { sayiOndalik } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -53,7 +52,6 @@ export function FirsatEnYuksekListe() {
                 );
               })}
             </ul>
-            <TumFirsatlarDrawer etiket="Tümünü Gör" className="mt-auto self-start" />
           </>
         )}
       </CardContent>

@@ -9,7 +9,7 @@ export function ElektrikGesKarti() {
       ikonSinif="bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300"
     >
       {/* Girdiler */}
-      <div className="grid gap-4 @min-[20rem]:grid-cols-2">
+      <div className="grid gap-4 @min-[26rem]:grid-cols-2">
         <VeriInput etiket="Şebeke Elektrik Tüketimi (kWh)" birim="kWh" deger="598.217,40" />
         <VeriInput etiket="GES Toplam Üretimi (kWh)" birim="kWh" deger="295.000,00" />
         <VeriInput etiket="GES Öz Tüketimi (kWh)" birim="kWh" deger="240.000,00" />
