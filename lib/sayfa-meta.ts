@@ -32,5 +32,8 @@ export function sayfaMeta(pathname: string): SayfaMeta {
   if (pathname.startsWith("/raporlar/")) {
     return { baslik: "Rapor Önizleme", altBaslik: "Rapor içeriğini görüntüleyin, yazdırın veya dışa aktarın." };
   }
+  if (pathname.startsWith("/enerji-kayitlari/")) {
+    return { baslik: "Kayıt Detayı", altBaslik: "Dönemin enerji tüketim, üretim ve fatura verilerini görüntüleyin." };
+  }
   return VARSAYILAN;
 }

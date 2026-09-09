@@ -111,21 +111,21 @@ export function KayitDetayIcerik({ id }: { id: string }) {
       {/* Üst KPI */}
       <DetayKpi kayit={kayit} />
 
-      {/* Ana grid */}
-      <div className="grid gap-6 xl:grid-cols-3">
-        <div className="space-y-6">
-          <ElektrikGesDetay kayit={kayit} />
-          <UretimDetay kayit={kayit} />
-        </div>
-        <div className="space-y-6">
-          <DogalgazDetay kayit={kayit} />
-          <OncekiAyTablo kayit={kayit} />
-        </div>
-        <div className="space-y-6">
-          <AkaryakitDetay kayit={kayit} />
-          <NotlarKarti kayit={kayit} />
-          <GecmisKarti kayit={kayit} />
-        </div>
+      {/* Elektrik & GES — en zengin kart, tam genişlik */}
+      <ElektrikGesDetay kayit={kayit} />
+
+      {/* Diğer enerji kaynakları — dengeli 2 kolon */}
+      <div className="grid gap-6 lg:grid-cols-2 [&>*]:min-w-0">
+        <UretimDetay kayit={kayit} />
+        <DogalgazDetay kayit={kayit} />
+        <AkaryakitDetay kayit={kayit} />
+        <OncekiAyTablo kayit={kayit} />
+      </div>
+
+      {/* Notlar + geçmiş — 2 kolon */}
+      <div className="grid gap-6 lg:grid-cols-2 [&>*]:min-w-0">
+        <NotlarKarti kayit={kayit} />
+        <GecmisKarti kayit={kayit} />
       </div>
 
       {/* Kaynak belgeler */}

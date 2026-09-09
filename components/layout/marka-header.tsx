@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { MobileNav } from "@/components/layout/mobile-nav";
+import { BildirimMenu } from "@/components/layout/bildirim-menu";
+import { KullaniciMenu } from "@/components/layout/kullanici-menu";
 import { sayfaMeta } from "@/lib/sayfa-meta";
 
 /**
@@ -89,18 +91,8 @@ export function MarkaHeader() {
         {/* Aksiyonlar + kullanıcı */}
         <div className="flex shrink-0 items-center gap-0.5 border-l px-2 sm:gap-1.5 sm:px-3">
           <ThemeToggle />
-          <button type="button" aria-label="Bildirimler" className="relative inline-flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
-            <Icon icon="solar:bell-linear" className="size-4.5" />
-            <span className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-emerald-500 ring-2 ring-card" />
-          </button>
-          <div className="ml-0.5 flex items-center gap-2 border-l pl-2 sm:pl-2.5">
-            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-slate-600 to-slate-800 text-[11px] font-bold text-white">UM</span>
-            <div className="hidden leading-tight lg:block">
-              <div className="text-[13px] font-semibold">Uğur Melih</div>
-              <div className="text-[11px] text-muted-foreground">Enerji Yöneticisi</div>
-            </div>
-            <Icon icon="solar:alt-arrow-down-linear" className="hidden size-3.5 text-muted-foreground lg:block" />
-          </div>
+          <BildirimMenu />
+          <KullaniciMenu />
         </div>
       </div>
     </header>

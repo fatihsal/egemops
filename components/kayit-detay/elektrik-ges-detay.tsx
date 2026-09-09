@@ -31,7 +31,7 @@ export function ElektrikGesDetay({ kayit }: { kayit: EnerjiKayit }) {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-5">
-        <div className="grid gap-6 sm:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {/* Değer listesi */}
           <div className="space-y-2.5">
             <Satir etiket="Şebeke Elektrik Tüketimi" deger={`${sayi2(kayit.sebekeElektrik)} kWh`} />
@@ -43,17 +43,18 @@ export function ElektrikGesDetay({ kayit }: { kayit: EnerjiKayit }) {
             </div>
           </div>
 
-          {/* Radial + trend */}
-          <div className="flex flex-col items-center justify-center gap-4">
-            <div className="text-center">
-              <RadialOran deger={kayit.gesKarsilama} className="mx-auto size-28" yaziSinif="text-lg" />
-              <div className="mt-1 text-xs text-muted-foreground">GES Katkı Oranı</div>
+          {/* Radial */}
+          <div className="flex flex-col items-center justify-center gap-1">
+            <RadialOran deger={kayit.gesKarsilama} className="mx-auto size-28" yaziSinif="text-lg" />
+            <div className="text-xs text-muted-foreground">GES Katkı Oranı</div>
+          </div>
+
+          {/* Aylık trend */}
+          <div className="flex flex-col justify-center sm:col-span-2 lg:col-span-1">
+            <div className="mb-1 text-xs text-muted-foreground">
+              Aylık GES Katkı Oranı (%)
             </div>
-            <div className="w-full">
-              <div className="mb-1 text-xs text-muted-foreground">
-                Aylık GES Katkı Oranı (%)
-              </div>
-              <svg viewBox="0 0 120 32" className="h-8 w-full" preserveAspectRatio="none">
+            <svg viewBox="0 0 120 32" className="h-8 w-full" preserveAspectRatio="none">
                 {GES_TREND.map((v, i) => {
                   const h = (v / enBuyuk) * 28;
                   return (
@@ -69,11 +70,10 @@ export function ElektrikGesDetay({ kayit }: { kayit: EnerjiKayit }) {
                   );
                 })}
               </svg>
-              <div className="mt-0.5 flex justify-between text-[9px] text-muted-foreground">
-                {AY_HARF.map((a, i) => (
-                  <span key={i}>{a}</span>
-                ))}
-              </div>
+            <div className="mt-0.5 flex justify-between text-[9px] text-muted-foreground">
+              {AY_HARF.map((a, i) => (
+                <span key={i}>{a}</span>
+              ))}
             </div>
           </div>
         </div>

@@ -59,7 +59,7 @@ export function DetayKpi({ kayit }: { kayit: EnerjiKayit }) {
     : undefined;
 
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
+    <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
       <KpiKart
         ikon="solar:bolt-circle-bold-duotone"
         ikonSinif="bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300"
