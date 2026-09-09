@@ -1,4 +1,4 @@
-
+import { AnalizFiltreProvider } from "@/components/providers/analiz-filtre-provider";
 import { ElektrikFiltreler } from "@/components/elektrik-ges/filtreler";
 import { AkaryakitKpiKartlari } from "@/components/akaryakit/kpi";
 import { AkaryakitTuketimGrafik } from "@/components/akaryakit/tuketim-grafik";
@@ -11,6 +11,7 @@ import { AkaryakitDetayTablo } from "@/components/akaryakit/detay-tablo";
 
 export default function AkaryakitPage() {
   return (
+    <AnalizFiltreProvider>
     <div className="space-y-6">
       {/* Filtreler */}
       <div className="flex flex-wrap items-center justify-end gap-3">
@@ -42,5 +43,6 @@ export default function AkaryakitPage() {
       {/* Aylık detaylı veriler */}
       <AkaryakitDetayTablo />
     </div>
+    </AnalizFiltreProvider>
   );
 }

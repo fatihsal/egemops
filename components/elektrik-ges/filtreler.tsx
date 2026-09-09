@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useAnalizFiltre } from "@/components/providers/analiz-filtre-provider";
 
 const VARSAYILAN: DateRange = {
   from: new Date(2026, 0, 1),
@@ -30,11 +31,11 @@ const VARSAYILAN: DateRange = {
 const YILLAR = ["2024", "2025", "2026"];
 
 /** Analiz ekranının üst filtre alanı — tarih aralığı, yıl ve Excel dışa aktar.
- *  Tasarım aşaması: filtreleme mantığı gerçek değildir (mock). */
+ *  Yıl seçimi ortak AnalizFiltre bağlamını günceller; sayfadaki KPI'lar buna göre değişir. */
 export function ElektrikFiltreler() {
   const [aralik, setAralik] = React.useState<DateRange | undefined>(VARSAYILAN);
   const [acik, setAcik] = React.useState(false);
-  const [yil, setYil] = React.useState("2026");
+  const { yil, setYil } = useAnalizFiltre();
 
   const etiket =
     aralik?.from && aralik?.to
@@ -67,7 +68,13 @@ export function ElektrikFiltreler() {
 
       <div className="flex items-center gap-2 rounded-lg border bg-card px-3 h-9">
         <span className="text-sm text-muted-foreground">Yıl</span>
-        <Select value={yil} onValueChange={(v) => setYil(v as string)}>
+        <Select
+          value={yil}
+          onValueChange={(v) => {
+            setYil(v as string);
+            toast.success(`${v} yılı verileri yüklendi`);
+          }}
+        >
           <SelectTrigger size="sm" className="w-[84px] border-0 bg-transparent px-1 shadow-none focus-visible:ring-0">
             <SelectValue />
           </SelectTrigger>

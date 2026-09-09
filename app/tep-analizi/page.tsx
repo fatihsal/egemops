@@ -1,10 +1,11 @@
-
+import { AnalizFiltreProvider } from "@/components/providers/analiz-filtre-provider";
 import { ElektrikFiltreler } from "@/components/elektrik-ges/filtreler";
 import { TepKpiKartlari } from "@/components/tep/kpi";
 import { TepIcerik } from "@/components/tep/tep-icerik";
 
 export default function TepAnaliziPage() {
   return (
+    <AnalizFiltreProvider>
     <div className="space-y-6">
       {/* Filtreler */}
       <div className="flex flex-wrap items-center justify-end gap-3">
@@ -15,5 +16,6 @@ export default function TepAnaliziPage() {
 
       <TepIcerik />
     </div>
+    </AnalizFiltreProvider>
   );
 }

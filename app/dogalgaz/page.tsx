@@ -1,4 +1,4 @@
-
+import { AnalizFiltreProvider } from "@/components/providers/analiz-filtre-provider";
 import { ElektrikFiltreler } from "@/components/elektrik-ges/filtreler";
 import { DogalgazKpiKartlari } from "@/components/dogalgaz/kpi";
 import { DogalgazTuketimGrafik } from "@/components/dogalgaz/tuketim-grafik";
@@ -11,6 +11,7 @@ import { DogalgazDetayTablo } from "@/components/dogalgaz/detay-tablo";
 
 export default function DogalgazPage() {
   return (
+    <AnalizFiltreProvider>
     <div className="space-y-6">
       {/* Filtreler */}
       <div className="flex flex-wrap items-center justify-end gap-3">
@@ -42,5 +43,6 @@ export default function DogalgazPage() {
       {/* Aylık detaylı veriler */}
       <DogalgazDetayTablo />
     </div>
+    </AnalizFiltreProvider>
   );
 }

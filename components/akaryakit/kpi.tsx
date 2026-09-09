@@ -5,6 +5,11 @@ import { Icon } from "@iconify/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAkaryakitAnaliz } from "@/lib/queries/akaryakit";
+import {
+  useAnalizFiltre,
+  yilOlcek,
+  olcekliDeger,
+} from "@/components/providers/analiz-filtre-provider";
 import { sayiOndalik } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { AkaryakitKpi } from "@/lib/types";
@@ -19,6 +24,8 @@ const IKON: Record<string, { ikon: string; sinif: string }> = {
 };
 
 function KpiKart({ kpi }: { kpi: AkaryakitKpi }) {
+  const { yil } = useAnalizFiltre();
+  const olcek = kpi.birim === "%" ? 1 : yilOlcek(yil);
   const ik = IKON[kpi.anahtar];
   const arti = (kpi.degisimYuzde ?? 0) >= 0;
 
@@ -37,7 +44,7 @@ function KpiKart({ kpi }: { kpi: AkaryakitKpi }) {
         </div>
 
         <div className="mt-2.5 flex items-baseline gap-1">
-          <span className="font-heading text-[26px] font-bold leading-none tracking-tight">{kpi.deger}</span>
+          <span className="font-heading text-[26px] font-bold leading-none tracking-tight">{olcekliDeger(kpi.deger, olcek)}</span>
           {kpi.birim ? <span className="text-sm font-medium text-muted-foreground">{kpi.birim}</span> : null}
         </div>
 

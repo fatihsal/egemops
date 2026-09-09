@@ -20,7 +20,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "EgemOps — Yönetim Paneli",
+  title: "EgemOps",
   description: "Operasyon yönetim paneli",
 };
 

@@ -10,9 +10,11 @@ import { OncekiAyKarti } from "@/components/veri-girisi/onceki-ay-karti";
 import { EnerjiOzetiKarti } from "@/components/veri-girisi/enerji-ozeti-karti";
 import { KaynakBelgelerKarti } from "@/components/veri-girisi/kaynak-belgeler-karti";
 import { AksiyonAlani } from "@/components/veri-girisi/aksiyon-alani";
+import { VeriGirisiProvider } from "@/components/veri-girisi/form-store";
 
 export default function VeriGirisiPage() {
   return (
+    <VeriGirisiProvider>
     <div className="space-y-6">
       {/* Yıl/ay seçimi */}
       <div className="flex flex-wrap items-center justify-end gap-4">
@@ -46,5 +48,6 @@ export default function VeriGirisiPage() {
         </div>
       </div>
     </div>
+    </VeriGirisiProvider>
   );
 }

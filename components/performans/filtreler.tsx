@@ -5,6 +5,7 @@ import { CalendarDays, ChevronDown } from "lucide-react";
 import type { DateRange } from "react-day-picker";
 import { format } from "date-fns";
 import { tr } from "date-fns/locale";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -75,9 +76,36 @@ export function PerformansFiltreler() {
         </PopoverContent>
       </Popover>
 
-      <EtiketliSecim etiket="Yıl:" deger={yil} secenekler={YILLAR} onChange={setYil} w="w-[76px]" />
-      <EtiketliSecim etiket="Baz Yıl:" deger={bazYil} secenekler={BAZ_YILLAR} onChange={setBazYil} w="w-[76px]" />
-      <EtiketliSecim etiket="EnPI:" deger={enpi} secenekler={ENPI} onChange={setEnpi} w="w-[168px]" />
+      <EtiketliSecim
+        etiket="Yıl:"
+        deger={yil}
+        secenekler={YILLAR}
+        onChange={(v) => {
+          setYil(v);
+          toast.success(`${v} yılı verileri yüklendi`);
+        }}
+        w="w-[76px]"
+      />
+      <EtiketliSecim
+        etiket="Baz Yıl:"
+        deger={bazYil}
+        secenekler={BAZ_YILLAR}
+        onChange={(v) => {
+          setBazYil(v);
+          toast(`Baz yıl ${v} olarak ayarlandı`);
+        }}
+        w="w-[76px]"
+      />
+      <EtiketliSecim
+        etiket="EnPI:"
+        deger={enpi}
+        secenekler={ENPI}
+        onChange={(v) => {
+          setEnpi(v);
+          toast(`Gösterge: ${v}`);
+        }}
+        w="w-[168px]"
+      />
     </div>
   );
 }

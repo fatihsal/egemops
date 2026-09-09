@@ -2,7 +2,8 @@
 
 import { StatCard, StatCardSkeleton } from "@/components/common/stat-card";
 import { useEnerjiKpi } from "@/lib/queries/enerji";
-import { BUGUN } from "@/lib/donem";
+import { useDonem } from "@/components/providers/donem-provider";
+import { BUGUN, donemGunSayisi } from "@/lib/donem";
 import { sayi, sayi2, sayiOndalik } from "@/lib/format";
 import type { EnerjiKpi as EnerjiKpiTip } from "@/lib/types";
 
@@ -47,22 +48,30 @@ const IKON: Record<string, { ikon: string; sinif: string }> = {
   },
 };
 
-// Birime göre değer gösterimi.
-function gosterim(kpi: EnerjiKpiTip): { deger: string; birim?: string } {
+// Birime göre değer gösterimi. Yüzde dışındaki (kümülatif) değerler dönem
+// uzunluğuna göre ölçeklenir; yüzdeler (pay/oran) döneme göre değişmez.
+function gosterim(
+  kpi: EnerjiKpiTip,
+  olcek: number,
+): { deger: string; birim?: string } {
+  const d = kpi.birim === "%" ? kpi.deger : kpi.deger * olcek;
   switch (kpi.birim) {
     case "%":
-      return { deger: `%${sayi(kpi.deger)}` };
+      return { deger: `%${sayi(d)}` };
     case "TEP":
-      return { deger: sayiOndalik(kpi.deger), birim: "TEP" };
+      return { deger: sayiOndalik(d), birim: "TEP" };
     case "GWh":
-      return { deger: sayi2(kpi.deger), birim: "GWh" };
+      return { deger: sayi2(d), birim: "GWh" };
     default:
-      return { deger: sayi(kpi.deger), birim: kpi.birim };
+      return { deger: sayi(d), birim: kpi.birim };
   }
 }
 
 export function EnerjiKpi() {
   const { data, isLoading } = useEnerjiKpi();
+  const { donem } = useDonem();
+  // Temel veri haftalık; seçilen dönemin gün sayısına göre ölçeklenir.
+  const olcek = donemGunSayisi(donem) / 7;
 
   if (isLoading) {
     return (
@@ -77,7 +86,7 @@ export function EnerjiKpi() {
   return (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-3 2xl:grid-cols-6">
       {data?.map((kpi) => {
-        const g = gosterim(kpi);
+        const g = gosterim(kpi, olcek);
         const ik = IKON[kpi.anahtar];
         return (
           <StatCard

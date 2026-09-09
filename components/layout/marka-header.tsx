@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { MobileNav } from "@/components/layout/mobile-nav";
+import { GlobalArama } from "@/components/layout/global-arama";
 import { BildirimMenu } from "@/components/layout/bildirim-menu";
 import { KullaniciMenu } from "@/components/layout/kullanici-menu";
 import { sayfaMeta } from "@/lib/sayfa-meta";
@@ -53,7 +54,7 @@ export function MarkaHeader() {
         </svg>
       </div>
       {/* Sağ filigran */}
-      <div className="pointer-events-none absolute top-1/2 right-80 hidden -translate-y-1/2 flex-col items-center gap-0.5 text-center xl:flex">
+      <div className="pointer-events-none absolute top-1/2 right-[22rem] hidden -translate-y-1/2 flex-col items-center gap-0.5 text-center xl:flex">
         <Icon icon="solar:leaf-bold-duotone" className="size-4 text-emerald-400/70" />
         <span className="text-[8px] font-semibold tracking-[0.18em] text-muted-foreground/50 uppercase leading-tight">
           Bugünün Enerjisi<br />Yarının Geleceği
@@ -90,6 +91,7 @@ export function MarkaHeader() {
 
         {/* Aksiyonlar + kullanıcı */}
         <div className="flex shrink-0 items-center gap-0.5 border-l px-2 sm:gap-1.5 sm:px-3">
+          <GlobalArama />
           <ThemeToggle />
           <BildirimMenu />
           <KullaniciMenu />

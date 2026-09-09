@@ -25,8 +25,20 @@ import { KayitTablosu } from "@/components/enerji-kayitlari/kayit-tablosu";
 import { YillikOzetTablosu } from "@/components/enerji-kayitlari/yillik-ozet-tablosu";
 import { KayitDetayPaneli } from "@/components/enerji-kayitlari/kayit-detay-paneli";
 import { useEnerjiKayitlari } from "@/lib/queries/kayitlar";
-import { sayi } from "@/lib/format";
+import { csvIndir } from "@/lib/disa-aktar";
+import { sayi, sayi2 } from "@/lib/format";
 import { cn } from "@/lib/utils";
+
+const DURUM_ETIKET: Record<string, string> = {
+  onaylandi: "Onaylandı",
+  kontrol: "Kontrol Bekliyor",
+  taslak: "Taslak",
+};
+const KALITE_ETIKET: Record<string, string> = {
+  tam: "Tam",
+  kontrol: "Kontrol Bekliyor",
+  eksik: "Eksik",
+};
 
 const SEKMELER = [
   { anahtar: "aylik", etiket: "Aylık Kayıtlar" },
@@ -87,6 +99,35 @@ export function EnerjiKayitlariIcerik() {
     toast.success(`${sonuc} kayıt bulundu`);
   }
 
+  function disaAktar() {
+    if (filtreli.length === 0) {
+      toast.error("Dışa aktarılacak kayıt yok");
+      return;
+    }
+    const basliklar = [
+      "Dönem",
+      "Elektrik (kWh)",
+      "GES Üretimi (kWh)",
+      "Doğalgaz (Sm³)",
+      "Akaryakıt (Litre)",
+      "Toplam TEP",
+      "Durum",
+      "Veri Kalitesi",
+    ];
+    const satirlar = filtreli.map((k) => [
+      k.donem,
+      sayi2(k.elektrik),
+      sayi2(k.gesUretim),
+      sayi2(k.dogalgaz),
+      sayi(k.akaryakit),
+      sayi2(k.toplamTep),
+      DURUM_ETIKET[k.durum] ?? k.durum,
+      KALITE_ETIKET[k.veriKalitesi] ?? k.veriKalitesi,
+    ]);
+    csvIndir("enerji-kayitlari", basliklar, satirlar);
+    toast.success(`${filtreli.length} kayıt Excel'e aktarıldı`);
+  }
+
   return (
     <div className="space-y-6">
       <KayitFiltreleri
@@ -125,7 +166,7 @@ export function EnerjiKayitlariIcerik() {
                 variant="outline"
                 size="sm"
                 className="gap-1.5"
-                onClick={() => toast.success("Excel'e aktarıldı")}
+                onClick={disaAktar}
               >
                 <Icon icon="vscode-icons:file-type-excel" className="size-4" />
                 Excel&apos;e Aktar

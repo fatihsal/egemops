@@ -6,6 +6,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RadialOran } from "@/components/kayit-detay/parcalar";
 import { useElektrikGesAnaliz } from "@/lib/queries/elektrik-ges";
+import {
+  useAnalizFiltre,
+  yilOlcek,
+  olcekliDeger,
+} from "@/components/providers/analiz-filtre-provider";
 import { sayiOndalik } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { ElektrikKpi } from "@/lib/types";
@@ -48,6 +53,8 @@ function Yon({ kpi }: { kpi: ElektrikKpi }) {
 }
 
 function KpiKart({ kpi }: { kpi: ElektrikKpi }) {
+  const { yil } = useAnalizFiltre();
+  const olcek = kpi.birim === "%" || kpi.radyal !== undefined ? 1 : yilOlcek(yil);
   const ik = IKON[kpi.anahtar];
   const gorsel = kpi.radyal !== undefined
     ? <RadialOran deger={kpi.radyal} renk="#0d9488" className="size-10 shrink-0" yaziSinif="text-[10px]" />
@@ -71,14 +78,16 @@ function KpiKart({ kpi }: { kpi: ElektrikKpi }) {
 
         <div className="mt-2.5 flex items-baseline gap-1">
           <span className="font-heading text-[26px] font-bold leading-none tracking-tight">
-            {kpi.birim === "%" ? `%${kpi.deger}` : kpi.deger}
+            {kpi.birim === "%" ? `%${kpi.deger}` : olcekliDeger(kpi.deger, olcek)}
           </span>
           {kpi.birim && kpi.birim !== "%" ? (
             <span className="text-sm font-medium text-muted-foreground">{kpi.birim}</span>
           ) : null}
         </div>
         {kpi.altDeger ? (
-          <p className="mt-1 text-xs text-muted-foreground">{kpi.altDeger}</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {olcekliDeger(kpi.altDeger, olcek)}
+          </p>
         ) : null}
 
         <Yon kpi={kpi} />

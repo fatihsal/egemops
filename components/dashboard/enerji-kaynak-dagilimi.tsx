@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEnerjiKaynakDagilimi } from "@/lib/queries/enerji";
+import { useDonem } from "@/components/providers/donem-provider";
+import { donemGunSayisi } from "@/lib/donem";
 import { sayi, sayi2, sayiOndalik } from "@/lib/format";
 import type { KaynakTuru } from "@/lib/types";
 
@@ -21,6 +23,9 @@ const RENK: Record<KaynakTuru, string> = {
 
 export function EnerjiKaynakDagilimi() {
   const { data, isLoading } = useEnerjiKaynakDagilimi();
+  const { donem } = useDonem();
+  // Kümülatif değerler (GWh, TEP) döneme göre ölçeklenir; yüzde payları sabit.
+  const olcek = donemGunSayisi(donem) / 7;
 
   return (
     <Card>
@@ -78,7 +83,7 @@ export function EnerjiKaynakDagilimi() {
                         <span className="font-semibold">%{k.yuzde}</span>
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        {sayi2(k.gwh)} GWh
+                        {sayi2(k.gwh * olcek)} GWh
                       </div>
                     </div>
                   </li>
@@ -89,7 +94,7 @@ export function EnerjiKaynakDagilimi() {
             <div className="border-t pt-3 text-sm">
               <span className="text-muted-foreground">Toplam Enerji: </span>
               <span className="font-semibold">
-                {sayiOndalik(data?.toplamTep ?? 0)} TEP
+                {sayiOndalik((data?.toplamTep ?? 0) * olcek)} TEP
               </span>
             </div>
           </div>
