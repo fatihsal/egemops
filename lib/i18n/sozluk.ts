@@ -1171,4 +1171,12 @@ export const EN: Record<string, string> = {
   "Bağlı": "Connected",
   "bağlantısı başlatılıyor": "connection is starting",
   "Bağlan": "Connect",
+
+  // — Ortak (common) —
+  "Veri": "Data",
+  "Kart menüsü": "Card menu",
+  "Detayı gör": "View details",
+  "yenilendi": "refreshed",
+  "Yenile": "Refresh",
+  "Bu bölüm hazırlanıyor": "This section is being prepared",
 };

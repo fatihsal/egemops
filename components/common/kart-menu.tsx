@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useDil } from "@/components/providers/dil-provider";
 
 export function KartMenu({
   baslik = "Veri",
@@ -21,6 +22,7 @@ export function KartMenu({
   baslik?: string;
   detayHref?: string;
 }) {
+  const { t } = useDil();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -28,7 +30,7 @@ export function KartMenu({
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label="Kart menüsü"
+            aria-label={t("Kart menüsü")}
             className="absolute top-2 right-2 text-muted-foreground/60 hover:text-foreground"
           />
         }
@@ -39,17 +41,17 @@ export function KartMenu({
         {detayHref ? (
           <DropdownMenuItem render={<Link href={detayHref} />}>
             <Icon icon="solar:eye-bold-duotone" className="size-4" />
-            Detayı gör
+            {t("Detayı gör")}
           </DropdownMenuItem>
         ) : null}
-        <DropdownMenuItem onClick={() => toast.success(`${baslik} dışa aktarıldı`)}>
+        <DropdownMenuItem onClick={() => toast.success(`${t(baslik)} ${t("dışa aktarıldı")}`)}>
           <Icon icon="solar:download-minimalistic-bold-duotone" className="size-4" />
-          Dışa aktar
+          {t("Dışa aktar")}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => toast(`${baslik} yenilendi`)}>
+        <DropdownMenuItem onClick={() => toast(`${t(baslik)} ${t("yenilendi")}`)}>
           <Icon icon="solar:refresh-circle-bold-duotone" className="size-4" />
-          Yenile
+          {t("Yenile")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
