@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/table";
 import { FORMAT_STIL } from "@/components/raporlar/stiller";
 import { useRaporAnaliz } from "@/lib/queries/raporlar";
+import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
 
 function FormatRozet({ format }: { format: string }) {
@@ -39,11 +40,12 @@ function FormatRozet({ format }: { format: string }) {
 
 export function SonRaporlar() {
   const { data, isLoading } = useRaporAnaliz();
+  const { t } = useDil();
 
   return (
     <Card className="h-full">
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">Son Oluşturulan Raporlar</h3>
+        <h3 className="font-heading text-base font-medium">{t("Son Oluşturulan Raporlar")}</h3>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col gap-4">
         {isLoading || !data ? (
@@ -54,47 +56,47 @@ export function SonRaporlar() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="whitespace-nowrap">Rapor Adı</TableHead>
-                    <TableHead className="whitespace-nowrap">Tür</TableHead>
-                    <TableHead className="whitespace-nowrap">Oluşturulma Tarihi</TableHead>
-                    <TableHead className="whitespace-nowrap">Oluşturan</TableHead>
-                    <TableHead className="whitespace-nowrap">Format</TableHead>
-                    <TableHead className="text-right whitespace-nowrap">İşlem</TableHead>
+                    <TableHead className="whitespace-nowrap">{t("Rapor Adı")}</TableHead>
+                    <TableHead className="whitespace-nowrap">{t("Tür")}</TableHead>
+                    <TableHead className="whitespace-nowrap">{t("Oluşturulma Tarihi")}</TableHead>
+                    <TableHead className="whitespace-nowrap">{t("Oluşturan")}</TableHead>
+                    <TableHead className="whitespace-nowrap">{t("Format")}</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("İşlem")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {data.sonRaporlar.map((r) => (
                     <TableRow key={r.id} className="hover:bg-muted/50">
-                      <TableCell className="font-medium">{r.ad}</TableCell>
-                      <TableCell className="whitespace-nowrap text-muted-foreground">{r.tur}</TableCell>
+                      <TableCell className="font-medium">{t(r.ad)}</TableCell>
+                      <TableCell className="whitespace-nowrap text-muted-foreground">{t(r.tur)}</TableCell>
                       <TableCell className="whitespace-nowrap tabular-nums text-muted-foreground">{r.tarih}</TableCell>
                       <TableCell className="whitespace-nowrap text-muted-foreground">{r.olusturan}</TableCell>
                       <TableCell><FormatRozet format={r.format} /></TableCell>
                       <TableCell>
                         <div className="flex items-center justify-end gap-0.5">
-                          <Button variant="ghost" size="icon-sm" aria-label="Görüntüle" nativeButton={false} render={<Link href={`/raporlar/${r.id}`} />}>
+                          <Button variant="ghost" size="icon-sm" aria-label={t("Görüntüle")} nativeButton={false} render={<Link href={`/raporlar/${r.id}`} />}>
                             <Icon icon="solar:eye-bold-duotone" className="size-4 text-muted-foreground" />
                           </Button>
-                          <Button variant="ghost" size="icon-sm" aria-label="İndir" onClick={() => toast.success(`${r.ad} indiriliyor (${r.format})`)}>
+                          <Button variant="ghost" size="icon-sm" aria-label={t("İndir")} onClick={() => toast.success(`${t(r.ad)} ${t("indiriliyor")} (${r.format})`)}>
                             <Icon icon="solar:download-minimalistic-bold-duotone" className="size-4 text-muted-foreground" />
                           </Button>
                           <DropdownMenu>
-                            <DropdownMenuTrigger render={<Button variant="ghost" size="icon-sm" aria-label="Daha fazla" />}>
+                            <DropdownMenuTrigger render={<Button variant="ghost" size="icon-sm" aria-label={t("Daha fazla")} />}>
                               <MoreVertical className="size-4 text-muted-foreground" />
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-40">
                               <DropdownMenuItem render={<Link href={`/raporlar/${r.id}`} />}>
                                 <Icon icon="solar:eye-bold-duotone" className="size-4" />
-                                Görüntüle
+                                {t("Görüntüle")}
                               </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => toast.success(`${r.ad} indiriliyor`)}>
+                              <DropdownMenuItem onClick={() => toast.success(`${t(r.ad)} ${t("indiriliyor")}`)}>
                                 <Icon icon="solar:download-minimalistic-bold-duotone" className="size-4" />
-                                İndir
+                                {t("İndir")}
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
-                              <DropdownMenuItem onClick={() => toast(`${r.ad} paylaşıldı`)}>
+                              <DropdownMenuItem onClick={() => toast(`${t(r.ad)} ${t("paylaşıldı")}`)}>
                                 <Icon icon="solar:share-bold-duotone" className="size-4" />
-                                Paylaş
+                                {t("Paylaş")}
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
@@ -109,7 +111,7 @@ export function SonRaporlar() {
               href="#rapor-listesi"
               className="mt-auto inline-flex items-center gap-1 self-start text-sm font-medium text-primary transition-opacity hover:opacity-80"
             >
-              Tümünü Görüntüle
+              {t("Tümünü Görüntüle")}
               <Icon icon="solar:alt-arrow-right-linear" className="size-4" />
             </Link>
           </>

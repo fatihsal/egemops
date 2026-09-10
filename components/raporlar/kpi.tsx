@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRaporAnaliz } from "@/lib/queries/raporlar";
+import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
 
 const IKON: Record<string, { ikon: string; sinif: string }> = {
@@ -18,6 +19,7 @@ const IKON: Record<string, { ikon: string; sinif: string }> = {
 
 export function RaporKpiKartlari() {
   const { data, isLoading } = useRaporAnaliz();
+  const { t } = useDil();
 
   if (isLoading || !data) {
     return (
@@ -47,15 +49,15 @@ export function RaporKpiKartlari() {
           <Card key={k.anahtar} className="h-full">
             <CardContent className="flex h-full flex-col gap-2">
               <div className="flex items-start justify-between gap-2">
-                <p className="text-xs text-muted-foreground">{k.baslik}</p>
+                <p className="text-xs text-muted-foreground">{t(k.baslik)}</p>
                 <span className={cn("flex size-9 shrink-0 items-center justify-center rounded-xl", ik?.sinif)}>
                   <Icon icon={ik?.ikon} className="size-5" />
                 </span>
               </div>
               <p className={cn("font-heading font-bold tracking-tight", metin ? "text-sm leading-snug" : "text-2xl tabular-nums")}>
-                {k.deger}
+                {metin ? t(k.deger) : k.deger}
               </p>
-              <p className="mt-auto text-[11px] text-muted-foreground">{k.altMetin}</p>
+              <p className="mt-auto text-[11px] text-muted-foreground">{t(k.altMetin)}</p>
             </CardContent>
           </Card>
         );

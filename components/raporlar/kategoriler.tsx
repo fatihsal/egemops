@@ -7,10 +7,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { KATEGORI_META } from "@/components/raporlar/stiller";
 import { useRaporFiltre } from "@/components/raporlar/filtre-store";
 import { useRaporAnaliz } from "@/lib/queries/raporlar";
+import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
 
 export function RaporKategorileri() {
   const { data, isLoading } = useRaporAnaliz();
+  const { t } = useDil();
   const { set } = useRaporFiltre();
 
   const kategoriSec = (etiket: string) => {
@@ -21,7 +23,7 @@ export function RaporKategorileri() {
   return (
     <Card className="h-full">
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">Rapor Kategorileri</h3>
+        <h3 className="font-heading text-base font-medium">{t("Rapor Kategorileri")}</h3>
       </CardHeader>
       <CardContent>
         {isLoading || !data ? (
@@ -46,10 +48,10 @@ export function RaporKategorileri() {
                     <Icon icon="solar:alt-arrow-right-linear" className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
                   </div>
                   <div className="space-y-1">
-                    <p className="text-sm font-medium">{k.baslik}</p>
-                    <p className="line-clamp-2 text-xs text-muted-foreground">{k.aciklama}</p>
+                    <p className="text-sm font-medium">{t(k.baslik)}</p>
+                    <p className="line-clamp-2 text-xs text-muted-foreground">{t(k.aciklama)}</p>
                   </div>
-                  <p className="mt-auto text-xs font-semibold text-foreground">{k.adet} Rapor</p>
+                  <p className="mt-auto text-xs font-semibold text-foreground">{k.adet} {t("Rapor")}</p>
                 </button>
               );
             })}

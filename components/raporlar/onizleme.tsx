@@ -17,23 +17,26 @@ import {
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { raporOnizlemeGetir } from "@/lib/data/rapor-onizleme";
+import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
 import type { OnizlemeKpi, RaporKategoriAnahtar } from "@/lib/types";
 
 function Delta({ k }: { k: OnizlemeKpi }) {
-  if (!k.degisim) return <span className="text-[11px] text-muted-foreground">— sabit</span>;
+  const { t } = useDil();
+  if (!k.degisim) return <span className="text-[11px] text-muted-foreground">{t("— sabit")}</span>;
   const artis = k.degisim > 0;
   const iyi = (artis && k.iyiYon === "artis") || (!artis && k.iyiYon === "azalis");
   return (
     <span className={cn("inline-flex items-center gap-1 text-[11px] font-medium", iyi ? "text-emerald-600" : "text-red-500")}>
       <Icon icon={artis ? "solar:arrow-right-up-linear" : "solar:arrow-right-down-linear"} className="size-3.5" />
       %{Math.abs(k.degisim).toLocaleString("tr-TR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
-      <span className="text-muted-foreground">önceki döneme göre</span>
+      <span className="text-muted-foreground">{t("önceki döneme göre")}</span>
     </span>
   );
 }
 
 export function RaporOnizlemeIcerik({ kategori }: { kategori: RaporKategoriAnahtar }) {
+  const { t } = useDil();
   const d = raporOnizlemeGetir(kategori);
   const toplamDagilim = d.dagilim.reduce((t, x) => t + x.deger, 0);
 
@@ -42,24 +45,24 @@ export function RaporOnizlemeIcerik({ kategori }: { kategori: RaporKategoriAnaht
       {/* Yönetim Özeti */}
       <Card>
         <CardHeader>
-          <h3 className="font-heading text-base font-medium">Yönetim Özeti</h3>
+          <h3 className="font-heading text-base font-medium">{t("Yönetim Özeti")}</h3>
         </CardHeader>
         <CardContent>
-          <p className="max-w-4xl text-sm leading-relaxed text-muted-foreground">{d.ozet}</p>
+          <p className="max-w-4xl text-sm leading-relaxed text-muted-foreground">{t(d.ozet)}</p>
         </CardContent>
       </Card>
 
       {/* KPI Alanları */}
       <div>
-        <h3 className="mb-3 font-heading text-base font-medium">Temel Göstergeler</h3>
+        <h3 className="mb-3 font-heading text-base font-medium">{t("Temel Göstergeler")}</h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {d.kpiler.map((k) => (
             <Card key={k.baslik} className="h-full">
               <CardContent className="space-y-2">
-                <p className="text-xs text-muted-foreground">{k.baslik}</p>
+                <p className="text-xs text-muted-foreground">{t(k.baslik)}</p>
                 <p className="flex items-baseline gap-1">
-                  <span className="font-heading text-2xl font-bold tracking-tight tabular-nums">{k.deger}</span>
-                  {k.birim ? <span className="text-xs font-medium text-muted-foreground">{k.birim}</span> : null}
+                  <span className="font-heading text-2xl font-bold tracking-tight tabular-nums">{t(k.deger)}</span>
+                  {k.birim ? <span className="text-xs font-medium text-muted-foreground">{t(k.birim)}</span> : null}
                 </p>
                 <Delta k={k} />
               </CardContent>
@@ -73,11 +76,11 @@ export function RaporOnizlemeIcerik({ kategori }: { kategori: RaporKategoriAnaht
         <Card className="xl:col-span-7">
           <CardHeader className="flex-row items-center justify-between gap-4 space-y-0">
             <h3 className="font-heading text-base font-medium">
-              Aylık Gelişim <span className="text-sm font-normal text-muted-foreground">({d.birim})</span>
+              {t("Aylık Gelişim")} <span className="text-sm font-normal text-muted-foreground">({t(d.birim)})</span>
             </h3>
             <div className="flex items-center gap-4 text-xs text-muted-foreground">
-              <span className="inline-flex items-center gap-1.5"><span className="size-2.5 rounded-full bg-teal-500" /> Bu Dönem</span>
-              <span className="inline-flex items-center gap-1.5"><span className="size-2.5 rounded-full bg-slate-300" /> Önceki Dönem</span>
+              <span className="inline-flex items-center gap-1.5"><span className="size-2.5 rounded-full bg-teal-500" /> {t("Bu Dönem")}</span>
+              <span className="inline-flex items-center gap-1.5"><span className="size-2.5 rounded-full bg-slate-300" /> {t("Önceki Dönem")}</span>
             </div>
           </CardHeader>
           <CardContent>
@@ -91,11 +94,11 @@ export function RaporOnizlemeIcerik({ kategori }: { kategori: RaporKategoriAnaht
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                  <XAxis dataKey="etiket" tickLine={false} axisLine={false} fontSize={12} stroke="var(--muted-foreground)" />
+                  <XAxis dataKey="etiket" tickLine={false} axisLine={false} fontSize={12} stroke="var(--muted-foreground)" tickFormatter={(v: string) => t(v)} />
                   <YAxis tickLine={false} axisLine={false} fontSize={12} width={40} stroke="var(--muted-foreground)" />
                   <Tooltip
                     contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
-                    formatter={(v, n) => [`${Number(v).toLocaleString("tr-TR")} ${d.birim}`, n === "buDonem" ? "Bu Dönem" : "Önceki Dönem"]}
+                    formatter={(v, n) => [`${Number(v).toLocaleString("tr-TR")} ${t(d.birim)}`, n === "buDonem" ? t("Bu Dönem") : t("Önceki Dönem")]}
                   />
                   <Area type="monotone" dataKey="buDonem" stroke="#14b8a6" strokeWidth={2.5} fill="url(#onzArea)" isAnimationActive={false} />
                   <Line type="monotone" dataKey="oncekiDonem" stroke="#cbd5e1" strokeWidth={2} strokeDasharray="5 4" dot={false} isAnimationActive={false} />
@@ -107,7 +110,7 @@ export function RaporOnizlemeIcerik({ kategori }: { kategori: RaporKategoriAnaht
 
         <Card className="xl:col-span-5">
           <CardHeader>
-            <h3 className="font-heading text-base font-medium">{d.dagilimBaslik}</h3>
+            <h3 className="font-heading text-base font-medium">{t(d.dagilimBaslik)}</h3>
           </CardHeader>
           <CardContent className="flex flex-1 flex-col items-center gap-5">
             <div className="relative size-40 shrink-0">
@@ -118,20 +121,20 @@ export function RaporOnizlemeIcerik({ kategori }: { kategori: RaporKategoriAnaht
                   </Pie>
                   <Tooltip
                     contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
-                    formatter={(v, n) => [`${Number(v).toLocaleString("tr-TR")} ${d.birim}`, String(n)]}
+                    formatter={(v, n) => [`${Number(v).toLocaleString("tr-TR")} ${t(d.birim)}`, t(String(n))]}
                   />
                 </PieChart>
               </ResponsiveContainer>
               <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
                 <span className="font-heading text-lg font-bold tracking-tight tabular-nums">{toplamDagilim.toLocaleString("tr-TR")}</span>
-                <span className="text-[11px] text-muted-foreground">{d.birim}</span>
+                <span className="text-[11px] text-muted-foreground">{t(d.birim)}</span>
               </div>
             </div>
             <ul className="w-full space-y-2.5 text-sm">
               {d.dagilim.map((x) => (
                 <li key={x.etiket} className="flex items-center gap-2.5">
                   <span className="size-2.5 shrink-0 rounded-full" style={{ background: x.renk }} />
-                  <span className="flex-1 truncate text-muted-foreground">{x.etiket}</span>
+                  <span className="flex-1 truncate text-muted-foreground">{t(x.etiket)}</span>
                   <span className="font-medium tabular-nums">{x.deger.toLocaleString("tr-TR")}</span>
                   <span className="w-12 text-right text-xs tabular-nums text-muted-foreground">%{Math.round((x.deger / toplamDagilim) * 100)}</span>
                 </li>
@@ -144,7 +147,7 @@ export function RaporOnizlemeIcerik({ kategori }: { kategori: RaporKategoriAnaht
       {/* Detay Tablo */}
       <Card>
         <CardHeader>
-          <h3 className="font-heading text-base font-medium">{d.tabloBaslik}</h3>
+          <h3 className="font-heading text-base font-medium">{t(d.tabloBaslik)}</h3>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto rounded-xl border">
@@ -152,7 +155,7 @@ export function RaporOnizlemeIcerik({ kategori }: { kategori: RaporKategoriAnaht
               <thead>
                 <tr className="bg-muted/40 text-left text-xs text-muted-foreground">
                   {d.tabloKolonlar.map((c, i) => (
-                    <th key={c} className={cn("px-3 py-2.5 font-medium whitespace-nowrap", i > 0 && "text-right")}>{c}</th>
+                    <th key={c} className={cn("px-3 py-2.5 font-medium whitespace-nowrap", i > 0 && "text-right")}>{t(c)}</th>
                   ))}
                 </tr>
               </thead>
@@ -166,7 +169,7 @@ export function RaporOnizlemeIcerik({ kategori }: { kategori: RaporKategoriAnaht
                         const son = i === satir.length - 1;
                         return (
                           <td key={i} className={cn("px-3 py-2.5 whitespace-nowrap tabular-nums", i === 0 ? "font-medium" : "text-right", i > 0 && i < satir.length - 1 && "text-muted-foreground", son && (negatif ? "text-red-500" : "text-emerald-600"), son && "font-medium")}>
-                            {h}
+                            {i === 0 ? t(h) : h}
                           </td>
                         );
                       })}
@@ -182,7 +185,7 @@ export function RaporOnizlemeIcerik({ kategori }: { kategori: RaporKategoriAnaht
       {/* Değerlendirme */}
       <Card>
         <CardHeader>
-          <h3 className="font-heading text-base font-medium">Yorum / Değerlendirme</h3>
+          <h3 className="font-heading text-base font-medium">{t("Yorum / Değerlendirme")}</h3>
         </CardHeader>
         <CardContent>
           <ul className="space-y-3">
@@ -191,7 +194,7 @@ export function RaporOnizlemeIcerik({ kategori }: { kategori: RaporKategoriAnaht
                 <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-teal-50 text-teal-600 dark:bg-teal-950 dark:text-teal-300">
                   <Icon icon="solar:check-read-linear" className="size-3.5" />
                 </span>
-                <p className="text-sm leading-relaxed text-muted-foreground">{v}</p>
+                <p className="text-sm leading-relaxed text-muted-foreground">{t(v)}</p>
               </li>
             ))}
           </ul>

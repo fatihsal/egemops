@@ -5,7 +5,7 @@ import { CalendarDays, ChevronDown } from "lucide-react";
 import { Icon } from "@iconify/react";
 import type { DateRange } from "react-day-picker";
 import { format } from "date-fns";
-import { tr } from "date-fns/locale";
+import { tr, enUS } from "date-fns/locale";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { queryKeys } from "@/lib/queries/keys";
+import { useDil } from "@/components/providers/dil-provider";
 import type { Rapor, RaporAnaliz, RaporFormat, RaporKategoriAnahtar } from "@/lib/types";
 
 const TURLER = ["Tüketim Raporu", "Performans Raporu", "Maliyet Raporu", "TEP Raporu", "Karşılaştırma Raporu", "Özel Rapor"];
@@ -33,6 +34,7 @@ const TUR_KATEGORI: Record<string, RaporKategoriAnahtar> = {
 };
 
 export function RaporOlusturForm({ onSubmitted }: { onSubmitted?: () => void }) {
+  const { t, dil } = useDil();
   const qc = useQueryClient();
   const [tur, setTur] = React.useState("");
   const [ad, setAd] = React.useState("");
@@ -42,11 +44,11 @@ export function RaporOlusturForm({ onSubmitted }: { onSubmitted?: () => void }) 
 
   const donemEtiket = aralik?.from && aralik?.to
     ? `${format(aralik.from, "dd.MM.yyyy")} – ${format(aralik.to, "dd.MM.yyyy")}`
-    : "Dönem seçiniz";
+    : t("Dönem seçiniz");
 
   const olustur = () => {
     if (!tur) {
-      toast.error("Rapor türü seçiniz");
+      toast.error(t("Rapor türü seçiniz"));
       return;
     }
     const raporAdi = ad.trim() || tur;
@@ -59,27 +61,27 @@ export function RaporOlusturForm({ onSubmitted }: { onSubmitted?: () => void }) 
       };
       return { ...old, raporlar: [yeni, ...old.raporlar] };
     });
-    toast.success(`${raporAdi} oluşturuldu (${format2})`);
+    toast.success(`${raporAdi} ${t("oluşturuldu")} (${format2})`);
     onSubmitted?.();
   };
 
   return (
     <div className="space-y-4">
       <div className="space-y-1.5">
-        <Label className="text-xs text-muted-foreground">Rapor Türü</Label>
+        <Label className="text-xs text-muted-foreground">{t("Rapor Türü")}</Label>
         <Select value={tur} onValueChange={(v) => setTur(v as string)}>
-          <SelectTrigger className="w-full"><SelectValue placeholder="Seçiniz" /></SelectTrigger>
-          <SelectContent>{TURLER.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent>
+          <SelectTrigger className="w-full"><SelectValue placeholder={t("Seçiniz")} /></SelectTrigger>
+          <SelectContent>{TURLER.map((x) => <SelectItem key={x} value={x}>{t(x)}</SelectItem>)}</SelectContent>
         </Select>
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="rapor-adi" className="text-xs text-muted-foreground">Rapor Adı</Label>
-        <Input id="rapor-adi" value={ad} onChange={(e) => setAd(e.target.value)} placeholder="Rapor adı giriniz" />
+        <Label htmlFor="rapor-adi" className="text-xs text-muted-foreground">{t("Rapor Adı")}</Label>
+        <Input id="rapor-adi" value={ad} onChange={(e) => setAd(e.target.value)} placeholder={t("Rapor adı giriniz")} />
       </div>
 
       <div className="space-y-1.5">
-        <Label className="text-xs text-muted-foreground">Dönem</Label>
+        <Label className="text-xs text-muted-foreground">{t("Dönem")}</Label>
         <Popover open={acik} onOpenChange={setAcik}>
           <PopoverTrigger render={<Button variant="outline" className="h-9 w-full justify-start gap-2 bg-card font-normal" />}>
             <CalendarDays className="size-4 text-muted-foreground" />
@@ -87,13 +89,13 @@ export function RaporOlusturForm({ onSubmitted }: { onSubmitted?: () => void }) 
             <ChevronDown className="size-4 text-muted-foreground" />
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0" align="start">
-            <Calendar mode="range" numberOfMonths={2} selected={aralik} onSelect={setAralik} locale={tr} autoFocus />
+            <Calendar mode="range" numberOfMonths={2} selected={aralik} onSelect={setAralik} locale={dil === "en" ? enUS : tr} autoFocus />
           </PopoverContent>
         </Popover>
       </div>
 
       <div className="space-y-1.5">
-        <Label className="text-xs text-muted-foreground">Format</Label>
+        <Label className="text-xs text-muted-foreground">{t("Format")}</Label>
         <Select value={format2} onValueChange={(v) => setFormat2(v as string)}>
           <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
           <SelectContent>{FORMATLAR.map((f) => <SelectItem key={f} value={f}>{f}</SelectItem>)}</SelectContent>
@@ -102,7 +104,7 @@ export function RaporOlusturForm({ onSubmitted }: { onSubmitted?: () => void }) 
 
       <Button className="w-full gap-1.5 bg-teal-600 text-white shadow-sm hover:bg-teal-700" onClick={olustur}>
         <Icon icon="solar:document-add-bold-duotone" className="size-4.5" />
-        Rapor Oluştur
+        {t("Rapor Oluştur")}
       </Button>
     </div>
   );
