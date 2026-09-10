@@ -5,6 +5,7 @@ import { toast } from "sonner";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
 import type { EnerjiKayit, KayitGecmis } from "@/lib/types";
 
@@ -15,28 +16,30 @@ const GECMIS_IKON: Record<KayitGecmis["tur"], { ikon: string; renk: string }> = 
 };
 
 export function NotlarKarti({ kayit }: { kayit: EnerjiKayit }) {
+  const { t } = useDil();
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Icon icon="solar:notes-bold-duotone" className="size-5 text-primary" />
-          Notlar
+          {t("Notlar")}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-sm leading-relaxed text-muted-foreground">{kayit.notlar}</p>
+        <p className="text-sm leading-relaxed text-muted-foreground">{t(kayit.notlar)}</p>
       </CardContent>
     </Card>
   );
 }
 
 export function GecmisKarti({ kayit }: { kayit: EnerjiKayit }) {
+  const { t } = useDil();
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Icon icon="solar:history-bold-duotone" className="size-5 text-primary" />
-          Kayıt Geçmişi
+          {t("Kayıt Geçmişi")}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -51,12 +54,12 @@ export function GecmisKarti({ kayit }: { kayit: EnerjiKayit }) {
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <div className="text-xs text-muted-foreground tabular-nums">{g.tarih}</div>
-                    <div className="text-sm font-medium">{g.baslik}</div>
+                    <div className="text-sm font-medium">{t(g.baslik)}</div>
                     {g.aciklama ? (
-                      <div className="text-xs text-muted-foreground">Açıklama: {g.aciklama}</div>
+                      <div className="text-xs text-muted-foreground">{t("Açıklama")}: {t(g.aciklama)}</div>
                     ) : null}
                   </div>
-                  <span className="shrink-0 text-xs text-muted-foreground">{g.kullanici}</span>
+                  <span className="shrink-0 text-xs text-muted-foreground">{t(g.kullanici)}</span>
                 </div>
               </li>
             );
@@ -68,12 +71,13 @@ export function GecmisKarti({ kayit }: { kayit: EnerjiKayit }) {
 }
 
 export function BelgelerKarti({ kayit }: { kayit: EnerjiKayit }) {
+  const { t } = useDil();
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Icon icon="solar:documents-bold-duotone" className="size-5 text-primary" />
-          Kaynak Belgeler
+          {t("Kaynak Belgeler")}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -92,16 +96,16 @@ export function BelgelerKarti({ kayit }: { kayit: EnerjiKayit }) {
                 <Button
                   variant="ghost"
                   size="icon-sm"
-                  aria-label="Görüntüle"
-                  onClick={() => toast(`${b.ad} açılıyor`)}
+                  aria-label={t("Görüntüle")}
+                  onClick={() => toast(`${b.ad} ${t("açılıyor")}`)}
                 >
                   <Icon icon="solar:eye-bold-duotone" className="size-4 text-muted-foreground" />
                 </Button>
                 <Button
                   variant="ghost"
                   size="icon-sm"
-                  aria-label="İndir"
-                  onClick={() => toast.success(`${b.ad} indiriliyor`)}
+                  aria-label={t("İndir")}
+                  onClick={() => toast.success(`${b.ad} ${t("indiriliyor")}`)}
                 >
                   <Icon icon="solar:download-minimalistic-bold-duotone" className="size-4 text-muted-foreground" />
                 </Button>

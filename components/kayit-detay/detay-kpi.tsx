@@ -4,6 +4,7 @@ import { Icon } from "@iconify/react";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Degisim } from "@/components/kayit-detay/parcalar";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi2, sayiOndalik } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { EnerjiKayit } from "@/lib/types";
@@ -25,6 +26,7 @@ function KpiKart({
   degisim: number | null;
   oncekiEtiket?: string;
 }) {
+  const { t } = useDil();
   return (
     <Card size="sm">
       <CardContent className="space-y-2">
@@ -41,7 +43,7 @@ function KpiKart({
         {degisim !== null ? (
           <Degisim yuzde={degisim} etiket={oncekiEtiket} />
         ) : (
-          <span className="text-xs text-muted-foreground">İlk kayıt</span>
+          <span className="text-xs text-muted-foreground">{t("İlk kayıt")}</span>
         )}
       </CardContent>
     </Card>
@@ -54,6 +56,7 @@ function oran(guncel: number, onceki: number | null): number | null {
 }
 
 export function DetayKpi({ kayit }: { kayit: EnerjiKayit }) {
+  const { t } = useDil();
   const onc = kayit.oncekiDonem
     ? `(${kayit.oncekiDonem.replace(/\s(\d{2})(\d{2})$/, " '$2")})`
     : undefined;
@@ -63,7 +66,7 @@ export function DetayKpi({ kayit }: { kayit: EnerjiKayit }) {
       <KpiKart
         ikon="solar:bolt-circle-bold-duotone"
         ikonSinif="bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300"
-        etiket="Toplam Enerji"
+        etiket={t("Toplam Enerji")}
         deger={sayi2(kayit.toplamTep)}
         birim="TEP"
         degisim={kayit.degisimYuzde}
@@ -72,7 +75,7 @@ export function DetayKpi({ kayit }: { kayit: EnerjiKayit }) {
       <KpiKart
         ikon="solar:bolt-bold-duotone"
         ikonSinif="bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300"
-        etiket="Toplam Elektrik"
+        etiket={t("Toplam Elektrik")}
         deger={sayi2(kayit.elektrikTep)}
         birim="TEP"
         degisim={oran(kayit.elektrikTep, kayit.oncekiElektrikTep)}
@@ -81,7 +84,7 @@ export function DetayKpi({ kayit }: { kayit: EnerjiKayit }) {
       <KpiKart
         ikon="solar:fire-bold-duotone"
         ikonSinif="bg-violet-50 text-violet-600 dark:bg-violet-950 dark:text-violet-300"
-        etiket="Doğalgaz"
+        etiket={t("Doğalgaz")}
         deger={sayi2(kayit.dogalgazTep)}
         birim="TEP"
         degisim={oran(kayit.dogalgazTep, kayit.oncekiDogalgazTep)}
@@ -90,7 +93,7 @@ export function DetayKpi({ kayit }: { kayit: EnerjiKayit }) {
       <KpiKart
         ikon="solar:gas-station-bold-duotone"
         ikonSinif="bg-orange-50 text-orange-600 dark:bg-orange-950 dark:text-orange-300"
-        etiket="Akaryakıt"
+        etiket={t("Akaryakıt")}
         deger={sayi2(kayit.akaryakitTep)}
         birim="TEP"
         degisim={oran(kayit.akaryakitTep, kayit.oncekiAkaryakitTep)}
@@ -99,7 +102,7 @@ export function DetayKpi({ kayit }: { kayit: EnerjiKayit }) {
       <KpiKart
         ikon="solar:speedometer-max-bold-duotone"
         ikonSinif="bg-teal-50 text-teal-600 dark:bg-teal-950 dark:text-teal-300"
-        etiket="Enerji Yoğunluğu"
+        etiket={t("Enerji Yoğunluğu")}
         deger={kayit.enerjiYogunluk.toLocaleString("tr-TR", { minimumFractionDigits: 3, maximumFractionDigits: 3 })}
         birim="TEP / ton"
         degisim={kayit.yogunlukDegisim}
@@ -111,7 +114,7 @@ export function DetayKpi({ kayit }: { kayit: EnerjiKayit }) {
             <span className="flex size-9 items-center justify-center rounded-lg bg-teal-50 text-teal-600 dark:bg-teal-950 dark:text-teal-300">
               <Icon icon="solar:pie-chart-2-bold-duotone" className="size-5" />
             </span>
-            <span className="text-xs text-muted-foreground">GES Karşılama Oranı</span>
+            <span className="text-xs text-muted-foreground">{t("GES Karşılama Oranı")}</span>
           </div>
           <div className="text-2xl font-bold tracking-tight text-teal-600 dark:text-teal-400">
             %{sayiOndalik(kayit.gesKarsilama)}

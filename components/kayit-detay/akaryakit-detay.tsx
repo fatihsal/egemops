@@ -3,6 +3,7 @@
 import { Icon } from "@iconify/react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi, sayi2 } from "@/lib/format";
 import type { EnerjiKayit } from "@/lib/types";
 
@@ -33,6 +34,7 @@ function YakitSatir({
 }
 
 export function AkaryakitDetay({ kayit }: { kayit: EnerjiKayit }) {
+  const { t } = useDil();
   const toplam = kayit.motorin + kayit.benzin + kayit.diger;
   const max = Math.max(kayit.motorin, kayit.benzin, kayit.diger, 1);
 
@@ -41,26 +43,26 @@ export function AkaryakitDetay({ kayit }: { kayit: EnerjiKayit }) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Icon icon="solar:gas-station-bold-duotone" className="size-5 text-orange-600 dark:text-orange-400" />
-          Akaryakıt
+          {t("Akaryakıt")}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2.5">
-          <YakitSatir etiket="Motorin" deger={kayit.motorin} max={max} />
-          <YakitSatir etiket="Benzin" deger={kayit.benzin} max={max} />
-          <YakitSatir etiket="Diğer" deger={kayit.diger} max={max} />
+          <YakitSatir etiket={t("Motorin")} deger={kayit.motorin} max={max} />
+          <YakitSatir etiket={t("Benzin")} deger={kayit.benzin} max={max} />
+          <YakitSatir etiket={t("Diğer")} deger={kayit.diger} max={max} />
         </div>
 
         <div className="grid grid-cols-2 gap-4 border-t pt-4">
           <div>
-            <div className="text-xs text-muted-foreground">Toplam Akaryakıt</div>
+            <div className="text-xs text-muted-foreground">{t("Toplam Akaryakıt")}</div>
             <div className="text-lg font-bold tracking-tight tabular-nums">
               {sayi(toplam)}
               <span className="ml-1 text-xs font-normal text-muted-foreground">L</span>
             </div>
           </div>
           <div className="text-right">
-            <div className="text-xs text-muted-foreground">Akaryakıt TEP</div>
+            <div className="text-xs text-muted-foreground">{t("Akaryakıt TEP")}</div>
             <div className="text-lg font-bold tracking-tight text-orange-600 dark:text-orange-400">
               {sayi2(kayit.akaryakitTep)}
               <span className="ml-1 text-xs font-normal text-muted-foreground">TEP</span>

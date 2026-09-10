@@ -18,6 +18,7 @@ import {
 } from "@/components/kayit-detay/ek-kartlar";
 import { AksiyonBar } from "@/components/kayit-detay/aksiyon-bar";
 import { useKayit } from "@/lib/queries/kayitlar";
+import { useDil } from "@/components/providers/dil-provider";
 import type { KayitDurum } from "@/lib/types";
 
 const DURUM_ETIKET: Record<KayitDurum, string> = {
@@ -53,6 +54,7 @@ function BilgiBadge({
 
 export function KayitDetayIcerik({ id }: { id: string }) {
   const { data: kayit, isLoading } = useKayit(id);
+  const { t } = useDil();
 
   if (isLoading) {
     return (
@@ -68,9 +70,9 @@ export function KayitDetayIcerik({ id }: { id: string }) {
     return (
       <div className="flex flex-col items-center justify-center gap-3 py-24 text-center">
         <Icon icon="solar:danger-triangle-bold-duotone" className="size-10 text-amber-500" />
-        <p className="font-medium">Kayıt bulunamadı</p>
+        <p className="font-medium">{t("Kayıt bulunamadı")}</p>
         <Link href="/enerji-kayitlari" className="text-sm text-primary hover:underline">
-          Enerji Kayıtları&apos;na dön
+          {t("Enerji Kayıtları'na dön")}
         </Link>
       </div>
     );
@@ -80,18 +82,18 @@ export function KayitDetayIcerik({ id }: { id: string }) {
     <div className="space-y-6">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-1.5 text-sm text-muted-foreground">
-        <span>Enerji Yönetimi</span>
+        <span>{t("Enerji Yönetimi")}</span>
         <ChevronRight className="size-3.5" />
         <Link href="/enerji-kayitlari" className="hover:text-foreground">
-          Enerji Kayıtları
+          {t("Enerji Kayıtları")}
         </Link>
         <ChevronRight className="size-3.5" />
-        <span className="font-medium text-foreground">{kayit.donem}</span>
+        <span className="font-medium text-foreground">{t(kayit.donem)}</span>
       </nav>
 
       {/* Başlık */}
       <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
-        {kayit.donem} Enerji Kaydı
+        {t(kayit.donem)} {t("Enerji Kaydı")}
         <Icon icon="solar:info-circle-bold-duotone" className="size-5 text-muted-foreground" />
       </h1>
 
@@ -99,13 +101,13 @@ export function KayitDetayIcerik({ id }: { id: string }) {
       <div className="flex flex-wrap gap-2">
         <BilgiBadge
           ikon="solar:check-circle-bold-duotone"
-          etiket="Durum"
-          deger={DURUM_ETIKET[kayit.durum]}
+          etiket={t("Durum")}
+          deger={t(DURUM_ETIKET[kayit.durum])}
           vurgu={kayit.durum === "onaylandi"}
         />
-        <BilgiBadge ikon="solar:clock-circle-bold-duotone" etiket="Son Güncelleme" deger={kayit.sonGuncelleme} />
-        <BilgiBadge ikon="solar:user-bold-duotone" etiket="Oluşturan" deger={kayit.olusturan} />
-        <BilgiBadge ikon="solar:shield-check-bold-duotone" etiket="Onaylayan" deger={kayit.onaylayan} />
+        <BilgiBadge ikon="solar:clock-circle-bold-duotone" etiket={t("Son Güncelleme")} deger={kayit.sonGuncelleme} />
+        <BilgiBadge ikon="solar:user-bold-duotone" etiket={t("Oluşturan")} deger={t(kayit.olusturan)} />
+        <BilgiBadge ikon="solar:shield-check-bold-duotone" etiket={t("Onaylayan")} deger={t(kayit.onaylayan)} />
       </div>
 
       {/* Üst KPI */}

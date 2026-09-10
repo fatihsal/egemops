@@ -4,6 +4,7 @@ import { Icon } from "@iconify/react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Gauge, Degisim } from "@/components/kayit-detay/parcalar";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayiOndalik } from "@/lib/format";
 import type { EnerjiKayit } from "@/lib/types";
 
@@ -11,25 +12,26 @@ const f3 = (n: number) =>
   n.toLocaleString("tr-TR", { minimumFractionDigits: 3, maximumFractionDigits: 3 });
 
 export function UretimDetay({ kayit }: { kayit: EnerjiKayit }) {
+  const { t } = useDil();
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Icon icon="solar:buildings-2-bold-duotone" className="size-5 text-muted-foreground" />
-          Üretim Verisi
+          {t("Üretim Verisi")}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <div className="text-xs text-muted-foreground">Üretim Miktarı</div>
+            <div className="text-xs text-muted-foreground">{t("Üretim Miktarı")}</div>
             <div className="text-2xl font-bold tracking-tight">
               {sayiOndalik(kayit.uretimTon)}
               <span className="ml-1 text-sm font-normal text-muted-foreground">ton</span>
             </div>
           </div>
           <div className="text-right">
-            <div className="text-xs text-muted-foreground">Enerji Yoğunluğu</div>
+            <div className="text-xs text-muted-foreground">{t("Enerji Yoğunluğu")}</div>
             <div className="text-2xl font-bold tracking-tight text-teal-600 dark:text-teal-400">
               {f3(kayit.enerjiYogunluk)}
               <span className="ml-1 text-sm font-normal text-muted-foreground">TEP / ton</span>
@@ -48,7 +50,7 @@ export function UretimDetay({ kayit }: { kayit: EnerjiKayit }) {
 
         <div className="flex items-center justify-center gap-2 border-t pt-3 text-sm">
           <span className="text-muted-foreground">
-            Önceki Ay: {f3(kayit.oncekiYogunluk)} TEP / ton
+            {t("Önceki Ay")}: {f3(kayit.oncekiYogunluk)} TEP / ton
           </span>
           <Degisim yuzde={kayit.yogunlukDegisim} />
         </div>

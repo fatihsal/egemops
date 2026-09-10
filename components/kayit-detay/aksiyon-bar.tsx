@@ -12,8 +12,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useDil } from "@/components/providers/dil-provider";
 
 export function AksiyonBar() {
+  const { t } = useDil();
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-card p-3 shadow-sm">
       <Button
@@ -23,7 +25,7 @@ export function AksiyonBar() {
         className="gap-1.5"
       >
         <ArrowLeft className="size-4" />
-        Geri
+        {t("Geri")}
       </Button>
 
       <div className="flex flex-wrap items-center gap-2">
@@ -34,34 +36,34 @@ export function AksiyonBar() {
           className="gap-1.5"
         >
           <Icon icon="solar:pen-new-square-bold-duotone" className="size-4" />
-          Düzenle
+          {t("Düzenle")}
         </Button>
         <Button
           className="gap-1.5 bg-amber-500 text-white hover:bg-amber-600"
           onClick={() =>
-            toast("Kayıt revizyona açıldı", {
-              description: "Onaylı kayıt yeniden düzenlenebilir.",
+            toast(t("Kayıt revizyona açıldı"), {
+              description: t("Onaylı kayıt yeniden düzenlenebilir."),
             })
           }
         >
           <Icon icon="solar:refresh-circle-bold-duotone" className="size-4" />
-          Revizyona Aç
+          {t("Revizyona Aç")}
         </Button>
 
         {/* Rapor Oluştur — bölünmüş buton */}
         <div className="flex">
           <Button
             className="gap-1.5 rounded-r-none bg-teal-600 text-white hover:bg-teal-700"
-            onClick={() => toast.success("Rapor oluşturuldu")}
+            onClick={() => toast.success(t("Rapor oluşturuldu"))}
           >
             <Icon icon="solar:file-download-bold-duotone" className="size-4" />
-            Rapor Oluştur
+            {t("Rapor Oluştur")}
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger
               render={
                 <Button
-                  aria-label="Rapor biçimi"
+                  aria-label={t("Rapor biçimi")}
                   className="rounded-l-none border-l border-teal-500/50 bg-teal-600 px-2 text-white hover:bg-teal-700"
                 />
               }
@@ -69,13 +71,13 @@ export function AksiyonBar() {
               <ChevronDown className="size-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => toast.success("PDF raporu oluşturuldu")}>
+              <DropdownMenuItem onClick={() => toast.success(t("PDF raporu oluşturuldu"))}>
                 <Icon icon="vscode-icons:file-type-pdf2" className="size-4" />
-                PDF olarak
+                {t("PDF olarak")}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => toast.success("Excel raporu oluşturuldu")}>
+              <DropdownMenuItem onClick={() => toast.success(t("Excel raporu oluşturuldu"))}>
                 <Icon icon="vscode-icons:file-type-excel" className="size-4" />
-                Excel olarak
+                {t("Excel olarak")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
