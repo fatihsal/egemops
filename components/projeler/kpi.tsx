@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useProjeAnaliz } from "@/lib/queries/projeler";
+import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
 
 const IKON: Record<string, { ikon: string; sinif: string }> = {
@@ -18,6 +19,7 @@ const IKON: Record<string, { ikon: string; sinif: string }> = {
 
 export function ProjeKpiKartlari() {
   const { data, isLoading } = useProjeAnaliz();
+  const { t } = useDil();
 
   if (isLoading || !data) {
     return (
@@ -46,10 +48,10 @@ export function ProjeKpiKartlari() {
               <span className={cn("flex size-11 shrink-0 items-center justify-center rounded-xl", ik?.sinif)}>
                 <Icon icon={ik?.ikon} className="size-6" />
               </span>
-              <p className="text-xs text-muted-foreground">{k.baslik}</p>
+              <p className="text-xs text-muted-foreground">{t(k.baslik)}</p>
               <p className="flex items-baseline gap-1">
                 <span className="font-heading text-2xl font-bold tracking-tight tabular-nums">{k.deger}</span>
-                {k.birim ? <span className="text-xs font-medium text-muted-foreground">{k.birim}</span> : null}
+                {k.birim ? <span className="text-xs font-medium text-muted-foreground">{t(k.birim)}</span> : null}
               </p>
               <div className="mt-auto space-y-1.5">
                 {k.ilerleme != null ? (
@@ -57,7 +59,7 @@ export function ProjeKpiKartlari() {
                     <span className="block h-full rounded-full bg-teal-500" style={{ width: `${k.ilerleme}%` }} />
                   </span>
                 ) : null}
-                <p className="text-[11px] leading-tight text-muted-foreground">{k.altMetin}</p>
+                <p className="text-[11px] leading-tight text-muted-foreground">{t(k.altMetin)}</p>
               </div>
             </CardContent>
           </Card>

@@ -6,15 +6,17 @@ import { Icon } from "@iconify/react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useProjeAnaliz } from "@/lib/queries/projeler";
+import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
 
 export function ProjeYasamDongusu() {
   const { data, isLoading } = useProjeAnaliz();
+  const { t } = useDil();
 
   return (
     <Card>
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">Proje Yaşam Döngüsü</h3>
+        <h3 className="font-heading text-base font-medium">{t("Proje Yaşam Döngüsü")}</h3>
       </CardHeader>
       <CardContent>
         {isLoading || !data ? (
@@ -39,7 +41,7 @@ export function ProjeYasamDongusu() {
                     <span className={cn("font-heading text-lg font-bold tabular-nums", aktif ? "text-foreground" : "text-muted-foreground/60")}>
                       {a.adet}
                     </span>
-                    <span className="text-[11px] leading-tight text-muted-foreground">{a.etiket}</span>
+                    <span className="text-[11px] leading-tight text-muted-foreground">{t(a.etiket)}</span>
                   </div>
                   {i < data.asamalar.length - 1 ? (
                     <Icon icon="solar:alt-arrow-right-linear" className="mt-3 size-4 shrink-0 text-muted-foreground/40" />

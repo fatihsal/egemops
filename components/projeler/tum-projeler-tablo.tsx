@@ -34,6 +34,7 @@ import { ProjeDetayDrawer } from "@/components/projeler/proje-detay-drawer";
 import { ProjeFormDrawer } from "@/components/projeler/proje-form-drawer";
 import { useProjeFiltre } from "@/components/projeler/filtre-store";
 import { useProjeAnaliz } from "@/lib/queries/projeler";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi, sayiOndalik } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { Proje, ProjeRag } from "@/lib/types";
@@ -48,6 +49,7 @@ function genelSaglik(s: Proje["saglik"]): ProjeRag {
 
 export function TumProjelerTablo() {
   const { data, isLoading } = useProjeAnaliz();
+  const { t } = useDil();
   const { yil, durum, tur, sorumlu } = useProjeFiltre();
 
   const tumu = data?.projeler ?? [];
@@ -62,7 +64,7 @@ export function TumProjelerTablo() {
   return (
     <Card id="tum-projeler" className="scroll-mt-6">
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">Tüm Projeler</h3>
+        <h3 className="font-heading text-base font-medium">{t("Tüm Projeler")}</h3>
       </CardHeader>
       <CardContent className="space-y-4">
         {isLoading || !data ? (
@@ -73,26 +75,26 @@ export function TumProjelerTablo() {
               <Table>
                 <TableHeader>
                   <TableRow className="bg-muted/40">
-                    <TableHead className="whitespace-nowrap">Proje Adı</TableHead>
-                    <TableHead className="whitespace-nowrap">Enerji Türü</TableHead>
-                    <TableHead className="whitespace-nowrap">Durum</TableHead>
-                    <TableHead className="whitespace-nowrap">İlerleme</TableHead>
-                    <TableHead className="whitespace-nowrap">Başlangıç</TableHead>
-                    <TableHead className="whitespace-nowrap">Hedef Bitiş</TableHead>
-                    <TableHead className="text-right whitespace-nowrap">Bütçe</TableHead>
-                    <TableHead className="text-right whitespace-nowrap">Harcanan</TableHead>
-                    <TableHead className="text-right whitespace-nowrap">Beklenen <span className="font-normal text-muted-foreground">(TEP/yıl)</span></TableHead>
-                    <TableHead className="text-right whitespace-nowrap">Doğrulanan <span className="font-normal text-muted-foreground">(TEP/yıl)</span></TableHead>
-                    <TableHead className="whitespace-nowrap">Sorumlu</TableHead>
-                    <TableHead className="text-center whitespace-nowrap">Sağlık</TableHead>
-                    <TableHead className="text-right whitespace-nowrap">İşlem</TableHead>
+                    <TableHead className="whitespace-nowrap">{t("Proje Adı")}</TableHead>
+                    <TableHead className="whitespace-nowrap">{t("Enerji Türü")}</TableHead>
+                    <TableHead className="whitespace-nowrap">{t("Durum")}</TableHead>
+                    <TableHead className="whitespace-nowrap">{t("İlerleme")}</TableHead>
+                    <TableHead className="whitespace-nowrap">{t("Başlangıç")}</TableHead>
+                    <TableHead className="whitespace-nowrap">{t("Hedef Bitiş")}</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("Bütçe")}</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("Harcanan")}</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("Beklenen")} <span className="font-normal text-muted-foreground">(TEP/yıl)</span></TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("Doğrulanan")} <span className="font-normal text-muted-foreground">(TEP/yıl)</span></TableHead>
+                    <TableHead className="whitespace-nowrap">{t("Sorumlu")}</TableHead>
+                    <TableHead className="text-center whitespace-nowrap">{t("Sağlık")}</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("İşlem")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filtreli.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={13} className="py-10 text-center text-sm text-muted-foreground">
-                        Seçili filtrelere uygun proje bulunamadı.
+                        {t("Seçili filtrelere uygun proje bulunamadı.")}
                       </TableCell>
                     </TableRow>
                   ) : null}
@@ -101,15 +103,15 @@ export function TumProjelerTablo() {
                     const saglik = genelSaglik(p.saglik);
                     return (
                       <TableRow key={p.id} className="odd:bg-muted/20 hover:bg-muted/50">
-                        <TableCell className="font-medium whitespace-nowrap">{p.ad}</TableCell>
+                        <TableCell className="font-medium whitespace-nowrap">{t(p.ad)}</TableCell>
                         <TableCell className="whitespace-nowrap">
                           <span className="inline-flex items-center gap-1.5">
                             <span className="size-2.5 rounded-full" style={{ background: KAYNAK_RENK[p.kaynak] }} />
-                            {KAYNAK_ETIKET[p.kaynak]}
+                            {t(KAYNAK_ETIKET[p.kaynak])}
                           </span>
                         </TableCell>
                         <TableCell>
-                          <span className={cn("inline-block rounded-full px-2.5 py-0.5 text-[11px] font-medium whitespace-nowrap", durum.sinif)}>{durum.etiket}</span>
+                          <span className={cn("inline-block rounded-full px-2.5 py-0.5 text-[11px] font-medium whitespace-nowrap", durum.sinif)}>{t(durum.etiket)}</span>
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
@@ -127,7 +129,7 @@ export function TumProjelerTablo() {
                         <TableCell className="text-right tabular-nums">
                           {p.dogrulananTasarruf != null ? <span className="font-medium text-emerald-600">{sayiOndalik(p.dogrulananTasarruf)}</span> : <span className="text-muted-foreground/50">—</span>}
                         </TableCell>
-                        <TableCell className="whitespace-nowrap text-muted-foreground">{p.sorumlu}</TableCell>
+                        <TableCell className="whitespace-nowrap text-muted-foreground">{t(p.sorumlu)}</TableCell>
                         <TableCell className="text-center">
                           <span className={cn("inline-block size-2.5 rounded-full", RAG_META[saglik].nokta)} />
                         </TableCell>
@@ -136,7 +138,7 @@ export function TumProjelerTablo() {
                             <ProjeDetayDrawer
                               proje={p}
                               trigger={
-                                <Button variant="ghost" size="icon-sm" aria-label="Görüntüle">
+                                <Button variant="ghost" size="icon-sm" aria-label={t("Görüntüle")}>
                                   <Icon icon="solar:eye-bold-duotone" className="size-4 text-muted-foreground" />
                                 </Button>
                               }
@@ -144,24 +146,24 @@ export function TumProjelerTablo() {
                             <ProjeFormDrawer
                               proje={p}
                               trigger={
-                                <Button variant="ghost" size="icon-sm" aria-label="Düzenle">
+                                <Button variant="ghost" size="icon-sm" aria-label={t("Düzenle")}>
                                   <Icon icon="solar:pen-2-bold-duotone" className="size-4 text-muted-foreground" />
                                 </Button>
                               }
                             />
                             <DropdownMenu>
-                              <DropdownMenuTrigger render={<Button variant="ghost" size="icon-sm" aria-label="Daha fazla" />}>
+                              <DropdownMenuTrigger render={<Button variant="ghost" size="icon-sm" aria-label={t("Daha fazla")} />}>
                                 <MoreVertical className="size-4 text-muted-foreground" />
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end" className="w-44">
-                                <DropdownMenuItem onClick={() => toast(`${p.ad} dışa aktarıldı`)}>
+                                <DropdownMenuItem onClick={() => toast(`${t(p.ad)} ${t("dışa aktarıldı")}`)}>
                                   <Icon icon="solar:download-minimalistic-bold-duotone" className="size-4" />
-                                  Dışa aktar
+                                  {t("Dışa aktar")}
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={() => toast(`${p.ad} arşivlendi`)}>
+                                <DropdownMenuItem onClick={() => toast(`${t(p.ad)} ${t("arşivlendi")}`)}>
                                   <Icon icon="solar:archive-bold-duotone" className="size-4" />
-                                  Arşivle
+                                  {t("Arşivle")}
                                 </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
@@ -178,22 +180,22 @@ export function TumProjelerTablo() {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <p className="text-xs text-muted-foreground tabular-nums">
                 {filtreli.length === tumu.length
-                  ? `1 – ${tumu.length} / ${tumu.length} kayıt`
-                  : `${filtreli.length} / ${tumu.length} kayıt (filtrelenmiş)`}
+                  ? `1 – ${tumu.length} / ${tumu.length} ${t("kayıt")}`
+                  : `${filtreli.length} / ${tumu.length} ${t("kayıt (filtrelenmiş)")}`}
               </p>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1">
-                  <Button variant="outline" size="icon-sm" aria-label="Önceki" disabled>
+                  <Button variant="outline" size="icon-sm" aria-label={t("Önceki")} disabled>
                     <Icon icon="solar:alt-arrow-left-linear" className="size-4" />
                   </Button>
                   <Button size="icon-sm" className="bg-teal-600 text-white hover:bg-teal-700">1</Button>
-                  <Button variant="outline" size="icon-sm" aria-label="Sonraki" onClick={() => toast("Sonraki sayfa")}>
+                  <Button variant="outline" size="icon-sm" aria-label={t("Sonraki")} onClick={() => toast(t("Sonraki sayfa"))}>
                     <Icon icon="solar:alt-arrow-right-linear" className="size-4" />
                   </Button>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-muted-foreground">Sayfa başına:</span>
-                  <Select value="10" onValueChange={() => toast("Sayfa boyutu güncellendi")}>
+                  <span className="text-xs text-muted-foreground">{t("Sayfa başına")}:</span>
+                  <Select value="10" onValueChange={() => toast(t("Sayfa boyutu güncellendi"))}>
                     <SelectTrigger className="h-8 w-[68px] bg-card"><SelectValue /></SelectTrigger>
                     <SelectContent>{["10", "25", "50"].map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
                   </Select>

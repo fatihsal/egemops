@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RAG_META } from "@/components/projeler/stiller";
 import { useProjeAnaliz } from "@/lib/queries/projeler";
+import { useDil } from "@/components/providers/dil-provider";
 import type { ProjeRag } from "@/lib/types";
 
 function Rag({ durum }: { durum: ProjeRag }) {
@@ -17,11 +18,12 @@ const LEGEND: { durum: ProjeRag }[] = [{ durum: "yesil" }, { durum: "amber" }, {
 
 export function ProjeSagligi() {
   const { data, isLoading } = useProjeAnaliz();
+  const { t } = useDil();
 
   return (
     <Card className="h-full">
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">Proje Sağlığı</h3>
+        <h3 className="font-heading text-base font-medium">{t("Proje Sağlığı")}</h3>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col gap-3">
         {isLoading || !data ? (
@@ -31,16 +33,16 @@ export function ProjeSagligi() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-xs text-muted-foreground">
-                  <th className="pb-2 text-left font-medium">Proje</th>
-                  <th className="pb-2 text-center font-medium">Zaman</th>
-                  <th className="pb-2 text-center font-medium">Bütçe</th>
-                  <th className="pb-2 text-center font-medium">Tasarruf</th>
+                  <th className="pb-2 text-left font-medium">{t("Proje")}</th>
+                  <th className="pb-2 text-center font-medium">{t("Zaman")}</th>
+                  <th className="pb-2 text-center font-medium">{t("Bütçe")}</th>
+                  <th className="pb-2 text-center font-medium">{t("Tasarruf")}</th>
                 </tr>
               </thead>
               <tbody>
                 {data.projeler.map((p) => (
                   <tr key={p.id} className="border-t">
-                    <td className="max-w-0 truncate py-2.5 pr-2 font-medium">{p.ad}</td>
+                    <td className="max-w-0 truncate py-2.5 pr-2 font-medium">{t(p.ad)}</td>
                     <td className="py-2.5 text-center"><Rag durum={p.saglik.zaman} /></td>
                     <td className="py-2.5 text-center"><Rag durum={p.saglik.butce} /></td>
                     <td className="py-2.5 text-center"><Rag durum={p.saglik.tasarruf} /></td>
@@ -53,7 +55,7 @@ export function ProjeSagligi() {
               {LEGEND.map(({ durum }) => (
                 <span key={durum} className="inline-flex items-center gap-1.5">
                   <Rag durum={durum} />
-                  {RAG_META[durum].etiket}
+                  {t(RAG_META[durum].etiket)}
                 </span>
               ))}
             </div>

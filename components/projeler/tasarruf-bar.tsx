@@ -15,17 +15,19 @@ import {
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useProjeAnaliz } from "@/lib/queries/projeler";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayiOndalik } from "@/lib/format";
 
 const RENK = ["#14b8a6", "#8b5cf6"];
 
 export function ProjeTasarrufBar() {
   const { data, isLoading } = useProjeAnaliz();
+  const { t } = useDil();
 
   const grafikData = data
     ? [
-        { etiket: "Planlanan Tasarruf", deger: data.tasarruf.planlanan },
-        { etiket: "Doğrulanan Tasarruf", deger: data.tasarruf.dogrulanan },
+        { etiket: t("Planlanan Tasarruf"), deger: data.tasarruf.planlanan },
+        { etiket: t("Doğrulanan Tasarruf"), deger: data.tasarruf.dogrulanan },
       ]
     : [];
 
@@ -33,7 +35,7 @@ export function ProjeTasarrufBar() {
     <Card className="h-full">
       <CardHeader>
         <h3 className="font-heading text-base font-medium">
-          Planlanan / Doğrulanan Tasarruf <span className="text-sm font-normal text-muted-foreground">(TEP / yıl)</span>
+          {t("Planlanan / Doğrulanan Tasarruf")} <span className="text-sm font-normal text-muted-foreground">(TEP / yıl)</span>
         </h3>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col">
@@ -49,7 +51,7 @@ export function ProjeTasarrufBar() {
                 <Tooltip
                   cursor={{ fill: "var(--muted)", opacity: 0.4 }}
                   contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
-                  formatter={(value) => [`${sayiOndalik(Number(value))} TEP/yıl`, "Tasarruf"]}
+                  formatter={(value) => [`${sayiOndalik(Number(value))} TEP/yıl`, t("Tasarruf")]}
                 />
                 <Bar dataKey="deger" radius={[4, 4, 0, 0]} maxBarSize={72} isAnimationActive={false}>
                   {grafikData.map((_, i) => <Cell key={i} fill={RENK[i]} />)}

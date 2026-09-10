@@ -14,21 +14,23 @@ import {
 } from "@/components/ui/sheet";
 import { KAYNAK_ETIKET, KAYNAK_RENK } from "@/components/projeler/stiller";
 import { useProjeAnaliz } from "@/lib/queries/projeler";
+import { useDil } from "@/components/providers/dil-provider";
 import type { ProjeDikkatMadde } from "@/lib/types";
 
 function Madde({ d }: { d: ProjeDikkatMadde }) {
+  const { t } = useDil();
   return (
     <li className="flex gap-3 rounded-lg border border-amber-200/70 bg-amber-50/50 p-3 dark:border-amber-900/50 dark:bg-amber-950/20">
       <Icon icon="solar:danger-triangle-bold-duotone" className="size-5 shrink-0 text-amber-500" />
       <div className="min-w-0">
         <div className="flex items-center gap-2">
-          <p className="text-sm font-medium">{d.proje}</p>
+          <p className="text-sm font-medium">{t(d.proje)}</p>
           <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
             <span className="size-1.5 rounded-full" style={{ background: KAYNAK_RENK[d.kaynak] }} />
-            {KAYNAK_ETIKET[d.kaynak]}
+            {t(KAYNAK_ETIKET[d.kaynak])}
           </span>
         </div>
-        <p className="text-xs text-muted-foreground">{d.mesaj}</p>
+        <p className="text-xs text-muted-foreground">{t(d.mesaj)}</p>
       </div>
     </li>
   );
@@ -36,11 +38,12 @@ function Madde({ d }: { d: ProjeDikkatMadde }) {
 
 export function ProjeDikkat() {
   const { data, isLoading } = useProjeAnaliz();
+  const { t } = useDil();
 
   return (
     <Card className="h-full">
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">Dikkat Gerektirenler</h3>
+        <h3 className="font-heading text-base font-medium">{t("Dikkat Gerektirenler")}</h3>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col gap-3">
         {isLoading || !data ? (
@@ -57,13 +60,13 @@ export function ProjeDikkat() {
                   <button type="button" className="mt-auto inline-flex items-center gap-1 self-start text-sm font-medium text-primary transition-opacity hover:opacity-80" />
                 }
               >
-                Tümünü Görüntüle
+                {t("Tümünü Görüntüle")}
                 <Icon icon="solar:alt-arrow-right-linear" className="size-4" />
               </SheetTrigger>
               <SheetContent side="right" className="flex w-full flex-col gap-0 p-0 sm:max-w-md">
                 <SheetHeader className="border-b p-5">
-                  <SheetTitle>Dikkat Gerektiren Konular</SheetTitle>
-                  <SheetDescription>{data.dikkat.length} açık konu · aksiyon bekleniyor</SheetDescription>
+                  <SheetTitle>{t("Dikkat Gerektiren Konular")}</SheetTitle>
+                  <SheetDescription>{data.dikkat.length} {t("açık konu · aksiyon bekleniyor")}</SheetDescription>
                 </SheetHeader>
                 <ul className="flex-1 space-y-2.5 overflow-y-auto p-4">
                   {data.dikkat.map((d) => <Madde key={d.id} d={d} />)}
