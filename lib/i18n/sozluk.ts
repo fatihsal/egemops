@@ -1346,4 +1346,13 @@ export const EN: Record<string, string> = {
   "Veriler doğrulandı. Kritik hata bulunmadı.": "Data validated. No critical errors found.",
   "Taslak Kaydet": "Save Draft",
   "Onayla": "Approve",
+
+  // — 404 / Hata —
+  "Sayfa bulunamadı": "Page not found",
+  "Aradığınız sayfa taşınmış veya hiç var olmamış olabilir.": "The page you are looking for may have moved or never existed.",
+  "Dashboard'a dön": "Back to Dashboard",
+  "Bir şeyler ters gitti": "Something went wrong",
+  "Beklenmeyen bir hata oluştu. Tekrar deneyebilir veya panele dönebilirsiniz.": "An unexpected error occurred. You can try again or return to the dashboard.",
+  "Hata kodu": "Error code",
+  "Tekrar dene": "Try again",
 };

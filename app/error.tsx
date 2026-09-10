@@ -4,6 +4,7 @@ import * as React from "react";
 import { Icon } from "@iconify/react";
 
 import { Button } from "@/components/ui/button";
+import { useDil } from "@/components/providers/dil-provider";
 
 export default function Error({
   error,
@@ -12,6 +13,7 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const { t } = useDil();
   React.useEffect(() => {
     console.error(error);
   }, [error]);
@@ -22,12 +24,12 @@ export default function Error({
         <Icon icon="solar:danger-triangle-bold-duotone" className="size-9" />
       </span>
       <div className="space-y-1.5">
-        <h1 className="text-lg font-semibold">Bir şeyler ters gitti</h1>
+        <h1 className="text-lg font-semibold">{t("Bir şeyler ters gitti")}</h1>
         <p className="mx-auto max-w-sm text-sm text-muted-foreground">
-          Beklenmeyen bir hata oluştu. Tekrar deneyebilir veya panele dönebilirsiniz.
+          {t("Beklenmeyen bir hata oluştu. Tekrar deneyebilir veya panele dönebilirsiniz.")}
         </p>
         {error?.digest ? (
-          <p className="text-xs text-muted-foreground/70">Hata kodu: {error.digest}</p>
+          <p className="text-xs text-muted-foreground/70">{t("Hata kodu")}: {error.digest}</p>
         ) : null}
       </div>
       <div className="flex flex-wrap items-center justify-center gap-2">
@@ -36,7 +38,7 @@ export default function Error({
           className="gap-1.5 bg-teal-600 text-white hover:bg-teal-700"
         >
           <Icon icon="solar:refresh-circle-bold-duotone" className="size-4" />
-          Tekrar dene
+          {t("Tekrar dene")}
         </Button>
         <Button
           variant="outline"
@@ -46,7 +48,7 @@ export default function Error({
           }}
         >
           <Icon icon="solar:home-smile-bold-duotone" className="size-4" />
-          Dashboard&apos;a dön
+          {t("Dashboard'a dön")}
         </Button>
       </div>
     </div>
