@@ -1,3 +1,6 @@
+"use client";
+
+import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
 import type { KayitDurum, VeriKalite } from "@/lib/types";
 
@@ -18,6 +21,7 @@ const DURUM: Record<KayitDurum, { etiket: string; sinif: string }> = {
 };
 
 export function KayitDurumBadge({ durum }: { durum: KayitDurum }) {
+  const { t } = useDil();
   const d = DURUM[durum];
   return (
     <span
@@ -26,7 +30,7 @@ export function KayitDurumBadge({ durum }: { durum: KayitDurum }) {
         d.sinif,
       )}
     >
-      {d.etiket}
+      {t(d.etiket)}
     </span>
   );
 }
@@ -38,12 +42,13 @@ const KALITE: Record<VeriKalite, { renk: string; baslik: string }> = {
 };
 
 export function VeriKaliteNokta({ kalite }: { kalite: VeriKalite }) {
+  const { t } = useDil();
   const k = KALITE[kalite];
   return (
     <span
       className={cn("inline-block size-2.5 rounded-full", k.renk)}
-      title={k.baslik}
-      aria-label={k.baslik}
+      title={t(k.baslik)}
+      aria-label={t(k.baslik)}
     />
   );
 }

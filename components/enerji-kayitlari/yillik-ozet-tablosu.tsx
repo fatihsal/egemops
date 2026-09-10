@@ -21,6 +21,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sparkline } from "@/components/common/sparkline";
 import { useYillikOzet } from "@/lib/queries/kayitlar";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -41,6 +42,7 @@ function GrupBaslik({ children }: { children: React.ReactNode }) {
 
 export function YillikOzetTablosu() {
   const { data, isLoading } = useYillikOzet();
+  const { t } = useDil();
 
   if (isLoading || !data) {
     return <Skeleton className="h-96 w-full" />;
@@ -59,7 +61,7 @@ export function YillikOzetTablosu() {
       )}
     >
       <TableCell className={cn("whitespace-nowrap", r.vurgu ? "font-semibold" : "font-medium")}>
-        {r.kaynak}
+        {t(r.kaynak)}
         <span className="ml-1 text-[11px] font-normal text-muted-foreground">
           ({r.birim})
         </span>
@@ -89,7 +91,7 @@ export function YillikOzetTablosu() {
     <div className="space-y-5">
       {/* Yıllık Toplam Enerji (TEP) grafiği */}
       <div className="rounded-lg border p-4">
-        <div className="mb-3 text-sm font-medium">Yıllık Toplam Enerji (TEP)</div>
+        <div className="mb-3 text-sm font-medium">{t("Yıllık Toplam Enerji (TEP)")}</div>
         <div className="h-[160px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={barVeri} margin={{ left: 4, right: 8, top: 4, bottom: 0 }}>
@@ -105,7 +107,7 @@ export function YillikOzetTablosu() {
                   fontSize: "12px",
                   color: "var(--popover-foreground)",
                 }}
-                formatter={(value) => [`${sayi(Number(value))} TEP`, "Toplam"]}
+                formatter={(value) => [`${sayi(Number(value))} TEP`, t("Toplam")]}
               />
               <Bar dataKey="tep" fill="var(--primary)" radius={[4, 4, 0, 0]} maxBarSize={64} />
             </BarChart>
@@ -118,31 +120,31 @@ export function YillikOzetTablosu() {
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
-              <TableHead>Enerji Kaynağı</TableHead>
+              <TableHead>{t("Enerji Kaynağı")}</TableHead>
               {YILLAR.map((y) => (
                 <TableHead key={y} className="text-right tabular-nums">
                   {y}
                   {y === "2026" ? (
                     <span className="ml-1 text-[10px] font-normal text-muted-foreground">
-                      (kısmi)
+                      ({t("kısmi")})
                     </span>
                   ) : null}
                 </TableHead>
               ))}
-              <TableHead>Trend</TableHead>
+              <TableHead>{t("Trend")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            <GrupBaslik>Tüketim / Üretim (birim bazında)</GrupBaslik>
+            <GrupBaslik>{t("Tüketim / Üretim (birim bazında)")}</GrupBaslik>
             {tuketim.map(satir)}
-            <GrupBaslik>Enerji (TEP)</GrupBaslik>
+            <GrupBaslik>{t("Enerji (TEP)")}</GrupBaslik>
             {tep.map(satir)}
           </TableBody>
         </Table>
       </div>
 
       <p className="text-xs text-muted-foreground">
-        * 2026 değerleri kısmidir; yıl devam etmektedir.
+        {t("* 2026 değerleri kısmidir; yıl devam etmektedir.")}
       </p>
     </div>
   );

@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useKayitOzeti } from "@/lib/queries/kayitlar";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi, sayiOndalik } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -46,6 +47,7 @@ function KpiKart({
 
 export function KayitKpi() {
   const { data, isLoading } = useKayitOzeti();
+  const { t } = useDil();
 
   if (isLoading || !data) {
     return (
@@ -70,35 +72,35 @@ export function KayitKpi() {
       <KpiKart
         ikon="solar:documents-bold-duotone"
         ikonSinif="bg-primary/10 text-primary"
-        etiket="Toplam Kayıt"
+        etiket={t("Toplam Kayıt")}
         deger={sayi(data.toplam)}
         alt={data.toplamAralik}
       />
       <KpiKart
         ikon="solar:check-circle-bold-duotone"
         ikonSinif="bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-300"
-        etiket="Onaylanan"
+        etiket={t("Onaylanan")}
         deger={sayi(data.onaylanan)}
         alt={`%${sayiOndalik(data.onaylananOran)}`}
       />
       <KpiKart
         ikon="solar:clock-circle-bold-duotone"
         ikonSinif="bg-amber-50 text-amber-600 dark:bg-amber-950 dark:text-amber-300"
-        etiket="Kontrol Bekleyen"
+        etiket={t("Kontrol Bekleyen")}
         deger={sayi(data.kontrolBekleyen)}
         alt={`%${sayiOndalik(data.kontrolOran)}`}
       />
       <KpiKart
         ikon="solar:document-text-bold-duotone"
         ikonSinif="bg-violet-50 text-violet-600 dark:bg-violet-950 dark:text-violet-300"
-        etiket="Taslak"
+        etiket={t("Taslak")}
         deger={sayi(data.taslak)}
         alt={`%${sayiOndalik(data.taslakOran)}`}
       />
       <KpiKart
         ikon="solar:danger-triangle-bold-duotone"
         ikonSinif="bg-red-50 text-red-600 dark:bg-red-950 dark:text-red-300"
-        etiket="Eksik Veri"
+        etiket={t("Eksik Veri")}
         deger={sayi(data.eksik)}
         alt={`%${sayiOndalik(data.eksikOran)}`}
       />

@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Sparkline } from "@/components/common/sparkline";
 import { KayitDurumBadge } from "@/components/enerji-kayitlari/durum";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi2, sayiOndalik } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { EnerjiKayit, KayitGecmis } from "@/lib/types";
@@ -67,6 +68,7 @@ export function KayitDetayPaneli({
   kayit: EnerjiKayit | null;
   onKapat: () => void;
 }) {
+  const { t } = useDil();
   const arti = (kayit?.degisimYuzde ?? 0) >= 0;
 
   return (
@@ -79,12 +81,12 @@ export function KayitDetayPaneli({
           <>
             {/* Başlık */}
             <SheetHeader className="border-b p-5 pr-12">
-              <SheetTitle className="text-lg">{kayit.donem}</SheetTitle>
+              <SheetTitle className="text-lg">{t(kayit.donem)}</SheetTitle>
               <div className="mt-1">
                 <KayitDurumBadge durum={kayit.durum} />
               </div>
               <div className="mt-3">
-                <div className="text-xs text-muted-foreground">Toplam Enerji</div>
+                <div className="text-xs text-muted-foreground">{t("Toplam Enerji")}</div>
                 <div className="text-3xl font-bold tracking-tight">
                   {sayi2(kayit.toplamTep)}
                   <span className="ml-1 text-base font-normal text-muted-foreground">
@@ -98,7 +100,7 @@ export function KayitDetayPaneli({
               {/* Enerji kırılımı */}
               <div className="grid grid-cols-2 gap-3">
                 <KirilimKart
-                  etiket="Elektrik"
+                  etiket={t("Elektrik")}
                   deger={sayi2(kayit.elektrikTep)}
                   birim="TEP"
                   oran="%59,0"
@@ -106,7 +108,7 @@ export function KayitDetayPaneli({
                   spark={[5, 5.4, 5.2, 5.8, 5.6, 6]}
                 />
                 <KirilimKart
-                  etiket="Doğalgaz"
+                  etiket={t("Doğalgaz")}
                   deger={sayi2(kayit.dogalgazTep)}
                   birim="TEP"
                   oran="%39,4"
@@ -114,7 +116,7 @@ export function KayitDetayPaneli({
                   spark={[3, 3.2, 3.1, 3.4, 3.3, 3.5]}
                 />
                 <KirilimKart
-                  etiket="Akaryakıt"
+                  etiket={t("Akaryakıt")}
                   deger={sayi2(kayit.akaryakitTep)}
                   birim="TEP"
                   oran="%1,6"
@@ -122,9 +124,9 @@ export function KayitDetayPaneli({
                   spark={[1, 1.1, 1.05, 1.2, 1.15, 1.25]}
                 />
                 <KirilimKart
-                  etiket="GES Karşılama"
+                  etiket={t("GES Karşılama")}
                   deger={`%${sayiOndalik(kayit.gesKarsilama)}`}
-                  oran="Yenilenebilir"
+                  oran={t("Yenilenebilir")}
                   renk="#0d9488"
                   spark={[28, 29, 30, 30.5, 31, 31.4]}
                 />
@@ -133,11 +135,11 @@ export function KayitDetayPaneli({
               {/* Önceki aya göre değişim */}
               {kayit.oncekiDonem ? (
                 <div className="rounded-lg border p-4">
-                  <div className="text-sm font-medium">Önceki Aya Göre Değişim</div>
+                  <div className="text-sm font-medium">{t("Önceki Aya Göre Değişim")}</div>
                   <div className="mt-2 flex items-end justify-between">
                     <div>
                       <div className="text-xs text-muted-foreground">
-                        {kayit.oncekiDonem}
+                        {t(kayit.oncekiDonem)}
                       </div>
                       <div className="text-lg font-bold tracking-tight">
                         {sayi2(kayit.oncekiTep ?? 0)}
@@ -168,14 +170,14 @@ export function KayitDetayPaneli({
                 <dl className="space-y-2.5 text-sm">
                   {[
                     { e: "Son Güncelleme", d: kayit.sonGuncelleme, ik: "solar:clock-circle-bold-duotone" },
-                    { e: "Güncelleyen", d: kayit.guncelleyen, ik: "solar:user-bold-duotone" },
-                    { e: "Kaydı Oluşturan", d: kayit.olusturan, ik: "solar:user-plus-bold-duotone" },
-                    { e: "Belgeler", d: `${kayit.belgeSayisi} dosya`, ik: "solar:documents-bold-duotone" },
+                    { e: "Güncelleyen", d: t(kayit.guncelleyen), ik: "solar:user-bold-duotone" },
+                    { e: "Kaydı Oluşturan", d: t(kayit.olusturan), ik: "solar:user-plus-bold-duotone" },
+                    { e: "Belgeler", d: `${kayit.belgeSayisi} ${t("dosya")}`, ik: "solar:documents-bold-duotone" },
                   ].map((s) => (
                     <div key={s.e} className="flex items-center justify-between gap-2">
                       <dt className="flex items-center gap-2 text-muted-foreground">
                         <Icon icon={s.ik} className="size-4" />
-                        {s.e}
+                        {t(s.e)}
                       </dt>
                       <dd className="font-medium tabular-nums">{s.d}</dd>
                     </div>
@@ -187,13 +189,13 @@ export function KayitDetayPaneli({
                   className="mt-4 w-full gap-1.5 bg-teal-600 text-white hover:bg-teal-700"
                 >
                   <Icon icon="solar:eye-bold-duotone" className="size-4" />
-                  Kaydı Görüntüle
+                  {t("Kaydı Görüntüle")}
                 </Button>
               </div>
 
               {/* Kayıt geçmişi */}
               <div>
-                <div className="mb-3 text-sm font-semibold">Kayıt Geçmişi</div>
+                <div className="mb-3 text-sm font-semibold">{t("Kayıt Geçmişi")}</div>
                 <ol className="relative space-y-4 border-l pl-5">
                   {kayit.gecmis.map((g, i) => {
                     const ik = GECMIS_IKON[g.tur];
@@ -205,14 +207,14 @@ export function KayitDetayPaneli({
                         <div className="text-xs text-muted-foreground tabular-nums">
                           {g.tarih}
                         </div>
-                        <div className="text-sm font-medium">{g.baslik}</div>
+                        <div className="text-sm font-medium">{t(g.baslik)}</div>
                         {g.aciklama ? (
                           <div className="text-xs text-muted-foreground">
-                            Açıklama: {g.aciklama}
+                            {t("Açıklama")}: {t(g.aciklama)}
                           </div>
                         ) : null}
                         <div className="text-xs text-muted-foreground">
-                          {g.kullanici}
+                          {t(g.kullanici)}
                         </div>
                       </li>
                     );
@@ -220,10 +222,10 @@ export function KayitDetayPaneli({
                 </ol>
                 <button
                   type="button"
-                  onClick={() => toast("Tüm geçmiş açılıyor")}
+                  onClick={() => toast(t("Tüm geçmiş açılıyor"))}
                   className="mt-3 text-xs font-medium text-primary hover:underline"
                 >
-                  Tüm geçmişi görüntüle
+                  {t("Tüm geçmişi görüntüle")}
                 </button>
               </div>
             </div>

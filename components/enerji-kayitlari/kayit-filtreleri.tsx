@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useDil } from "@/components/providers/dil-provider";
 
 const YILLAR = ["Tümü", "2023", "2024", "2025", "2026"];
 const AYLAR = [
@@ -47,6 +48,7 @@ function FiltreSecim({
   value: string;
   onChange: (v: string) => void;
 }) {
+  const { t } = useDil();
   return (
     <div className="flex flex-col gap-1.5">
       <Label className="text-xs font-medium text-muted-foreground">{etiket}</Label>
@@ -57,7 +59,7 @@ function FiltreSecim({
         <SelectContent>
           {secenekler.map((s) => (
             <SelectItem key={s} value={s}>
-              {s}
+              {t(s)}
             </SelectItem>
           ))}
         </SelectContent>
@@ -73,6 +75,7 @@ export function KayitFiltreleri({
   onFiltrele: (f: FiltreDegerleri) => void;
   onTemizle: () => void;
 }) {
+  const { t } = useDil();
   const [taslak, setTaslak] = React.useState<FiltreDegerleri>(VARSAYILAN_FILTRE);
   const guncelle = (k: keyof FiltreDegerleri) => (v: string) =>
     setTaslak((p) => ({ ...p, [k]: v }));
@@ -81,10 +84,10 @@ export function KayitFiltreleri({
     <Card>
       <CardContent className="flex flex-col gap-4 md:flex-row md:flex-wrap md:items-end">
         <div className="grid grid-cols-2 gap-4 md:flex-1 md:grid-cols-4">
-          <FiltreSecim etiket="Yıl" secenekler={YILLAR} value={taslak.yil} onChange={guncelle("yil")} />
-          <FiltreSecim etiket="Ay" secenekler={AYLAR} value={taslak.ay} onChange={guncelle("ay")} />
-          <FiltreSecim etiket="Durum" secenekler={DURUMLAR} value={taslak.durum} onChange={guncelle("durum")} />
-          <FiltreSecim etiket="Enerji Türü" secenekler={TURLER} value={taslak.tur} onChange={guncelle("tur")} />
+          <FiltreSecim etiket={t("Yıl")} secenekler={YILLAR} value={taslak.yil} onChange={guncelle("yil")} />
+          <FiltreSecim etiket={t("Ay")} secenekler={AYLAR} value={taslak.ay} onChange={guncelle("ay")} />
+          <FiltreSecim etiket={t("Durum")} secenekler={DURUMLAR} value={taslak.durum} onChange={guncelle("durum")} />
+          <FiltreSecim etiket={t("Enerji Türü")} secenekler={TURLER} value={taslak.tur} onChange={guncelle("tur")} />
         </div>
         <div className="grid grid-cols-2 gap-2 md:flex md:items-center">
           <Button
@@ -92,7 +95,7 @@ export function KayitFiltreleri({
             onClick={() => onFiltrele(taslak)}
           >
             <Icon icon="solar:filter-bold-duotone" className="size-4" />
-            Filtrele
+            {t("Filtrele")}
           </Button>
           <Button
             variant="outline"
@@ -103,7 +106,7 @@ export function KayitFiltreleri({
             }}
           >
             <Icon icon="solar:refresh-circle-bold-duotone" className="size-4" />
-            Temizle
+            {t("Temizle")}
           </Button>
         </div>
       </CardContent>

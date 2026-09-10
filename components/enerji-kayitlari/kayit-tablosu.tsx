@@ -21,6 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { KayitDurumBadge, VeriKaliteNokta } from "@/components/enerji-kayitlari/durum";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi, sayi2 } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { EnerjiKayit } from "@/lib/types";
@@ -45,20 +46,21 @@ function Baslik({ ana, birim }: { ana: string; birim?: string }) {
 }
 
 export function KayitTablosu({ kayitlar, seciliId, onSec }: Props) {
+  const { t } = useDil();
   return (
     <div className="overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow className="hover:bg-transparent">
-            <TableHead><Baslik ana="Dönem" /></TableHead>
-            <TableHead className="text-right"><Baslik ana="Elektrik" birim="kWh" /></TableHead>
-            <TableHead className="text-right"><Baslik ana="GES Üretimi" birim="kWh" /></TableHead>
-            <TableHead className="text-right"><Baslik ana="Doğalgaz" birim="Sm³" /></TableHead>
-            <TableHead className="text-right"><Baslik ana="Akaryakıt" birim="Litre" /></TableHead>
-            <TableHead className="text-right"><Baslik ana="Toplam TEP" /></TableHead>
-            <TableHead>Durum</TableHead>
-            <TableHead className="text-center">Veri Kalitesi</TableHead>
-            <TableHead className="text-right">İşlem</TableHead>
+            <TableHead><Baslik ana={t("Dönem")} /></TableHead>
+            <TableHead className="text-right"><Baslik ana={t("Elektrik")} birim="kWh" /></TableHead>
+            <TableHead className="text-right"><Baslik ana={t("GES Üretimi")} birim="kWh" /></TableHead>
+            <TableHead className="text-right"><Baslik ana={t("Doğalgaz")} birim="Sm³" /></TableHead>
+            <TableHead className="text-right"><Baslik ana={t("Akaryakıt")} birim="Litre" /></TableHead>
+            <TableHead className="text-right"><Baslik ana={t("Toplam TEP")} /></TableHead>
+            <TableHead>{t("Durum")}</TableHead>
+            <TableHead className="text-center">{t("Veri Kalitesi")}</TableHead>
+            <TableHead className="text-right">{t("İşlem")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -82,7 +84,7 @@ export function KayitTablosu({ kayitlar, seciliId, onSec }: Props) {
                         secili ? "text-primary" : "text-muted-foreground",
                       )}
                     />
-                    {k.donem}
+                    {t(k.donem)}
                   </div>
                 </TableCell>
                 <TableCell className="text-right tabular-nums">{sayi2(k.elektrik)}</TableCell>
@@ -101,7 +103,7 @@ export function KayitTablosu({ kayitlar, seciliId, onSec }: Props) {
                     <Button
                       variant="ghost"
                       size="icon-sm"
-                      aria-label="Görüntüle"
+                      aria-label={t("Görüntüle")}
                       onClick={(e) => {
                         e.stopPropagation();
                         onSec(k.id);
@@ -115,7 +117,7 @@ export function KayitTablosu({ kayitlar, seciliId, onSec }: Props) {
                           <Button
                             variant="ghost"
                             size="icon-sm"
-                            aria-label="Daha fazla"
+                            aria-label={t("Daha fazla")}
                             onClick={(e) => e.stopPropagation()}
                           />
                         }
@@ -125,16 +127,16 @@ export function KayitTablosu({ kayitlar, seciliId, onSec }: Props) {
                       <DropdownMenuContent align="end" className="w-40">
                         <DropdownMenuItem onClick={() => onSec(k.id)}>
                           <Icon icon="solar:eye-bold-duotone" className="size-4" />
-                          Görüntüle
+                          {t("Görüntüle")}
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => toast.success(`${k.donem} dışa aktarıldı`)}>
+                        <DropdownMenuItem onClick={() => toast.success(`${t(k.donem)} ${t("dışa aktarıldı")}`)}>
                           <Icon icon="solar:download-minimalistic-bold-duotone" className="size-4" />
-                          Dışa aktar
+                          {t("Dışa aktar")}
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => toast(`${k.donem} arşivlendi`)}>
+                        <DropdownMenuItem onClick={() => toast(`${t(k.donem)} ${t("arşivlendi")}`)}>
                           <Icon icon="solar:archive-bold-duotone" className="size-4" />
-                          Arşivle
+                          {t("Arşivle")}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

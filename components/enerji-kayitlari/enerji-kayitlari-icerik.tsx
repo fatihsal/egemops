@@ -27,6 +27,7 @@ import { YillikOzetTablosu } from "@/components/enerji-kayitlari/yillik-ozet-tab
 import { KayitDetayPaneli } from "@/components/enerji-kayitlari/kayit-detay-paneli";
 import { BosDurum } from "@/components/common/bos-durum";
 import { useEnerjiKayitlari } from "@/lib/queries/kayitlar";
+import { useDil } from "@/components/providers/dil-provider";
 import { csvIndir } from "@/lib/disa-aktar";
 import { sayi, sayi2 } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -60,6 +61,7 @@ const BOYUTLAR = ["10", "25", "50"];
 
 export function EnerjiKayitlariIcerik() {
   const { data: kayitlar, isLoading } = useEnerjiKayitlari();
+  const { t } = useDil();
   const [sekme, setSekme] = React.useState<"aylik" | "yillik">("aylik");
   const [seciliId, setSeciliId] = React.useState<string | null>(null);
   const [filtre, setFiltre] = React.useState<FiltreDegerleri>(VARSAYILAN_FILTRE);
@@ -98,36 +100,36 @@ export function EnerjiKayitlariIcerik() {
       if (f.durum !== "Tümü" && k.durum !== DURUM_MAP[f.durum]) return false;
       return true;
     }).length;
-    toast.success(`${sonuc} kayıt bulundu`);
+    toast.success(`${sonuc} ${t("kayıt bulundu")}`);
   }
 
   function disaAktar() {
     if (filtreli.length === 0) {
-      toast.error("Dışa aktarılacak kayıt yok");
+      toast.error(t("Dışa aktarılacak kayıt yok"));
       return;
     }
     const basliklar = [
-      "Dönem",
-      "Elektrik (kWh)",
-      "GES Üretimi (kWh)",
-      "Doğalgaz (Sm³)",
-      "Akaryakıt (Litre)",
-      "Toplam TEP",
-      "Durum",
-      "Veri Kalitesi",
+      t("Dönem"),
+      t("Elektrik (kWh)"),
+      t("GES Üretimi (kWh)"),
+      t("Doğalgaz (Sm³)"),
+      t("Akaryakıt (Litre)"),
+      t("Toplam TEP"),
+      t("Durum"),
+      t("Veri Kalitesi"),
     ];
     const satirlar = filtreli.map((k) => [
-      k.donem,
+      t(k.donem),
       sayi2(k.elektrik),
       sayi2(k.gesUretim),
       sayi2(k.dogalgaz),
       sayi(k.akaryakit),
       sayi2(k.toplamTep),
-      DURUM_ETIKET[k.durum] ?? k.durum,
-      KALITE_ETIKET[k.veriKalitesi] ?? k.veriKalitesi,
+      t(DURUM_ETIKET[k.durum] ?? k.durum),
+      t(KALITE_ETIKET[k.veriKalitesi] ?? k.veriKalitesi),
     ]);
     csvIndir("enerji-kayitlari", basliklar, satirlar);
-    toast.success(`${filtreli.length} kayıt Excel'e aktarıldı`);
+    toast.success(`${filtreli.length} ${t("kayıt Excel'e aktarıldı")}`);
   }
 
   return (
@@ -137,7 +139,7 @@ export function EnerjiKayitlariIcerik() {
         onTemizle={() => {
           setFiltre(VARSAYILAN_FILTRE);
           setSayfa(1);
-          toast("Filtreler temizlendi");
+          toast(t("Filtreler temizlendi"));
         }}
       />
       <KayitKpi />
@@ -159,7 +161,7 @@ export function EnerjiKayitlariIcerik() {
                       : "border-transparent text-muted-foreground hover:text-foreground",
                   )}
                 >
-                  {s.etiket}
+                  {t(s.etiket)}
                 </button>
               ))}
             </div>
@@ -171,7 +173,7 @@ export function EnerjiKayitlariIcerik() {
                 className="gap-1.5 bg-teal-600 text-white shadow-sm hover:bg-teal-700"
               >
                 <Icon icon="solar:add-circle-bold-duotone" className="size-4" />
-                Yeni Aylık Kayıt
+                {t("Yeni Aylık Kayıt")}
               </Button>
               <Button
                 variant="outline"
@@ -180,13 +182,13 @@ export function EnerjiKayitlariIcerik() {
                 onClick={disaAktar}
               >
                 <Icon icon="vscode-icons:file-type-excel" className="size-4" />
-                Excel&apos;e Aktar
+                {t("Excel'e Aktar")}
               </Button>
               <Button
                 variant="ghost"
                 size="icon-sm"
-                aria-label="Kolon ayarları"
-                onClick={() => toast("Kolon görünürlüğü yakında")}
+                aria-label={t("Kolon ayarları")}
+                onClick={() => toast(t("Kolon görünürlüğü yakında"))}
               >
                 <Icon icon="solar:tuning-2-bold-duotone" className="size-4.5 text-muted-foreground" />
               </Button>
@@ -203,8 +205,8 @@ export function EnerjiKayitlariIcerik() {
               </div>
             ) : sayfaKayitlari.length === 0 ? (
               <BosDurum
-                baslik="Kayıt bulunamadı"
-                aciklama="Filtre kriterlerine uygun kayıt yok."
+                baslik={t("Kayıt bulunamadı")}
+                aciklama={t("Filtre kriterlerine uygun kayıt yok.")}
               />
             ) : (
               <KayitTablosu
@@ -224,13 +226,13 @@ export function EnerjiKayitlariIcerik() {
                 <span className="tabular-nums">
                   {sayi(bas + 1)}–{sayi(Math.min(bas + boyut, filtreli.length))}
                 </span>{" "}
-                / {sayi(filtreli.length)} kayıt
+                / {sayi(filtreli.length)} {t("kayıt")}
               </span>
               <div className="flex items-center gap-1">
                 <Button
                   variant="outline"
                   size="icon-sm"
-                  aria-label="Önceki"
+                  aria-label={t("Önceki")}
                   disabled={geciliSayfa <= 1}
                   onClick={() => setSayfa((s) => Math.max(1, s - 1))}
                 >
@@ -250,7 +252,7 @@ export function EnerjiKayitlariIcerik() {
                 <Button
                   variant="outline"
                   size="icon-sm"
-                  aria-label="Sonraki"
+                  aria-label={t("Sonraki")}
                   disabled={geciliSayfa >= toplamSayfa}
                   onClick={() => setSayfa((s) => Math.min(toplamSayfa, s + 1))}
                 >
@@ -258,7 +260,7 @@ export function EnerjiKayitlariIcerik() {
                 </Button>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-muted-foreground">Sayfa başına:</span>
+                <span className="text-muted-foreground">{t("Sayfa başına")}:</span>
                 <Select
                   value={String(boyut)}
                   onValueChange={(v) => {
