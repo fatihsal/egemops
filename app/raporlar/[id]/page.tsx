@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { DURUM_META, KATEGORI_META } from "@/components/raporlar/stiller";
 import { RaporOnizlemeIcerik } from "@/components/raporlar/onizleme";
 import { useRaporAnaliz } from "@/lib/queries/raporlar";
+import { csvIndir } from "@/lib/disa-aktar";
 import { cn } from "@/lib/utils";
 
 export default function RaporOnizlemePage() {
@@ -48,20 +49,39 @@ export default function RaporOnizlemePage() {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div data-noprint className="flex flex-wrap items-center gap-2">
           <Button variant="outline" className="h-9 gap-1.5 bg-card" nativeButton={false} render={<Link href="/raporlar" />}>
             <Icon icon="solar:alt-arrow-left-linear" className="size-4" />
             Geri
           </Button>
-          <Button variant="outline" className="h-9 gap-1.5 bg-card" onClick={() => toast("Yazdırma penceresi açılıyor")}>
+          <Button variant="outline" className="h-9 gap-1.5 bg-card" onClick={() => window.print()}>
             <Icon icon="solar:printer-bold-duotone" className="size-4" />
             Yazdır
           </Button>
-          <Button variant="outline" className="h-9 gap-1.5 bg-card" onClick={() => toast.success(`${ad} Excel indiriliyor`)}>
+          <Button
+            variant="outline"
+            className="h-9 gap-1.5 bg-card"
+            onClick={() => {
+              csvIndir(`rapor-${id ?? "rapor"}`, ["Alan", "Değer"], [
+                ["Rapor Adı", ad],
+                ["Kategori", kategori ? KATEGORI_META[kategori].etiket : "-"],
+                ["Format", rapor?.format ?? "-"],
+                ["Sıklık", rapor?.siklik ?? "-"],
+                ["Son Oluşturulma", rapor?.sonOlusturma ?? "-"],
+              ]);
+              toast.success(`${ad} Excel'e aktarıldı`);
+            }}
+          >
             <Icon icon="solar:file-bold-duotone" className="size-4 text-emerald-600" />
             Excel İndir
           </Button>
-          <Button className="h-9 gap-1.5 bg-teal-600 text-white shadow-sm hover:bg-teal-700" onClick={() => toast.success(`${ad} PDF indiriliyor`)}>
+          <Button
+            className="h-9 gap-1.5 bg-teal-600 text-white shadow-sm hover:bg-teal-700"
+            onClick={() => {
+              toast("PDF için 'Hedef' olarak 'PDF olarak kaydet' seçin");
+              window.print();
+            }}
+          >
             <Icon icon="solar:file-download-bold-duotone" className="size-4" />
             PDF İndir
           </Button>

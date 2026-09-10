@@ -25,6 +25,7 @@ import { KayitKpi } from "@/components/enerji-kayitlari/kayit-kpi";
 import { KayitTablosu } from "@/components/enerji-kayitlari/kayit-tablosu";
 import { YillikOzetTablosu } from "@/components/enerji-kayitlari/yillik-ozet-tablosu";
 import { KayitDetayPaneli } from "@/components/enerji-kayitlari/kayit-detay-paneli";
+import { BosDurum } from "@/components/common/bos-durum";
 import { useEnerjiKayitlari } from "@/lib/queries/kayitlar";
 import { csvIndir } from "@/lib/disa-aktar";
 import { sayi, sayi2 } from "@/lib/format";
@@ -201,13 +202,10 @@ export function EnerjiKayitlariIcerik() {
                 ))}
               </div>
             ) : sayfaKayitlari.length === 0 ? (
-              <div className="flex flex-col items-center gap-2 py-16 text-center">
-                <Icon icon="solar:inbox-line-bold-duotone" className="size-9 text-muted-foreground" />
-                <p className="text-sm font-medium">Kayıt bulunamadı</p>
-                <p className="text-xs text-muted-foreground">
-                  Filtre kriterlerine uygun kayıt yok.
-                </p>
-              </div>
+              <BosDurum
+                baslik="Kayıt bulunamadı"
+                aciklama="Filtre kriterlerine uygun kayıt yok."
+              />
             ) : (
               <KayitTablosu
                 kayitlar={sayfaKayitlari}

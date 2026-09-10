@@ -140,3 +140,24 @@
     }
   }
 }
+
+/* Yazdırma / PDF: uygulama çerçevesini gizle, yalnızca içeriği bas */
+@media print {
+  aside,
+  header,
+  [data-noprint] {
+    display: none !important;
+  }
+  main {
+    padding: 0 !important;
+  }
+  body {
+    background: #fff;
+  }
+  *,
+  *::before,
+  *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

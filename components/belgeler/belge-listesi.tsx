@@ -37,6 +37,7 @@ import { BelgeDetayDrawer } from "@/components/belgeler/belge-detay-drawer";
 import { useBelgeFiltre } from "@/components/belgeler/filtre-store";
 import { useBelgeAnaliz } from "@/lib/queries/belgeler";
 import { queryKeys } from "@/lib/queries/keys";
+import { csvIndir } from "@/lib/disa-aktar";
 import { cn } from "@/lib/utils";
 import type { BelgeAnaliz } from "@/lib/types";
 
@@ -82,6 +83,27 @@ export function BelgeListesi() {
   const basla = (gecerliSayfa - 1) * SAYFA_BOYUTU;
   const sayfaVerisi = filtreli.slice(basla, basla + SAYFA_BOYUTU);
 
+  function disaAktar() {
+    if (filtreli.length === 0) {
+      toast.error("Dışa aktarılacak belge yok");
+      return;
+    }
+    csvIndir(
+      "belgeler",
+      ["Belge Adı", "Kategori", "Boyut", "Yükleyen", "Yüklenme", "Geçerlilik", "Durum"],
+      filtreli.map((b) => [
+        b.ad,
+        KATEGORI_META[b.kategori].etiket,
+        b.boyut,
+        b.yukleyen,
+        b.tarih,
+        b.gecerlilik ?? "Süresiz",
+        DURUM_META[b.durum].etiket,
+      ]),
+    );
+    toast.success(`${filtreli.length} belge Excel'e aktarıldı`);
+  }
+
   return (
     <Card id="belge-listesi" className="scroll-mt-6">
       <CardHeader className="flex-col gap-3 @2xl/card-header:flex-row @2xl/card-header:items-center @2xl/card-header:justify-between">
@@ -93,6 +115,10 @@ export function BelgeListesi() {
           </div>
           <FiltreSelect etiket="Kategori" deger={kategori} secenekler={KATEGORILER} onChange={(v) => set("kategori", v)} genislik="w-[150px]" />
           <FiltreSelect etiket="Durum" deger={durum} secenekler={DURUMLAR} onChange={(v) => set("durum", v)} genislik="w-[140px]" />
+          <Button variant="outline" size="sm" className="h-9 gap-1.5 bg-card" onClick={disaAktar}>
+            <Icon icon="vscode-icons:file-type-excel" className="size-4" />
+            Dışa Aktar
+          </Button>
           {aktifMi ? (
             <Button variant="ghost" size="sm" className="h-9 gap-1 text-muted-foreground" onClick={sifirla}>
               <Icon icon="solar:restart-linear" className="size-4" />

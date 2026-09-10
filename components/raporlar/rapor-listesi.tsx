@@ -35,6 +35,7 @@ import {
 import { DURUM_META, FORMAT_STIL, KATEGORI_META } from "@/components/raporlar/stiller";
 import { useRaporFiltre } from "@/components/raporlar/filtre-store";
 import { useRaporAnaliz } from "@/lib/queries/raporlar";
+import { csvIndir } from "@/lib/disa-aktar";
 import { cn } from "@/lib/utils";
 
 const KATEGORILER = ["Tümü", "Tüketim", "Performans", "Maliyet", "TEP", "Karşılaştırma", "Özel"];
@@ -90,6 +91,27 @@ export function RaporListesi() {
   const basla = (gecerliSayfa - 1) * SAYFA_BOYUTU;
   const sayfaVerisi = filtreli.slice(basla, basla + SAYFA_BOYUTU);
 
+  function disaAktar() {
+    if (filtreli.length === 0) {
+      toast.error("Dışa aktarılacak rapor yok");
+      return;
+    }
+    csvIndir(
+      "raporlar",
+      ["Rapor Adı", "Kategori", "Açıklama", "Format", "Sıklık", "Son Oluşturulma", "Durum"],
+      filtreli.map((r) => [
+        r.ad,
+        KATEGORI_META[r.kategori].etiket,
+        r.aciklama,
+        r.format,
+        r.siklik,
+        r.sonOlusturma,
+        DURUM_META[r.durum].etiket,
+      ]),
+    );
+    toast.success(`${filtreli.length} rapor Excel'e aktarıldı`);
+  }
+
   return (
     <Card id="rapor-listesi" className="scroll-mt-6">
       <CardHeader className="flex-col gap-3 @2xl/card-header:flex-row @2xl/card-header:items-center @2xl/card-header:justify-between">
@@ -107,6 +129,10 @@ export function RaporListesi() {
           <FiltreSelect etiket="Kategori" deger={kategori} secenekler={KATEGORILER} onChange={(v) => set("kategori", v)} genislik="w-[120px]" />
           <FiltreSelect etiket="Format" deger={format} secenekler={FORMATLAR} onChange={(v) => set("format", v)} genislik="w-[92px]" />
           <FiltreSelect etiket="Durum" deger={durum} secenekler={DURUMLAR} onChange={(v) => set("durum", v)} genislik="w-[112px]" />
+          <Button variant="outline" size="sm" className="h-9 gap-1.5 bg-card" onClick={disaAktar}>
+            <Icon icon="vscode-icons:file-type-excel" className="size-4" />
+            Dışa Aktar
+          </Button>
           {aktifMi ? (
             <Button variant="ghost" size="sm" className="h-9 gap-1 text-muted-foreground" onClick={sifirla}>
               <Icon icon="solar:restart-linear" className="size-4" />
