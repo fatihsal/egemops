@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useDil } from "@/components/providers/dil-provider";
 
 const YILLAR = ["2024", "2025", "2026"];
 const AYLAR = [
@@ -15,10 +16,11 @@ const AYLAR = [
 ];
 
 export function YilAySecim() {
+  const { t } = useDil();
   return (
     <div className="flex items-center gap-4">
       <div className="flex items-center gap-2">
-        <span className="text-sm font-medium text-muted-foreground">Yıl</span>
+        <span className="text-sm font-medium text-muted-foreground">{t("Yıl")}</span>
         <Select defaultValue="2026">
           <SelectTrigger className="w-28 bg-card">
             <SelectValue />
@@ -34,7 +36,7 @@ export function YilAySecim() {
       </div>
 
       <div className="flex items-center gap-2">
-        <span className="text-sm font-medium text-muted-foreground">Ay</span>
+        <span className="text-sm font-medium text-muted-foreground">{t("Ay")}</span>
         <Select defaultValue="Ağustos">
           <SelectTrigger className="w-32 bg-card">
             <SelectValue />
@@ -42,7 +44,7 @@ export function YilAySecim() {
           <SelectContent>
             {AYLAR.map((a) => (
               <SelectItem key={a} value={a}>
-                {a}
+                {t(a)}
               </SelectItem>
             ))}
           </SelectContent>

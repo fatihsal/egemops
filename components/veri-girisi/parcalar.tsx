@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { useVeriGirisi } from "@/components/veri-girisi/form-store";
+import { useDil } from "@/components/providers/dil-provider";
 
 /** Etiketli, sağında birim kutusu olan sayısal veri girişi (doğrulamalı). */
 export function VeriInput({
@@ -24,6 +25,7 @@ export function VeriInput({
   zorunlu?: boolean;
 }) {
   const { kaydet, sil, denendi } = useVeriGirisi();
+  const { t } = useDil();
   const id = React.useId();
   const [val, setVal] = React.useState(deger);
   const [dokunuldu, setDokunuldu] = React.useState(false);
@@ -36,10 +38,10 @@ export function VeriInput({
   const hata = gecerli
     ? null
     : bos
-      ? "Zorunlu alan"
+      ? t("Zorunlu alan")
       : !sayiMi
-        ? "Geçerli bir sayı girin"
-        : "Negatif olamaz";
+        ? t("Geçerli bir sayı girin")
+        : t("Negatif olamaz");
   const goster = (dokunuldu || denendi) && !!hata;
 
   React.useEffect(() => {

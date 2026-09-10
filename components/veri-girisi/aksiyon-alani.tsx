@@ -6,22 +6,24 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { useVeriGirisi } from "@/components/veri-girisi/form-store";
+import { useDil } from "@/components/providers/dil-provider";
 
 export function AksiyonAlani() {
   const { denemeVeDogrula } = useVeriGirisi();
+  const { t } = useDil();
   const [hataSayisi, setHataSayisi] = React.useState(0);
 
   function onayla() {
     const hatalar = denemeVeDogrula();
     setHataSayisi(hatalar.length);
     if (hatalar.length > 0) {
-      toast.error(`${hatalar.length} alan eksik veya hatalı`, {
-        description: "Kırmızı işaretli alanları düzeltip tekrar deneyin.",
+      toast.error(`${hatalar.length} ${t("alan eksik veya hatalı")}`, {
+        description: t("Kırmızı işaretli alanları düzeltip tekrar deneyin."),
       });
       return;
     }
-    toast.success("Veriler onaylandı", {
-      description: "Ağustos 2026 dönemi onaya gönderildi.",
+    toast.success(t("Veriler onaylandı"), {
+      description: t("Ağustos 2026 dönemi onaya gönderildi."),
     });
   }
 
@@ -35,7 +37,7 @@ export function AksiyonAlani() {
             className="size-6 shrink-0 text-red-600 dark:text-red-400"
           />
           <span className="text-sm font-medium text-red-800 dark:text-red-300">
-            {hataSayisi} alan eksik veya hatalı. Lütfen düzeltin.
+            {hataSayisi} {t("alan eksik veya hatalı. Lütfen düzeltin.")}
           </span>
         </div>
       ) : (
@@ -45,7 +47,7 @@ export function AksiyonAlani() {
             className="size-6 shrink-0 text-emerald-600 dark:text-emerald-400"
           />
           <span className="text-sm font-medium text-emerald-800 dark:text-emerald-300">
-            Veriler doğrulandı. Kritik hata bulunmadı.
+            {t("Veriler doğrulandı. Kritik hata bulunmadı.")}
           </span>
         </div>
       )}
@@ -55,17 +57,17 @@ export function AksiyonAlani() {
         <Button
           variant="outline"
           className="w-full justify-center gap-1.5"
-          onClick={() => toast.success("Taslak kaydedildi")}
+          onClick={() => toast.success(t("Taslak kaydedildi"))}
         >
           <Icon icon="solar:diskette-bold-duotone" className="size-4" />
-          Taslak Kaydet
+          {t("Taslak Kaydet")}
         </Button>
         <Button
           className="w-full justify-center gap-1.5 bg-amber-500 text-white shadow-sm hover:bg-amber-600"
           onClick={onayla}
         >
           <Icon icon="solar:shield-check-bold-duotone" className="size-4" />
-          Onayla
+          {t("Onayla")}
         </Button>
       </div>
     </div>

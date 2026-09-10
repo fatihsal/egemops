@@ -6,8 +6,10 @@ import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { YilAySecim } from "@/components/veri-girisi/yil-ay-secim";
+import { useDil } from "@/components/providers/dil-provider";
 
 export function DonemBar() {
+  const { t } = useDil();
   return (
     <Card>
       <CardContent className="flex flex-wrap items-center gap-x-6 gap-y-3">
@@ -17,9 +19,9 @@ export function DonemBar() {
 
         <div className="flex items-center gap-2 text-sm">
           <Icon icon="solar:document-text-bold-duotone" className="size-5 text-amber-500" />
-          <span className="text-muted-foreground">Kayıt Durumu:</span>
+          <span className="text-muted-foreground">{t("Kayıt Durumu")}:</span>
           <span className="font-semibold text-amber-600 dark:text-amber-400">
-            Taslak
+            {t("Taslak")}
           </span>
         </div>
 
@@ -27,16 +29,16 @@ export function DonemBar() {
 
         <div className="flex items-center gap-2 text-sm">
           <Icon icon="solar:clock-circle-bold-duotone" className="size-5 text-primary" />
-          <span className="text-muted-foreground">Son Güncelleme:</span>
+          <span className="text-muted-foreground">{t("Son Güncelleme")}:</span>
           <span className="font-semibold tabular-nums">26.08.2026 15:20</span>
         </div>
 
         <Button
           className="ml-auto gap-1.5 bg-teal-600 text-white hover:bg-teal-700"
-          onClick={() => toast("Enerji verisi görünümü", { description: "Dönem verileri yenilendi." })}
+          onClick={() => toast(t("Enerji verisi görünümü"), { description: t("Dönem verileri yenilendi.") })}
         >
           <Icon icon="solar:database-bold-duotone" className="size-4" />
-          Enerji Verisi
+          {t("Enerji Verisi")}
         </Button>
       </CardContent>
     </Card>

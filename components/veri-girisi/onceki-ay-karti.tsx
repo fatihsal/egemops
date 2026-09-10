@@ -1,7 +1,10 @@
 import { Icon } from "@iconify/react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+"use client";
+
 import { Sparkline } from "@/components/common/sparkline";
+import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
 
 const KALEMLER = [
@@ -13,16 +16,17 @@ const KALEMLER = [
 ];
 
 export function OncekiAyKarti() {
+  const { t } = useDil();
   return (
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <Icon icon="solar:calendar-mark-bold-duotone" className="size-5 text-primary" />
-            Önceki Ay Karşılaştırması
+            {t("Önceki Ay Karşılaştırması")}
           </CardTitle>
           <span className="text-xs font-medium text-muted-foreground">
-            Temmuz 2026
+            {t("Temmuz 2026")}
           </span>
         </div>
       </CardHeader>
@@ -42,7 +46,7 @@ export function OncekiAyKarti() {
                 k.vurgu && "font-semibold",
               )}
             >
-              {k.etiket}
+              {t(k.etiket)}
             </span>
             <Sparkline data={k.spark} renk={k.renk} className="h-5 w-14 shrink-0" />
             <span

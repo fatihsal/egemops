@@ -13,6 +13,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useDil } from "@/components/providers/dil-provider";
 
 const BELGELER = [
   { ad: "Elektrik Faturası.pdf", ikon: "vscode-icons:file-type-pdf2", tur: "PDF" },
@@ -22,13 +23,14 @@ const BELGELER = [
 ];
 
 export function KaynakBelgelerKarti() {
+  const { t } = useDil();
   return (
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <Icon icon="solar:documents-bold-duotone" className="size-5 text-primary" />
-            Kaynak Belgeler
+            {t("Kaynak Belgeler")}
           </CardTitle>
 
           {/* Yükleme drawer'ı */}
@@ -37,7 +39,7 @@ export function KaynakBelgelerKarti() {
               render={
                 <button
                   type="button"
-                  aria-label="Belge yükle"
+                  aria-label={t("Belge yükle")}
                   className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-primary"
                 />
               }
@@ -46,9 +48,9 @@ export function KaynakBelgelerKarti() {
             </SheetTrigger>
             <SheetContent side="right" className="w-full gap-0 p-0 sm:max-w-md">
               <SheetHeader className="border-b p-5">
-                <SheetTitle>Belge Yükle</SheetTitle>
+                <SheetTitle>{t("Belge Yükle")}</SheetTitle>
                 <SheetDescription>
-                  Fatura, rapor veya destekleyici belgeleri ekleyin.
+                  {t("Fatura, rapor veya destekleyici belgeleri ekleyin.")}
                 </SheetDescription>
               </SheetHeader>
               <div className="p-5">
@@ -58,22 +60,22 @@ export function KaynakBelgelerKarti() {
                     className="size-10 text-muted-foreground"
                   />
                   <div className="text-sm">
-                    <span className="font-medium text-primary">Dosya seç</span>
+                    <span className="font-medium text-primary">{t("Dosya seç")}</span>
                     <span className="text-muted-foreground">
                       {" "}
-                      veya buraya sürükleyip bırak
+                      {t("veya buraya sürükleyip bırak")}
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    PDF, XLSX, JPG · en fazla 20 MB
+                    {t("PDF, XLSX, JPG · en fazla 20 MB")}
                   </p>
                 </div>
                 <Button
                   className="mt-4 w-full gap-1.5"
-                  onClick={() => toast.success("Belge yüklendi")}
+                  onClick={() => toast.success(t("Belge yüklendi"))}
                 >
                   <Icon icon="solar:upload-minimalistic-bold-duotone" className="size-4" />
-                  Yükle
+                  {t("Yükle")}
                 </Button>
               </div>
             </SheetContent>
@@ -96,7 +98,7 @@ export function KaynakBelgelerKarti() {
                 render={<Button variant="outline" size="sm" className="gap-1.5" />}
               >
                 <Icon icon="solar:eye-bold-duotone" className="size-4" />
-                Görüntüle
+                {t("Görüntüle")}
               </SheetTrigger>
               <SheetContent side="right" className="w-full gap-0 p-0 sm:max-w-lg">
                 <SheetHeader className="border-b p-5">
@@ -104,22 +106,22 @@ export function KaynakBelgelerKarti() {
                     <Icon icon={b.ikon} className="size-5" />
                     <span className="truncate">{b.ad}</span>
                   </SheetTitle>
-                  <SheetDescription>{b.tur} belgesi · önizleme</SheetDescription>
+                  <SheetDescription>{b.tur} {t("belgesi · önizleme")}</SheetDescription>
                 </SheetHeader>
                 <div className="p-5">
                   <div className="flex aspect-[3/4] flex-col items-center justify-center gap-3 rounded-xl border bg-muted/40 text-center">
                     <Icon icon={b.ikon} className="size-16" />
                     <p className="text-sm text-muted-foreground">
-                      Belge önizlemesi burada gösterilecek
+                      {t("Belge önizlemesi burada gösterilecek")}
                     </p>
                   </div>
                   <Button
                     variant="outline"
                     className="mt-4 w-full gap-1.5"
-                    onClick={() => toast.success(`${b.ad} indiriliyor`)}
+                    onClick={() => toast.success(`${b.ad} ${t("indiriliyor")}`)}
                   >
                     <Icon icon="solar:download-minimalistic-bold-duotone" className="size-4" />
-                    İndir
+                    {t("İndir")}
                   </Button>
                 </div>
               </SheetContent>

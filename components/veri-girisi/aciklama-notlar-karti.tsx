@@ -5,20 +5,22 @@ import { Icon } from "@iconify/react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { useDil } from "@/components/providers/dil-provider";
 
 const VARSAYILAN =
   "GES üretimi planlanan seviyede gerçekleşmiştir. Kompresör dairesindeki yük artışı nedeniyle elektrik tüketimi geçen aya göre yükselmiştir.";
 const LIMIT = 1000;
 
 export function AciklamaNotlarKarti() {
-  const [metin, setMetin] = React.useState(VARSAYILAN);
+  const { t } = useDil();
+  const [metin, setMetin] = React.useState(() => t(VARSAYILAN));
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Icon icon="solar:chat-square-like-bold-duotone" className="size-5 text-primary" />
-          Açıklama / Notlar
+          {t("Açıklama / Notlar")}
         </CardTitle>
       </CardHeader>
       <CardContent>
