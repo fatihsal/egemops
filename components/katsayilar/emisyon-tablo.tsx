@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/table";
 import { KatsayiDuzenleDrawer } from "@/components/katsayilar/duzenle-drawer";
 import { useKatsayiAnaliz } from "@/lib/queries/katsayilar";
+import { useDil } from "@/components/providers/dil-provider";
 import { queryKeys } from "@/lib/queries/keys";
 import { cn } from "@/lib/utils";
 import type { EmisyonFaktor, KatsayiAnaliz } from "@/lib/types";
@@ -28,18 +29,19 @@ const KAPSAM_STIL: Record<string, string> = {
 
 export function EmisyonTablo() {
   const { data, isLoading } = useKatsayiAnaliz();
+  const { t } = useDil();
   const qc = useQueryClient();
 
   return (
     <Card>
       <CardHeader className="flex-row items-center justify-between gap-4 space-y-0">
         <div>
-          <h3 className="font-heading text-base font-medium">CO₂ Emisyon Faktörleri</h3>
-          <p className="mt-0.5 text-xs text-muted-foreground">Karbon ayak izi hesaplarında kullanılan emisyon faktörleri</p>
+          <h3 className="font-heading text-base font-medium">{t("CO₂ Emisyon Faktörleri")}</h3>
+          <p className="mt-0.5 text-xs text-muted-foreground">{t("Karbon ayak izi hesaplarında kullanılan emisyon faktörleri")}</p>
         </div>
-        <Button variant="outline" size="sm" className="h-8 gap-1.5 bg-card" onClick={() => toast("Yeni emisyon faktörü ekleniyor")}>
+        <Button variant="outline" size="sm" className="h-8 gap-1.5 bg-card" onClick={() => toast(t("Yeni emisyon faktörü ekleniyor"))}>
           <Icon icon="solar:add-circle-linear" className="size-4" />
-          Faktör Ekle
+          {t("Faktör Ekle")}
         </Button>
       </CardHeader>
       <CardContent>
@@ -50,11 +52,11 @@ export function EmisyonTablo() {
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/40">
-                  <TableHead className="whitespace-nowrap">Enerji Kaynağı</TableHead>
-                  <TableHead className="whitespace-nowrap">Birim</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">Emisyon Faktörü</TableHead>
-                  <TableHead className="whitespace-nowrap">Kapsam</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">İşlem</TableHead>
+                  <TableHead className="whitespace-nowrap">{t("Enerji Kaynağı")}</TableHead>
+                  <TableHead className="whitespace-nowrap">{t("Birim")}</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">{t("Emisyon Faktörü")}</TableHead>
+                  <TableHead className="whitespace-nowrap">{t("Kapsam")}</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">{t("İşlem")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -63,25 +65,25 @@ export function EmisyonTablo() {
                     <TableCell className="whitespace-nowrap font-medium">
                       <span className="inline-flex items-center gap-2">
                         <span className="size-2.5 rounded-full" style={{ background: r.renk }} />
-                        {r.ad}
+                        {t(r.ad)}
                       </span>
                     </TableCell>
                     <TableCell className="whitespace-nowrap text-muted-foreground">{r.birim}</TableCell>
                     <TableCell className="text-right font-semibold tabular-nums whitespace-nowrap">{r.faktor}</TableCell>
                     <TableCell>
-                      <span className={cn("inline-block rounded-full px-2.5 py-0.5 text-[11px] font-medium whitespace-nowrap", KAPSAM_STIL[r.kapsam])}>{r.kapsam}</span>
+                      <span className={cn("inline-block rounded-full px-2.5 py-0.5 text-[11px] font-medium whitespace-nowrap", KAPSAM_STIL[r.kapsam])}>{t(r.kapsam)}</span>
                     </TableCell>
                     <TableCell className="text-right">
                       <KatsayiDuzenleDrawer
-                        baslik={`${r.ad} — Emisyon Faktörü`}
-                        aciklama="Emisyon faktörünü ve kapsamı güncelleyin."
+                        baslik={`${t(r.ad)} — ${t("Emisyon Faktörü")}`}
+                        aciklama={t("Emisyon faktörünü ve kapsamı güncelleyin.")}
                         alanlar={[
-                          { anahtar: "faktor", label: `Emisyon Faktörü (${r.birim})`, deger: r.faktor },
-                          { anahtar: "kapsam", label: "Kapsam", deger: r.kapsam },
+                          { anahtar: "faktor", label: `${t("Emisyon Faktörü")} (${r.birim})`, deger: r.faktor },
+                          { anahtar: "kapsam", label: t("Kapsam"), deger: r.kapsam },
                         ]}
                         onKaydet={(d) => qc.setQueryData(queryKeys.katsayilar.analiz, (old?: KatsayiAnaliz) => old ? { ...old, emisyon: old.emisyon.map((x) => x.id === r.id ? { ...x, ...d } as EmisyonFaktor : x) } : old)}
                         trigger={
-                          <Button variant="ghost" size="icon-sm" aria-label="Düzenle">
+                          <Button variant="ghost" size="icon-sm" aria-label={t("Düzenle")}>
                             <Icon icon="solar:pen-2-bold-duotone" className="size-4 text-muted-foreground" />
                           </Button>
                         }

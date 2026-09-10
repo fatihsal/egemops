@@ -17,23 +17,25 @@ import {
 } from "@/components/ui/table";
 import { KatsayiDuzenleDrawer } from "@/components/katsayilar/duzenle-drawer";
 import { useKatsayiAnaliz } from "@/lib/queries/katsayilar";
+import { useDil } from "@/components/providers/dil-provider";
 import { queryKeys } from "@/lib/queries/keys";
 import type { KatsayiAnaliz } from "@/lib/types";
 
 export function FiyatTablo() {
   const { data, isLoading } = useKatsayiAnaliz();
+  const { t } = useDil();
   const qc = useQueryClient();
 
   return (
     <Card>
       <CardHeader className="flex-row items-center justify-between gap-4 space-y-0">
         <div>
-          <h3 className="font-heading text-base font-medium">Birim Fiyatlar / Tarifeler</h3>
-          <p className="mt-0.5 text-xs text-muted-foreground">Maliyet hesaplarında kullanılan güncel birim fiyatlar</p>
+          <h3 className="font-heading text-base font-medium">{t("Birim Fiyatlar / Tarifeler")}</h3>
+          <p className="mt-0.5 text-xs text-muted-foreground">{t("Maliyet hesaplarında kullanılan güncel birim fiyatlar")}</p>
         </div>
-        <Button variant="outline" size="sm" className="h-8 gap-1.5 bg-card" onClick={() => toast("Yeni birim fiyat ekleniyor")}>
+        <Button variant="outline" size="sm" className="h-8 gap-1.5 bg-card" onClick={() => toast(t("Yeni birim fiyat ekleniyor"))}>
           <Icon icon="solar:add-circle-linear" className="size-4" />
-          Fiyat Ekle
+          {t("Fiyat Ekle")}
         </Button>
       </CardHeader>
       <CardContent>
@@ -44,11 +46,11 @@ export function FiyatTablo() {
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/40">
-                  <TableHead className="whitespace-nowrap">Kaynak</TableHead>
-                  <TableHead className="whitespace-nowrap">Birim</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">Birim Fiyat</TableHead>
-                  <TableHead className="whitespace-nowrap">Son Güncelleme</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">İşlem</TableHead>
+                  <TableHead className="whitespace-nowrap">{t("Kaynak")}</TableHead>
+                  <TableHead className="whitespace-nowrap">{t("Birim")}</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">{t("Birim Fiyat")}</TableHead>
+                  <TableHead className="whitespace-nowrap">{t("Son Güncelleme")}</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">{t("İşlem")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -57,7 +59,7 @@ export function FiyatTablo() {
                     <TableCell className="whitespace-nowrap font-medium">
                       <span className="inline-flex items-center gap-2">
                         <span className="size-2.5 rounded-full" style={{ background: r.renk }} />
-                        {r.ad}
+                        {t(r.ad)}
                       </span>
                     </TableCell>
                     <TableCell className="whitespace-nowrap text-muted-foreground">{r.birim}</TableCell>
@@ -65,15 +67,15 @@ export function FiyatTablo() {
                     <TableCell className="whitespace-nowrap tabular-nums text-muted-foreground">{r.guncelleme}</TableCell>
                     <TableCell className="text-right">
                       <KatsayiDuzenleDrawer
-                        baslik={`${r.ad} — Birim Fiyat`}
-                        aciklama="Birim fiyatı güncelleyin."
+                        baslik={`${t(r.ad)} — ${t("Birim Fiyat")}`}
+                        aciklama={t("Birim fiyatı güncelleyin.")}
                         alanlar={[
-                          { anahtar: "fiyat", label: `Birim Fiyat (${r.birim})`, deger: r.fiyat },
-                          { anahtar: "guncelleme", label: "Geçerlilik Tarihi", deger: r.guncelleme },
+                          { anahtar: "fiyat", label: `${t("Birim Fiyat")} (${r.birim})`, deger: r.fiyat },
+                          { anahtar: "guncelleme", label: t("Geçerlilik Tarihi"), deger: r.guncelleme },
                         ]}
                         onKaydet={(d) => qc.setQueryData(queryKeys.katsayilar.analiz, (old?: KatsayiAnaliz) => old ? { ...old, fiyat: old.fiyat.map((x) => x.id === r.id ? { ...x, ...d } : x) } : old)}
                         trigger={
-                          <Button variant="ghost" size="icon-sm" aria-label="Düzenle">
+                          <Button variant="ghost" size="icon-sm" aria-label={t("Düzenle")}>
                             <Icon icon="solar:pen-2-bold-duotone" className="size-4 text-muted-foreground" />
                           </Button>
                         }

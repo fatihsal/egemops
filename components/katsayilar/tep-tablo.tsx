@@ -17,23 +17,25 @@ import {
 } from "@/components/ui/table";
 import { KatsayiDuzenleDrawer } from "@/components/katsayilar/duzenle-drawer";
 import { useKatsayiAnaliz } from "@/lib/queries/katsayilar";
+import { useDil } from "@/components/providers/dil-provider";
 import { queryKeys } from "@/lib/queries/keys";
 import type { KatsayiAnaliz } from "@/lib/types";
 
 export function TepKatsayiTablo() {
   const { data, isLoading } = useKatsayiAnaliz();
+  const { t } = useDil();
   const qc = useQueryClient();
 
   return (
     <Card>
       <CardHeader className="flex-row items-center justify-between gap-4 space-y-0">
         <div>
-          <h3 className="font-heading text-base font-medium">TEP Dönüşüm Katsayıları</h3>
-          <p className="mt-0.5 text-xs text-muted-foreground">Enerji tüketimini eşdeğer petrole (TEP) çeviren katsayılar</p>
+          <h3 className="font-heading text-base font-medium">{t("TEP Dönüşüm Katsayıları")}</h3>
+          <p className="mt-0.5 text-xs text-muted-foreground">{t("Enerji tüketimini eşdeğer petrole (TEP) çeviren katsayılar")}</p>
         </div>
-        <Button variant="outline" size="sm" className="h-8 gap-1.5 bg-card" onClick={() => toast("Yeni katsayı satırı ekleniyor")}>
+        <Button variant="outline" size="sm" className="h-8 gap-1.5 bg-card" onClick={() => toast(t("Yeni katsayı satırı ekleniyor"))}>
           <Icon icon="solar:add-circle-linear" className="size-4" />
-          Katsayı Ekle
+          {t("Katsayı Ekle")}
         </Button>
       </CardHeader>
       <CardContent>
@@ -44,12 +46,12 @@ export function TepKatsayiTablo() {
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/40">
-                  <TableHead className="whitespace-nowrap">Enerji Kaynağı</TableHead>
-                  <TableHead className="whitespace-nowrap">Birim</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">Alt Isıl Değer</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">TEP Katsayısı</TableHead>
-                  <TableHead className="whitespace-nowrap">Referans</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">İşlem</TableHead>
+                  <TableHead className="whitespace-nowrap">{t("Enerji Kaynağı")}</TableHead>
+                  <TableHead className="whitespace-nowrap">{t("Birim")}</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">{t("Alt Isıl Değer")}</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">{t("TEP Katsayısı")}</TableHead>
+                  <TableHead className="whitespace-nowrap">{t("Referans")}</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">{t("İşlem")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -58,25 +60,25 @@ export function TepKatsayiTablo() {
                     <TableCell className="whitespace-nowrap font-medium">
                       <span className="inline-flex items-center gap-2">
                         <span className="size-2.5 rounded-full" style={{ background: r.renk }} />
-                        {r.ad}
+                        {t(r.ad)}
                       </span>
                     </TableCell>
                     <TableCell className="whitespace-nowrap text-muted-foreground">{r.birim}</TableCell>
                     <TableCell className="text-right tabular-nums whitespace-nowrap text-muted-foreground">{r.altIsil}</TableCell>
                     <TableCell className="text-right font-semibold tabular-nums whitespace-nowrap">{r.tep}</TableCell>
-                    <TableCell className="whitespace-nowrap text-muted-foreground">{r.referans}</TableCell>
+                    <TableCell className="whitespace-nowrap text-muted-foreground">{t(r.referans)}</TableCell>
                     <TableCell className="text-right">
                       <KatsayiDuzenleDrawer
-                        baslik={`${r.ad} — TEP Katsayısı`}
-                        aciklama="Alt ısıl değer ve TEP dönüşüm katsayısını güncelleyin."
+                        baslik={`${t(r.ad)} — ${t("TEP Katsayısı")}`}
+                        aciklama={t("Alt ısıl değer ve TEP dönüşüm katsayısını güncelleyin.")}
                         alanlar={[
-                          { anahtar: "altIsil", label: `Alt Isıl Değer (${r.birim})`, deger: r.altIsil },
-                          { anahtar: "tep", label: `TEP Katsayısı (${r.birim})`, deger: r.tep },
-                          { anahtar: "referans", label: "Referans", deger: r.referans },
+                          { anahtar: "altIsil", label: `${t("Alt Isıl Değer")} (${r.birim})`, deger: r.altIsil },
+                          { anahtar: "tep", label: `${t("TEP Katsayısı")} (${r.birim})`, deger: r.tep },
+                          { anahtar: "referans", label: t("Referans"), deger: r.referans },
                         ]}
                         onKaydet={(d) => qc.setQueryData(queryKeys.katsayilar.analiz, (old?: KatsayiAnaliz) => old ? { ...old, tep: old.tep.map((x) => x.id === r.id ? { ...x, ...d } : x) } : old)}
                         trigger={
-                          <Button variant="ghost" size="icon-sm" aria-label="Düzenle">
+                          <Button variant="ghost" size="icon-sm" aria-label={t("Düzenle")}>
                             <Icon icon="solar:pen-2-bold-duotone" className="size-4 text-muted-foreground" />
                           </Button>
                         }

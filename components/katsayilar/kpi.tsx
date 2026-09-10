@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useKatsayiAnaliz } from "@/lib/queries/katsayilar";
+import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
 
 const IKON: Record<string, { ikon: string; sinif: string }> = {
@@ -16,6 +17,7 @@ const IKON: Record<string, { ikon: string; sinif: string }> = {
 
 export function KatsayiKpiKartlari() {
   const { data, isLoading } = useKatsayiAnaliz();
+  const { t } = useDil();
 
   if (isLoading || !data) {
     return (
@@ -38,9 +40,9 @@ export function KatsayiKpiKartlari() {
                 <Icon icon={ik?.ikon} className="size-6" />
               </span>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-xs text-muted-foreground">{k.baslik}</p>
-                <p className="mt-0.5 font-heading text-xl font-bold tracking-tight tabular-nums">{k.deger}</p>
-                <p className="mt-0.5 truncate text-[11px] text-muted-foreground">{k.altMetin}</p>
+                <p className="truncate text-xs text-muted-foreground">{t(k.baslik)}</p>
+                <p className="mt-0.5 font-heading text-xl font-bold tracking-tight tabular-nums">{t(k.deger)}</p>
+                <p className="mt-0.5 truncate text-[11px] text-muted-foreground">{t(k.altMetin)}</p>
               </div>
             </CardContent>
           </Card>

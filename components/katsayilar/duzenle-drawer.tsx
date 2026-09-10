@@ -17,6 +17,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useDil } from "@/components/providers/dil-provider";
 
 export interface DuzenleAlan {
   anahtar: string;
@@ -32,6 +33,7 @@ export function KatsayiDuzenleDrawer({ baslik, aciklama, alanlar, trigger, onKay
   trigger: React.ReactElement;
   onKaydet?: (degerler: Record<string, string>) => void;
 }) {
+  const { t } = useDil();
   const [acik, setAcik] = React.useState(false);
   const [degerler, setDegerler] = React.useState<Record<string, string>>({});
 
@@ -39,7 +41,7 @@ export function KatsayiDuzenleDrawer({ baslik, aciklama, alanlar, trigger, onKay
 
   const kaydet = () => {
     onKaydet?.(degerler);
-    toast.success(`${baslik} güncellendi`);
+    toast.success(`${baslik} ${t("güncellendi")}`);
     setAcik(false);
   };
 
@@ -67,15 +69,15 @@ export function KatsayiDuzenleDrawer({ baslik, aciklama, alanlar, trigger, onKay
             </div>
           ))}
           <p className="rounded-lg border border-dashed bg-muted/30 p-3 text-xs text-muted-foreground">
-            Katsayı değişiklikleri, kaydedildikten sonra ilgili dönem hesaplamalarına uygulanır.
+            {t("Katsayı değişiklikleri, kaydedildikten sonra ilgili dönem hesaplamalarına uygulanır.")}
           </p>
         </div>
 
         <SheetFooter className="flex-row justify-end gap-2 border-t">
-          <SheetClose render={<Button variant="outline" />}>İptal</SheetClose>
+          <SheetClose render={<Button variant="outline" />}>{t("İptal")}</SheetClose>
           <Button className="gap-1.5 bg-teal-600 text-white hover:bg-teal-700" onClick={kaydet}>
             <Icon icon="solar:diskette-bold-duotone" className="size-4" />
-            Kaydet
+            {t("Kaydet")}
           </Button>
         </SheetFooter>
       </SheetContent>

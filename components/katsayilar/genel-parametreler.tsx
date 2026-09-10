@@ -8,20 +8,22 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { KatsayiDuzenleDrawer } from "@/components/katsayilar/duzenle-drawer";
 import { useKatsayiAnaliz } from "@/lib/queries/katsayilar";
+import { useDil } from "@/components/providers/dil-provider";
 import { queryKeys } from "@/lib/queries/keys";
 import { cn } from "@/lib/utils";
 import type { KatsayiAnaliz } from "@/lib/types";
 
 export function GenelParametreler() {
   const { data, isLoading } = useKatsayiAnaliz();
+  const { t } = useDil();
   const qc = useQueryClient();
 
   return (
     <Card>
       <CardHeader>
         <div>
-          <h3 className="font-heading text-base font-medium">Genel Parametreler</h3>
-          <p className="mt-0.5 text-xs text-muted-foreground">EnPI ve hesaplamalarda kullanılan referans değerler</p>
+          <h3 className="font-heading text-base font-medium">{t("Genel Parametreler")}</h3>
+          <p className="mt-0.5 text-xs text-muted-foreground">{t("EnPI ve hesaplamalarda kullanılan referans değerler")}</p>
         </div>
       </CardHeader>
       <CardContent>
@@ -37,17 +39,17 @@ export function GenelParametreler() {
                   <Icon icon={p.ikon} className="size-6" />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs text-muted-foreground">{p.ad}</p>
-                  <p className="mt-0.5 font-heading text-lg font-bold tracking-tight tabular-nums">{p.deger}</p>
-                  <p className="mt-0.5 truncate text-[11px] text-muted-foreground">{p.aciklama}</p>
+                  <p className="text-xs text-muted-foreground">{t(p.ad)}</p>
+                  <p className="mt-0.5 font-heading text-lg font-bold tracking-tight tabular-nums">{t(p.deger)}</p>
+                  <p className="mt-0.5 truncate text-[11px] text-muted-foreground">{t(p.aciklama)}</p>
                 </div>
                 <KatsayiDuzenleDrawer
-                  baslik={p.ad}
-                  aciklama="Parametre değerini güncelleyin."
-                  alanlar={[{ anahtar: "deger", label: p.ad, deger: p.deger }]}
+                  baslik={t(p.ad)}
+                  aciklama={t("Parametre değerini güncelleyin.")}
+                  alanlar={[{ anahtar: "deger", label: t(p.ad), deger: p.deger }]}
                   onKaydet={(d) => qc.setQueryData(queryKeys.katsayilar.analiz, (old?: KatsayiAnaliz) => old ? { ...old, genel: old.genel.map((x) => x.id === p.id ? { ...x, ...d } : x) } : old)}
                   trigger={
-                    <Button variant="ghost" size="icon-sm" aria-label="Düzenle" className="shrink-0 opacity-0 transition-opacity group-hover:opacity-100">
+                    <Button variant="ghost" size="icon-sm" aria-label={t("Düzenle")} className="shrink-0 opacity-0 transition-opacity group-hover:opacity-100">
                       <Icon icon="solar:pen-2-bold-duotone" className="size-4 text-muted-foreground" />
                     </Button>
                   }
