@@ -49,10 +49,10 @@ function FiltreSelect({ etiket, deger, secenekler, onChange, genislik }: {
   etiket: string; deger: string; secenekler: string[]; onChange: (v: string) => void; genislik: string;
 }) {
   return (
-    <div className="flex items-center gap-2 rounded-lg border bg-card pl-3 shadow-sm">
+    <div className="flex w-full items-center gap-2 rounded-lg border bg-card pl-3 shadow-sm md:w-auto">
       <span className="text-xs font-medium text-muted-foreground">{etiket}</span>
       <Select value={deger} onValueChange={(v) => onChange(v as string)}>
-        <SelectTrigger className={`h-9 border-0 bg-transparent shadow-none ${genislik}`}><SelectValue /></SelectTrigger>
+        <SelectTrigger className={`h-9 flex-1 border-0 bg-transparent shadow-none md:flex-none ${genislik}`}><SelectValue /></SelectTrigger>
         <SelectContent>{secenekler.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
       </Select>
     </div>
@@ -108,19 +108,19 @@ export function BelgeListesi() {
     <Card id="belge-listesi" className="scroll-mt-6">
       <CardHeader className="flex-col gap-3 @2xl/card-header:flex-row @2xl/card-header:items-center @2xl/card-header:justify-between">
         <h3 className="font-heading text-base font-medium">Belge Listesi</h3>
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="relative">
+        <div className="flex flex-col gap-2 md:flex-row md:flex-wrap md:items-center">
+          <div className="relative w-full md:w-auto">
             <Search className="absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input value={arama} onChange={(e) => set("arama", e.target.value)} placeholder="Belge ara..." className="h-9 w-[200px] pl-8" />
+            <Input value={arama} onChange={(e) => set("arama", e.target.value)} placeholder="Belge ara..." className="h-9 w-full pl-8 md:w-[200px]" />
           </div>
           <FiltreSelect etiket="Kategori" deger={kategori} secenekler={KATEGORILER} onChange={(v) => set("kategori", v)} genislik="w-[150px]" />
           <FiltreSelect etiket="Durum" deger={durum} secenekler={DURUMLAR} onChange={(v) => set("durum", v)} genislik="w-[140px]" />
-          <Button variant="outline" size="sm" className="h-9 gap-1.5 bg-card" onClick={disaAktar}>
+          <Button variant="outline" size="sm" className="h-9 w-full justify-center gap-1.5 bg-card md:w-auto" onClick={disaAktar}>
             <Icon icon="vscode-icons:file-type-excel" className="size-4" />
             Dışa Aktar
           </Button>
           {aktifMi ? (
-            <Button variant="ghost" size="sm" className="h-9 gap-1 text-muted-foreground" onClick={sifirla}>
+            <Button variant="ghost" size="sm" className="h-9 w-full justify-center gap-1 text-muted-foreground md:w-auto" onClick={sifirla}>
               <Icon icon="solar:restart-linear" className="size-4" />
               Sıfırla
             </Button>
