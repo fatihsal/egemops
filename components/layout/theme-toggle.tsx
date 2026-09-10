@@ -5,8 +5,10 @@ import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
+import { useDil } from "@/components/providers/dil-provider";
 
 export function ThemeToggle() {
+  const { t } = useDil();
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
@@ -19,7 +21,7 @@ export function ThemeToggle() {
     <Button
       variant="ghost"
       size="icon"
-      aria-label="Temayı değiştir"
+      aria-label={t("Temayı değiştir")}
       onClick={() => setTheme(koyu ? "light" : "dark")}
     >
       {mounted && koyu ? (

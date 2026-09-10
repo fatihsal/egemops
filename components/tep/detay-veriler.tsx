@@ -85,7 +85,7 @@ export function TepDetayVeriler() {
               <Table>
                 <TableHeader>
                   <TableRow className="border-b-0 hover:bg-transparent">
-                    <TableHead rowSpan={2} className="align-bottom whitespace-nowrap">Dönem</TableHead>
+                    <TableHead rowSpan={2} className="align-bottom whitespace-nowrap">{t("Dönem")}</TableHead>
                     <TableHead colSpan={3} className={cn("text-center text-[11px] font-semibold uppercase tracking-wide text-muted-foreground", grup)}>{t("Kaynak Kırılımı (TEP)")}</TableHead>
                     <TableHead colSpan={1} className={cn("text-center text-[11px] font-semibold uppercase tracking-wide text-teal-600 dark:text-teal-400", grup)}>{t("Toplam")}</TableHead>
                     <TableHead colSpan={2} className={cn("text-center text-[11px] font-semibold uppercase tracking-wide text-muted-foreground", grup)}>{t("Verimlilik")}</TableHead>

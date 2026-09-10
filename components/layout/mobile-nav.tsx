@@ -13,8 +13,10 @@ import {
 } from "@/components/ui/sheet";
 import { NavList } from "@/components/layout/nav-list";
 import { MarkaLogo } from "@/components/layout/marka-logo";
+import { useDil } from "@/components/providers/dil-provider";
 
 export function MobileNav() {
+  const { t } = useDil();
   const [acik, setAcik] = React.useState(false);
 
   return (
@@ -24,7 +26,7 @@ export function MobileNav() {
           <Button
             variant="ghost"
             size="icon"
-            aria-label="Menüyü aç"
+            aria-label={t("Menüyü aç")}
             className="md:hidden"
           />
         }
@@ -33,7 +35,7 @@ export function MobileNav() {
       </SheetTrigger>
       <SheetContent side="left" className="flex w-64 flex-col p-0">
         <SheetHeader className="h-16 shrink-0 flex-row items-center border-b px-4">
-          <SheetTitle className="sr-only">EGEM Ambalaj menüsü</SheetTitle>
+          <SheetTitle className="sr-only">{t("EGEM Ambalaj menüsü")}</SheetTitle>
           <MarkaLogo />
         </SheetHeader>
         <div className="flex-1 overflow-y-auto p-3">
