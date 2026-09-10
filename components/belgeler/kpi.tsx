@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useBelgeAnaliz } from "@/lib/queries/belgeler";
+import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
 
 const IKON: Record<string, { ikon: string; sinif: string }> = {
@@ -16,6 +17,7 @@ const IKON: Record<string, { ikon: string; sinif: string }> = {
 
 export function BelgeKpiKartlari() {
   const { data, isLoading } = useBelgeAnaliz();
+  const { t } = useDil();
 
   if (isLoading || !data) {
     return (
@@ -38,7 +40,7 @@ export function BelgeKpiKartlari() {
                 <Icon icon={ik?.ikon} className="size-6" />
               </span>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-xs text-muted-foreground">{k.baslik}</p>
+                <p className="truncate text-xs text-muted-foreground">{t(k.baslik)}</p>
                 <p className="mt-0.5 flex items-baseline gap-1">
                   <span className="font-heading text-2xl font-bold tracking-tight tabular-nums">{k.deger}</span>
                   {k.birim ? <span className="text-sm font-medium text-muted-foreground">{k.birim}</span> : null}
@@ -48,7 +50,7 @@ export function BelgeKpiKartlari() {
                     <span className="block h-full rounded-full bg-teal-500" style={{ width: `${k.ilerleme}%` }} />
                   </span>
                 ) : null}
-                <p className="mt-1 truncate text-[11px] text-muted-foreground">{k.altMetin}</p>
+                <p className="mt-1 truncate text-[11px] text-muted-foreground">{t(k.altMetin)}</p>
               </div>
             </CardContent>
           </Card>

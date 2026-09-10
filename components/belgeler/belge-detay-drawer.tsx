@@ -15,6 +15,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { DURUM_META, FORMAT_STIL, KATEGORI_META } from "@/components/belgeler/stiller";
+import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
 import type { Belge } from "@/lib/types";
 
@@ -28,6 +29,7 @@ function Satir({ etiket, deger, vurgu }: { etiket: string; deger: string; vurgu?
 }
 
 export function BelgeDetayDrawer({ belge, trigger }: { belge: Belge; trigger: React.ReactElement }) {
+  const { t } = useDil();
   const kat = KATEGORI_META[belge.kategori];
   const durum = DURUM_META[belge.durum];
   const anaFormat = belge.format.split(", ")[0];
@@ -43,14 +45,14 @@ export function BelgeDetayDrawer({ belge, trigger }: { belge: Belge; trigger: Re
               <Icon icon={fmt.ikon} className="size-6" />
             </span>
             <div className="min-w-0 flex-1">
-              <SheetTitle className="leading-snug">{belge.ad}</SheetTitle>
-              <SheetDescription>{belge.aciklama}</SheetDescription>
+              <SheetTitle className="leading-snug">{t(belge.ad)}</SheetTitle>
+              <SheetDescription>{t(belge.aciklama)}</SheetDescription>
               <div className="mt-2 flex flex-wrap items-center gap-2">
                 <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium">
                   <span className="size-1.5 rounded-full" style={{ background: kat.nokta }} />
-                  {kat.etiket}
+                  {t(kat.etiket)}
                 </span>
-                <span className={cn("rounded-full px-2 py-0.5 text-[11px] font-medium", durum.sinif)}>{durum.etiket}</span>
+                <span className={cn("rounded-full px-2 py-0.5 text-[11px] font-medium", durum.sinif)}>{t(durum.etiket)}</span>
               </div>
             </div>
           </div>
@@ -58,34 +60,34 @@ export function BelgeDetayDrawer({ belge, trigger }: { belge: Belge; trigger: Re
 
         <div className="flex-1 overflow-y-auto p-5">
           <dl>
-            <Satir etiket="Kategori" deger={kat.etiket} />
-            <Satir etiket="Dosya Biçimi" deger={belge.format} />
-            <Satir etiket="Boyut" deger={belge.boyut} />
-            <Satir etiket="Yükleyen" deger={belge.yukleyen} />
-            <Satir etiket="Yüklenme Tarihi" deger={belge.tarih} />
+            <Satir etiket={t("Kategori")} deger={t(kat.etiket)} />
+            <Satir etiket={t("Dosya Biçimi")} deger={belge.format} />
+            <Satir etiket={t("Boyut")} deger={belge.boyut} />
+            <Satir etiket={t("Yükleyen")} deger={t(belge.yukleyen)} />
+            <Satir etiket={t("Yüklenme Tarihi")} deger={belge.tarih} />
             <Satir
-              etiket="Geçerlilik"
-              deger={belge.gecerlilik ?? "Süresiz"}
+              etiket={t("Geçerlilik")}
+              deger={belge.gecerlilik ?? t("Süresiz")}
               vurgu={belge.durum === "doldu" ? "text-red-500" : belge.durum === "yaklasiyor" ? "text-amber-600" : undefined}
             />
-            <Satir etiket="Durum" deger={durum.etiket} />
+            <Satir etiket={t("Durum")} deger={t(durum.etiket)} />
           </dl>
 
           {/* Önizleme yer tutucu */}
           <div className="mt-5 flex flex-col items-center gap-2 rounded-xl border border-dashed bg-muted/30 px-4 py-10 text-center">
             <Icon icon={fmt.ikon} className="size-10 text-muted-foreground" />
-            <p className="text-xs text-muted-foreground">Belge önizlemesi indirme sonrası görüntülenir.</p>
+            <p className="text-xs text-muted-foreground">{t("Belge önizlemesi indirme sonrası görüntülenir.")}</p>
           </div>
         </div>
 
         <SheetFooter className="flex-row justify-end gap-2 border-t">
-          <Button variant="outline" className="gap-1.5" onClick={() => toast("Yazdırma penceresi açılıyor")}>
+          <Button variant="outline" className="gap-1.5" onClick={() => toast(t("Yazdırma penceresi açılıyor"))}>
             <Icon icon="solar:printer-bold-duotone" className="size-4" />
-            Yazdır
+            {t("Yazdır")}
           </Button>
-          <Button className="gap-1.5 bg-teal-600 text-white hover:bg-teal-700" onClick={() => toast.success(`${belge.ad} indiriliyor`)}>
+          <Button className="gap-1.5 bg-teal-600 text-white hover:bg-teal-700" onClick={() => toast.success(`${t(belge.ad)} ${t("indiriliyor")}`)}>
             <Icon icon="solar:download-minimalistic-bold-duotone" className="size-4" />
-            İndir
+            {t("İndir")}
           </Button>
         </SheetFooter>
       </SheetContent>

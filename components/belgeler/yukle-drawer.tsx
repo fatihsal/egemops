@@ -27,6 +27,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { KATEGORI_META } from "@/components/belgeler/stiller";
+import { useDil } from "@/components/providers/dil-provider";
 import { queryKeys } from "@/lib/queries/keys";
 import type { Belge, BelgeAnaliz, BelgeFormat, BelgeKategoriAnahtar } from "@/lib/types";
 
@@ -44,6 +45,7 @@ function dosyaFormat(dosya: string): BelgeFormat {
 }
 
 export function BelgeYukleDrawer({ trigger, varsayilanKategori }: { trigger: React.ReactElement; varsayilanKategori?: string }) {
+  const { t } = useDil();
   const qc = useQueryClient();
   const [acik, setAcik] = React.useState(false);
   const [ad, setAd] = React.useState("");
@@ -57,8 +59,8 @@ export function BelgeYukleDrawer({ trigger, varsayilanKategori }: { trigger: Rea
   };
 
   const yukle = () => {
-    if (!dosya) { toast.error("Lütfen bir dosya seçin"); return; }
-    if (!ad.trim()) { toast.error("Belge adı zorunludur"); return; }
+    if (!dosya) { toast.error(t("Lütfen bir dosya seçin")); return; }
+    if (!ad.trim()) { toast.error(t("Belge adı zorunludur")); return; }
     qc.setQueryData(queryKeys.belgeler.analiz, (old?: BelgeAnaliz) => {
       if (!old) return old;
       const yeni: Belge = {
@@ -68,7 +70,7 @@ export function BelgeYukleDrawer({ trigger, varsayilanKategori }: { trigger: Rea
       };
       return { ...old, belgeler: [yeni, ...old.belgeler] };
     });
-    toast.success(`${ad} yüklendi`);
+    toast.success(`${ad} ${t("yüklendi")}`);
     setAcik(false);
   };
 
@@ -77,8 +79,8 @@ export function BelgeYukleDrawer({ trigger, varsayilanKategori }: { trigger: Rea
       <SheetTrigger render={trigger} />
       <SheetContent side="right" className="flex w-full flex-col gap-0 p-0 sm:max-w-md">
         <SheetHeader className="border-b p-5">
-          <SheetTitle>Belge Yükle</SheetTitle>
-          <SheetDescription>Belgeyi kategori ve geçerlilik bilgisiyle arşive ekleyin.</SheetDescription>
+          <SheetTitle>{t("Belge Yükle")}</SheetTitle>
+          <SheetDescription>{t("Belgeyi kategori ve geçerlilik bilgisiyle arşive ekleyin.")}</SheetDescription>
         </SheetHeader>
 
         <div className="flex-1 space-y-4 overflow-y-auto p-5">
@@ -93,41 +95,41 @@ export function BelgeYukleDrawer({ trigger, varsayilanKategori }: { trigger: Rea
               <span className="text-sm font-medium">{dosya}</span>
             ) : (
               <>
-                <span className="text-sm font-medium">Dosyayı buraya sürükleyin</span>
-                <span className="text-xs text-muted-foreground">veya seçmek için tıklayın · PDF, Word, Excel, Görsel</span>
+                <span className="text-sm font-medium">{t("Dosyayı buraya sürükleyin")}</span>
+                <span className="text-xs text-muted-foreground">{t("veya seçmek için tıklayın · PDF, Word, Excel, Görsel")}</span>
               </>
             )}
           </button>
 
           <div className="space-y-1.5">
-            <Label htmlFor="belge-adi" className="text-xs text-muted-foreground">Belge Adı</Label>
-            <Input id="belge-adi" value={ad} onChange={(e) => setAd(e.target.value)} placeholder="Örn. ISO 50001 Sertifikası" />
+            <Label htmlFor="belge-adi" className="text-xs text-muted-foreground">{t("Belge Adı")}</Label>
+            <Input id="belge-adi" value={ad} onChange={(e) => setAd(e.target.value)} placeholder={t("Örn. ISO 50001 Sertifikası")} />
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs text-muted-foreground">Kategori</Label>
+            <Label className="text-xs text-muted-foreground">{t("Kategori")}</Label>
             <Select value={kategori} onValueChange={(v) => setKategori(v as string)}>
               <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
-              <SelectContent>{KATEGORILER.map(([k, m]) => <SelectItem key={k} value={m.etiket}>{m.etiket}</SelectItem>)}</SelectContent>
+              <SelectContent>{KATEGORILER.map(([k, m]) => <SelectItem key={k} value={m.etiket}>{t(m.etiket)}</SelectItem>)}</SelectContent>
             </Select>
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="belge-gecerlilik" className="text-xs text-muted-foreground">Geçerlilik Tarihi <span className="text-muted-foreground/70">(opsiyonel)</span></Label>
+            <Label htmlFor="belge-gecerlilik" className="text-xs text-muted-foreground">{t("Geçerlilik Tarihi")} <span className="text-muted-foreground/70">({t("opsiyonel")})</span></Label>
             <Input id="belge-gecerlilik" value={gecerlilik} onChange={(e) => setGecerlilik(e.target.value)} placeholder="gg.aa.yyyy" />
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="belge-aciklama" className="text-xs text-muted-foreground">Açıklama</Label>
-            <Textarea id="belge-aciklama" value={aciklama} onChange={(e) => setAciklama(e.target.value)} placeholder="Kısa açıklama" rows={2} />
+            <Label htmlFor="belge-aciklama" className="text-xs text-muted-foreground">{t("Açıklama")}</Label>
+            <Textarea id="belge-aciklama" value={aciklama} onChange={(e) => setAciklama(e.target.value)} placeholder={t("Kısa açıklama")} rows={2} />
           </div>
         </div>
 
         <SheetFooter className="flex-row justify-end gap-2 border-t">
-          <SheetClose render={<Button variant="outline" />}>İptal</SheetClose>
+          <SheetClose render={<Button variant="outline" />}>{t("İptal")}</SheetClose>
           <Button className="gap-1.5 bg-teal-600 text-white hover:bg-teal-700" onClick={yukle}>
             <Icon icon="solar:upload-minimalistic-bold-duotone" className="size-4" />
-            Yükle
+            {t("Yükle")}
           </Button>
         </SheetFooter>
       </SheetContent>
