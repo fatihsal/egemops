@@ -79,16 +79,16 @@ export function KayitFiltreleri({
 
   return (
     <Card>
-      <CardContent className="flex flex-wrap items-end gap-4">
-        <div className="grid flex-1 grid-cols-2 gap-4 md:grid-cols-4">
+      <CardContent className="flex flex-col gap-4 md:flex-row md:flex-wrap md:items-end">
+        <div className="grid grid-cols-2 gap-4 md:flex-1 md:grid-cols-4">
           <FiltreSecim etiket="Yıl" secenekler={YILLAR} value={taslak.yil} onChange={guncelle("yil")} />
           <FiltreSecim etiket="Ay" secenekler={AYLAR} value={taslak.ay} onChange={guncelle("ay")} />
           <FiltreSecim etiket="Durum" secenekler={DURUMLAR} value={taslak.durum} onChange={guncelle("durum")} />
           <FiltreSecim etiket="Enerji Türü" secenekler={TURLER} value={taslak.tur} onChange={guncelle("tur")} />
         </div>
-        <div className="flex items-center gap-2">
+        <div className="grid grid-cols-2 gap-2 md:flex md:items-center">
           <Button
-            className="gap-1.5 bg-teal-600 text-white hover:bg-teal-700"
+            className="w-full justify-center gap-1.5 bg-teal-600 text-white hover:bg-teal-700 md:w-auto"
             onClick={() => onFiltrele(taslak)}
           >
             <Icon icon="solar:filter-bold-duotone" className="size-4" />
@@ -96,7 +96,7 @@ export function KayitFiltreleri({
           </Button>
           <Button
             variant="outline"
-            className="gap-1.5"
+            className="w-full justify-center gap-1.5 md:w-auto"
             onClick={() => {
               setTaslak(VARSAYILAN_FILTRE);
               onTemizle();
