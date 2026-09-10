@@ -5,18 +5,20 @@ import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useYonetimOzeti } from "@/lib/queries/yonetim-ozeti";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi, sayiOndalik } from "@/lib/format";
 import type { OzetDonut } from "@/lib/types";
 
 export function OzetKaynakDonut({ baslik, tur }: { baslik: string; tur: "tep" | "maliyet" }) {
   const { data, isLoading } = useYonetimOzeti();
+  const { t } = useDil();
   const veri: OzetDonut | undefined = data ? (tur === "tep" ? data.kaynakTep : data.maliyetDagilim) : undefined;
   const bicim = (n: number) => (tur === "tep" ? sayi(n) : sayiOndalik(n));
 
   return (
     <Card className="h-full">
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">{baslik}</h3>
+        <h3 className="font-heading text-base font-medium">{t(baslik)}</h3>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col items-center gap-5 sm:flex-row sm:gap-6">
         {isLoading || !veri ? (
@@ -31,20 +33,20 @@ export function OzetKaynakDonut({ baslik, tur }: { baslik: string; tur: "tep" | 
                   </Pie>
                   <Tooltip
                     contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
-                    formatter={(v, n) => [`${bicim(Number(v))} ${veri.birim}`, String(n)]}
+                    formatter={(v, n) => [`${bicim(Number(v))} ${t(veri.birim)}`, t(String(n))]}
                   />
                 </PieChart>
               </ResponsiveContainer>
               <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
                 <span className="font-heading text-lg font-bold tracking-tight tabular-nums">{veri.merkez}</span>
-                <span className="text-[11px] text-muted-foreground">{veri.birim}</span>
+                <span className="text-[11px] text-muted-foreground">{t(veri.birim)}</span>
               </div>
             </div>
             <ul className="w-full flex-1 space-y-3 text-sm">
               {veri.dilimler.map((d) => (
                 <li key={d.anahtar} className="flex items-center gap-2.5">
                   <span className="size-2.5 shrink-0 rounded-full" style={{ background: d.renk }} />
-                  <span className="flex-1 truncate text-muted-foreground">{d.etiket}</span>
+                  <span className="flex-1 truncate text-muted-foreground">{t(d.etiket)}</span>
                   <span className="font-medium tabular-nums">{bicim(d.deger)}</span>
                   <span className="w-14 text-right text-xs tabular-nums text-muted-foreground">%{sayiOndalik(d.yuzde)}</span>
                 </li>

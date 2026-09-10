@@ -5,15 +5,17 @@ import { Icon } from "@iconify/react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useYonetimOzeti } from "@/lib/queries/yonetim-ozeti";
+import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
 
 export function OzetOneCikan() {
   const { data, isLoading } = useYonetimOzeti();
+  const { t } = useDil();
 
   return (
     <Card className="h-full">
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">Öne Çıkan Gelişmeler</h3>
+        <h3 className="font-heading text-base font-medium">{t("Öne Çıkan Gelişmeler")}</h3>
       </CardHeader>
       <CardContent>
         {isLoading || !data ? (
@@ -26,8 +28,8 @@ export function OzetOneCikan() {
                   <Icon icon={o.ikon} className="size-5" />
                 </span>
                 <div className="min-w-0">
-                  <p className="text-sm font-medium">{o.baslik}</p>
-                  <p className="text-xs text-muted-foreground">{o.aciklama}</p>
+                  <p className="text-sm font-medium">{t(o.baslik)}</p>
+                  <p className="text-xs text-muted-foreground">{t(o.aciklama)}</p>
                 </div>
               </li>
             ))}

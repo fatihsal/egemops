@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import { Icon } from "@iconify/react";
 
+import { useDil } from "@/components/providers/dil-provider";
 import { OzetFiltreler } from "@/components/yonetim-ozeti/filtreler";
 import { OzetKpiKartlari } from "@/components/yonetim-ozeti/kpi";
 import { OzetTuketimUretim } from "@/components/yonetim-ozeti/tuketim-uretim";
@@ -13,6 +16,7 @@ import { OzetSonRaporlar } from "@/components/yonetim-ozeti/son-raporlar";
 import { OzetSistemDurumu } from "@/components/yonetim-ozeti/sistem-durumu";
 
 export default function YonetimOzetiPage() {
+  const { t } = useDil();
   return (
     <div className="space-y-6">
       {/* Filtreler */}
@@ -53,11 +57,11 @@ export default function YonetimOzetiPage() {
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-card px-4 py-3 text-xs text-muted-foreground shadow-sm">
         <span className="inline-flex items-center gap-2">
           <Icon icon="solar:info-circle-linear" className="size-4" />
-          Son güncelleme: 26.08.2026 10:45 · Veriler taslaktır. Resmi raporlar için <Link href="/raporlar" className="font-medium text-primary">Raporlar sayfasını</Link> kullanın.
+          {t("Son güncelleme")}: 26.08.2026 10:45 · {t("Veriler taslaktır. Resmi raporlar için")} <Link href="/raporlar" className="font-medium text-primary">{t("Raporlar sayfasını")}</Link> {t("kullanın.")}
         </span>
         <span className="inline-flex items-center gap-1.5">
           <Icon icon="solar:leaf-bold-duotone" className="size-4 text-emerald-500" />
-          Daha Verimli Bir Gelecek İçin · <span className="font-semibold text-foreground">EgemOps</span>
+          {t("Daha Verimli Bir Gelecek İçin")} · <span className="font-semibold text-foreground">EgemOps</span>
         </span>
       </div>
     </div>

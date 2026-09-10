@@ -7,16 +7,18 @@ import { toast } from "sonner";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useYonetimOzeti } from "@/lib/queries/yonetim-ozeti";
+import { useDil } from "@/components/providers/dil-provider";
 
 export function OzetSonRaporlar() {
   const { data, isLoading } = useYonetimOzeti();
+  const { t } = useDil();
 
   return (
     <Card className="h-full">
       <CardHeader className="flex-row items-center justify-between gap-4 space-y-0">
-        <h3 className="font-heading text-base font-medium">Son Raporlar</h3>
+        <h3 className="font-heading text-base font-medium">{t("Son Raporlar")}</h3>
         <Link href="/raporlar" className="inline-flex items-center gap-1 text-sm font-medium text-primary transition-opacity hover:opacity-80">
-          Tümünü Gör <Icon icon="solar:alt-arrow-right-linear" className="size-4" />
+          {t("Tümünü Gör")} <Icon icon="solar:alt-arrow-right-linear" className="size-4" />
         </Link>
       </CardHeader>
       <CardContent>
@@ -29,7 +31,7 @@ export function OzetSonRaporlar() {
               return (
                 <li key={r.id} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
                   <Link href={`/raporlar/${r.id}`} className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium hover:text-primary">{r.ad}</p>
+                    <p className="truncate text-sm font-medium hover:text-primary">{t(r.ad)}</p>
                     <p className="text-xs tabular-nums text-muted-foreground">{r.tarih}</p>
                   </Link>
                   <span className={pdf ? "text-red-500" : "text-emerald-600"} title={r.format}>
@@ -37,9 +39,9 @@ export function OzetSonRaporlar() {
                   </span>
                   <button
                     type="button"
-                    onClick={() => toast.success(`${r.ad} indiriliyor`)}
+                    onClick={() => toast.success(`${t(r.ad)} ${t("indiriliyor")}`)}
                     className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                    aria-label="İndir"
+                    aria-label={t("İndir")}
                   >
                     <Icon icon="solar:download-minimalistic-bold-duotone" className="size-4.5" />
                   </button>

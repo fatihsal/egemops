@@ -5,9 +5,11 @@ import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useYonetimOzeti } from "@/lib/queries/yonetim-ozeti";
+import { useDil } from "@/components/providers/dil-provider";
 
 export function OzetHedefGerceklesme() {
   const { data, isLoading } = useYonetimOzeti();
+  const { t } = useDil();
   const h = data?.hedef;
 
   const dilim = h ? [{ v: h.yuzde }, { v: 100 - h.yuzde }] : [];
@@ -15,7 +17,7 @@ export function OzetHedefGerceklesme() {
   return (
     <Card className="h-full">
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">Hedef Gerçekleşme</h3>
+        <h3 className="font-heading text-base font-medium">{t("Hedef Gerçekleşme")}</h3>
       </CardHeader>
       <CardContent className="flex flex-1 items-center gap-6">
         {isLoading || !h ? (
@@ -38,15 +40,15 @@ export function OzetHedefGerceklesme() {
 
             <dl className="flex-1 space-y-3">
               <div className="border-b pb-3">
-                <dt className="text-xs text-muted-foreground">Hedef İyileşme</dt>
+                <dt className="text-xs text-muted-foreground">{t("Hedef İyileşme")}</dt>
                 <dd className="font-heading text-lg font-bold tabular-nums">{h.hedefIyilesme}</dd>
               </div>
               <div className="border-b pb-3">
-                <dt className="text-xs text-muted-foreground">Gerçekleşen</dt>
+                <dt className="text-xs text-muted-foreground">{t("Gerçekleşen")}</dt>
                 <dd className="font-heading text-lg font-bold tabular-nums text-emerald-600">{h.gerceklesen}</dd>
               </div>
               <div>
-                <dt className="text-xs text-muted-foreground">Hedefe Kalan</dt>
+                <dt className="text-xs text-muted-foreground">{t("Hedefe Kalan")}</dt>
                 <dd className="font-heading text-lg font-bold tabular-nums">{h.hedefeKalan}</dd>
               </div>
             </dl>

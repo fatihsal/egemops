@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useYonetimOzeti } from "@/lib/queries/yonetim-ozeti";
+import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
 import type { OzetKpi } from "@/lib/types";
 
@@ -31,6 +32,7 @@ function Degisim({ k }: { k: OzetKpi }) {
 
 export function OzetKpiKartlari() {
   const { data, isLoading } = useYonetimOzeti();
+  const { t } = useDil();
 
   if (isLoading || !data) {
     return (
@@ -53,10 +55,10 @@ export function OzetKpiKartlari() {
                 <Icon icon={ik?.ikon} className="size-6" />
               </span>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-xs text-muted-foreground">{k.baslik}</p>
+                <p className="truncate text-xs text-muted-foreground">{t(k.baslik)}</p>
                 <p className="mt-0.5 flex items-baseline gap-1">
                   <span className="font-heading text-xl font-bold tracking-tight tabular-nums">{k.deger}</span>
-                  {k.birim ? <span className="text-xs font-medium text-muted-foreground">{k.birim}</span> : null}
+                  {k.birim ? <span className="text-xs font-medium text-muted-foreground">{t(k.birim)}</span> : null}
                 </p>
                 {k.ilerleme != null ? (
                   <span className="mt-1.5 block h-1.5 w-full overflow-hidden rounded-full bg-muted">
@@ -65,7 +67,7 @@ export function OzetKpiKartlari() {
                 ) : (
                   <div className="mt-0.5"><Degisim k={k} /></div>
                 )}
-                <p className="mt-1 truncate text-[11px] text-muted-foreground">{k.altMetin}</p>
+                <p className="mt-1 truncate text-[11px] text-muted-foreground">{t(k.altMetin)}</p>
               </div>
             </CardContent>
           </Card>

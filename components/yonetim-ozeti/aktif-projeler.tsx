@@ -15,18 +15,20 @@ import {
 } from "@/components/ui/table";
 import { DURUM_META } from "@/components/projeler/stiller";
 import { useYonetimOzeti } from "@/lib/queries/yonetim-ozeti";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayiOndalik } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 export function OzetAktifProjeler() {
   const { data, isLoading } = useYonetimOzeti();
+  const { t } = useDil();
 
   return (
     <Card className="h-full">
       <CardHeader className="flex-row items-center justify-between gap-4 space-y-0">
-        <h3 className="font-heading text-base font-medium">Aktif Projeler</h3>
+        <h3 className="font-heading text-base font-medium">{t("Aktif Projeler")}</h3>
         <Link href="/projeler" className="inline-flex items-center gap-1 text-sm font-medium text-primary transition-opacity hover:opacity-80">
-          Tümünü Gör <Icon icon="solar:alt-arrow-right-linear" className="size-4" />
+          {t("Tümünü Gör")} <Icon icon="solar:alt-arrow-right-linear" className="size-4" />
         </Link>
       </CardHeader>
       <CardContent>
@@ -37,11 +39,11 @@ export function OzetAktifProjeler() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="whitespace-nowrap">Proje Adı</TableHead>
-                  <TableHead className="whitespace-nowrap">Durum</TableHead>
-                  <TableHead className="whitespace-nowrap">İlerleme</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">Beklenen Tasarruf <span className="font-normal text-muted-foreground">(TEP/yıl)</span></TableHead>
-                  <TableHead className="whitespace-nowrap">Termin</TableHead>
+                  <TableHead className="whitespace-nowrap">{t("Proje Adı")}</TableHead>
+                  <TableHead className="whitespace-nowrap">{t("Durum")}</TableHead>
+                  <TableHead className="whitespace-nowrap">{t("İlerleme")}</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">{t("Beklenen Tasarruf")} <span className="font-normal text-muted-foreground">(TEP/yıl)</span></TableHead>
+                  <TableHead className="whitespace-nowrap">{t("Termin")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -49,9 +51,9 @@ export function OzetAktifProjeler() {
                   const d = DURUM_META[p.durum];
                   return (
                     <TableRow key={p.id} className="hover:bg-muted/50">
-                      <TableCell className="font-medium whitespace-nowrap">{p.ad}</TableCell>
+                      <TableCell className="font-medium whitespace-nowrap">{t(p.ad)}</TableCell>
                       <TableCell>
-                        <span className={cn("inline-block rounded-full px-2.5 py-0.5 text-[11px] font-medium whitespace-nowrap", d.sinif)}>{d.etiket}</span>
+                        <span className={cn("inline-block rounded-full px-2.5 py-0.5 text-[11px] font-medium whitespace-nowrap", d.sinif)}>{t(d.etiket)}</span>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
