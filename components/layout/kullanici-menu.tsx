@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Icon } from "@iconify/react";
 import { toast } from "sonner";
 
@@ -11,15 +12,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useDil } from "@/components/providers/dil-provider";
 
 export function KullaniciMenu() {
+  const router = useRouter();
+  const { t } = useDil();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
         render={
           <button
             type="button"
-            aria-label="Kullanıcı menüsü"
+            aria-label={t("Kullanıcı menüsü")}
             className="ml-0.5 flex items-center gap-2 rounded-lg border-l pl-2 transition-colors hover:bg-muted sm:pl-2.5"
           />
         }
@@ -29,7 +33,7 @@ export function KullaniciMenu() {
         </span>
         <span className="hidden text-left leading-tight lg:block">
           <span className="block text-[13px] font-semibold">Uğur Melih</span>
-          <span className="block text-[11px] text-muted-foreground">Enerji Yöneticisi</span>
+          <span className="block text-[11px] text-muted-foreground">{t("Enerji Yöneticisi")}</span>
         </span>
         <Icon icon="solar:alt-arrow-down-linear" className="mr-1 hidden size-3.5 text-muted-foreground lg:block" />
       </DropdownMenuTrigger>
@@ -51,29 +55,32 @@ export function KullaniciMenu() {
 
         <DropdownMenuItem render={<Link href="/ayarlar" />}>
           <Icon icon="solar:user-circle-bold-duotone" className="size-4.5 text-muted-foreground" />
-          Profilim
+          {t("Profilim")}
         </DropdownMenuItem>
         <DropdownMenuItem render={<Link href="/ayarlar" />}>
           <Icon icon="solar:settings-bold-duotone" className="size-4.5 text-muted-foreground" />
-          Hesap Ayarları
+          {t("Hesap Ayarları")}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => toast("Bildirim tercihleri yakında")}>
+        <DropdownMenuItem onClick={() => toast(t("Bildirim tercihleri yakında"))}>
           <Icon icon="solar:bell-bold-duotone" className="size-4.5 text-muted-foreground" />
-          Bildirim Tercihleri
+          {t("Bildirim Tercihleri")}
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem onClick={() => toast("Yardım merkezi yakında")}>
+        <DropdownMenuItem onClick={() => toast(t("Yardım merkezi yakında"))}>
           <Icon icon="solar:question-circle-bold-duotone" className="size-4.5 text-muted-foreground" />
-          Yardım &amp; Destek
+          {t("Yardım & Destek")}
         </DropdownMenuItem>
         <DropdownMenuItem
-          onClick={() => toast.success("Çıkış yapıldı")}
+          onClick={() => {
+            toast.success(t("Çıkış yapıldı"));
+            router.push("/login");
+          }}
           className="text-red-600 focus:bg-red-50 focus:text-red-700 dark:text-red-400 dark:focus:bg-red-950/50 dark:focus:text-red-300"
         >
           <Icon icon="solar:logout-2-bold-duotone" className="size-4.5" />
-          Çıkış Yap
+          {t("Çıkış Yap")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

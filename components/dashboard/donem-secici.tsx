@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { useDonem } from "@/components/providers/donem-provider";
+import { useDil } from "@/components/providers/dil-provider";
 import {
   donemOlustur,
   ozelDonem,
@@ -29,6 +30,7 @@ const HAZIR: { tur: Exclude<DonemTuru, "ozel">; etiket: string }[] = [
 
 export function DonemSecici() {
   const { donem, setDonem } = useDonem();
+  const { t } = useDil();
   const [acik, setAcik] = React.useState(false);
   const [aralik, setAralik] = React.useState<DateRange | undefined>();
 
@@ -47,7 +49,7 @@ export function DonemSecici() {
           "d MMM",
           { locale: tr },
         )}`
-      : "Özel";
+      : t("Özel");
 
   return (
     <div className="flex items-center gap-1 rounded-lg border p-0.5">
@@ -63,7 +65,7 @@ export function DonemSecici() {
               : "text-muted-foreground hover:bg-muted hover:text-foreground",
           )}
         >
-          {h.etiket}
+          {t(h.etiket)}
         </button>
       ))}
 

@@ -5,6 +5,7 @@ import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTepAnaliz } from "@/lib/queries/tep";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi, sayiOndalik } from "@/lib/format";
 import type { TepKaynakDilim } from "@/lib/types";
 
@@ -16,12 +17,13 @@ const RENK: Record<TepKaynakDilim["anahtar"], string> = {
 
 export function TepKaynakDagilimi() {
   const { data, isLoading } = useTepAnaliz();
+  const { t } = useDil();
 
   return (
     <Card className="h-full">
       <CardHeader>
         <h3 className="font-heading text-base font-medium">
-          Enerji Kaynak Dağılımı <span className="text-sm font-normal text-muted-foreground">(TEP)</span>
+          {t("Enerji Kaynak Dağılımı")} <span className="text-sm font-normal text-muted-foreground">(TEP)</span>
         </h3>
       </CardHeader>
       <CardContent className="flex-1">
@@ -64,7 +66,7 @@ export function TepKaynakDagilimi() {
               {data.kaynaklar.map((k) => (
                 <li key={k.anahtar} className="flex items-center gap-2.5">
                   <span className="size-2.5 shrink-0 rounded-full" style={{ background: RENK[k.anahtar] }} aria-hidden />
-                  <span className="flex-1 text-muted-foreground">{k.etiket}</span>
+                  <span className="flex-1 text-muted-foreground">{t(k.etiket)}</span>
                   <span className="font-medium tabular-nums">{sayiOndalik(k.tep)} TEP</span>
                   <span className="w-12 text-right font-semibold tabular-nums">%{sayiOndalik(k.yuzde)}</span>
                 </li>

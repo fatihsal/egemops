@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/table";
 import { Degisim } from "@/components/kayit-detay/parcalar";
 import { useTepAnaliz } from "@/lib/queries/tep";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi2, sayiOndalik } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -47,6 +48,7 @@ function Yoy({ yuzde, puan }: { yuzde: number; puan?: boolean }) {
 
 export function TepYillarAnaliz() {
   const { data, isLoading } = useTepAnaliz();
+  const { t } = useDil();
   if (isLoading || !data) return <Skeleton className="h-[520px] w-full rounded-xl" />;
 
   const oz = (m: string) => data.yillikOzet.find((x) => x.metrik === m)!;
@@ -66,13 +68,13 @@ export function TepYillarAnaliz() {
           <Card key={y.yil} className="h-full">
             <CardContent className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-sm text-muted-foreground">{y.yil} Toplam</p>
+                <p className="text-sm text-muted-foreground">{y.yil} {t("Toplam")}</p>
                 <p className="mt-1 flex items-baseline gap-1.5">
                   <span className="font-heading text-2xl font-bold tracking-tight">{sayiOndalik(y.tep)}</span>
                   <span className="text-sm text-muted-foreground">TEP</span>
                 </p>
                 <div className="mt-1.5">
-                  {y.yoy === null ? <span className="text-xs text-muted-foreground">Baz yıl</span> : <Degisim yuzde={y.yoy} etiket="önceki yıl" />}
+                  {y.yoy === null ? <span className="text-xs text-muted-foreground">{t("Baz yıl")}</span> : <Degisim yuzde={y.yoy} etiket={t("önceki yıl")} />}
                 </div>
               </div>
               <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl font-heading text-sm font-bold" style={{ background: `${YIL_RENK[`y${y.yil}` as keyof typeof YIL_RENK]}1a`, color: YIL_RENK[`y${y.yil}` as keyof typeof YIL_RENK] }}>
@@ -88,7 +90,7 @@ export function TepYillarAnaliz() {
         <Card className="h-full xl:col-span-8">
           <CardHeader>
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <h3 className="font-heading text-base font-medium">Yıllara Göre Aylık Toplam Enerji <span className="text-sm font-normal text-muted-foreground">(TEP)</span></h3>
+              <h3 className="font-heading text-base font-medium">{t("Yıllara Göre Aylık Toplam Enerji")} <span className="text-sm font-normal text-muted-foreground">(TEP)</span></h3>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
                 {CIZGI.map((c) => (
                   <span key={c.anahtar} className="inline-flex items-center gap-1.5"><span className="h-[3px] w-3.5 rounded-full" style={{ background: c.renk }} /> {c.etiket}</span>
@@ -107,7 +109,7 @@ export function TepYillarAnaliz() {
                     contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
                     formatter={(value, name) => {
                       const c = CIZGI.find((x) => x.anahtar === name);
-                      return [value === null ? "—" : `${sayiOndalik(Number(value))} TEP`, c?.etiket ?? String(name)];
+                      return [value === null ? "—" : `${sayiOndalik(Number(value))} TEP`, t(c?.etiket ?? String(name))];
                     }}
                   />
                   {CIZGI.map((c) => (
@@ -122,11 +124,11 @@ export function TepYillarAnaliz() {
         <Card className="h-full xl:col-span-4">
           <CardHeader>
             <div className="space-y-2.5">
-              <h3 className="font-heading text-base font-medium">Yıllık Kaynak Kırılımı <span className="text-sm font-normal text-muted-foreground">(TEP)</span></h3>
+              <h3 className="font-heading text-base font-medium">{t("Yıllık Kaynak Kırılımı")} <span className="text-sm font-normal text-muted-foreground">(TEP)</span></h3>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
-                <span className="inline-flex items-center gap-1.5"><span className="size-2 rounded-full bg-blue-600" /> Elektrik</span>
-                <span className="inline-flex items-center gap-1.5"><span className="size-2 rounded-full bg-violet-500" /> Doğalgaz</span>
-                <span className="inline-flex items-center gap-1.5"><span className="size-2 rounded-full bg-orange-500" /> Akaryakıt</span>
+                <span className="inline-flex items-center gap-1.5"><span className="size-2 rounded-full bg-blue-600" /> {t("Elektrik")}</span>
+                <span className="inline-flex items-center gap-1.5"><span className="size-2 rounded-full bg-violet-500" /> {t("Doğalgaz")}</span>
+                <span className="inline-flex items-center gap-1.5"><span className="size-2 rounded-full bg-orange-500" /> {t("Akaryakıt")}</span>
               </div>
             </div>
           </CardHeader>
@@ -140,7 +142,7 @@ export function TepYillarAnaliz() {
                   <Tooltip
                     cursor={{ fill: "var(--muted)", opacity: 0.4 }}
                     contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
-                    formatter={(value, name) => [`${sayiOndalik(Number(value))} TEP`, name === "elektrik" ? "Elektrik" : name === "dogalgaz" ? "Doğalgaz" : "Akaryakıt"]}
+                    formatter={(value, name) => [`${sayiOndalik(Number(value))} TEP`, name === "elektrik" ? t("Elektrik") : name === "dogalgaz" ? t("Doğalgaz") : t("Akaryakıt")]}
                   />
                   <Bar dataKey="elektrik" stackId="y" fill="#2563eb" maxBarSize={48} />
                   <Bar dataKey="dogalgaz" stackId="y" fill="#8b5cf6" maxBarSize={48} />
@@ -155,19 +157,19 @@ export function TepYillarAnaliz() {
       {/* Yıllık özet tablosu */}
       <Card>
         <CardHeader>
-          <h3 className="font-heading text-base font-medium">Yıllık Özet</h3>
+          <h3 className="font-heading text-base font-medium">{t("Yıllık Özet")}</h3>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto rounded-xl border">
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/40">
-                  <TableHead className="whitespace-nowrap">Metrik</TableHead>
+                  <TableHead className="whitespace-nowrap">{t("Metrik")}</TableHead>
                   <TableHead className="text-right">2023</TableHead>
                   <TableHead className="text-right">2024</TableHead>
                   <TableHead className="text-right">2025</TableHead>
                   <TableHead className="text-right">2026</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">Değişim (25→26)</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">{t("Değişim (25→26)")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -177,7 +179,7 @@ export function TepYillarAnaliz() {
                   return (
                     <TableRow key={m.metrik} className={cn("odd:bg-muted/20 hover:bg-muted/40", vurgu && "!bg-primary/5 font-medium")}>
                       <TableCell className="whitespace-nowrap">
-                        {m.metrik}
+                        {t(m.metrik)}
                         <span className="ml-1 font-normal text-muted-foreground">({m.birim})</span>
                       </TableCell>
                       <TableCell className="text-right tabular-nums">{bicim(m.y2023)}</TableCell>

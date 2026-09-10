@@ -5,11 +5,13 @@ import { Icon } from "@iconify/react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTepAnaliz } from "@/lib/queries/tep";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayiOndalik } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 export function TepBazYilKarti() {
   const { data, isLoading } = useTepAnaliz();
+  const { t } = useDil();
 
   if (isLoading || !data) {
     return (
@@ -35,15 +37,15 @@ export function TepBazYilKarti() {
   return (
     <Card className="h-full">
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">Baz Yıla Göre Performans</h3>
+        <h3 className="font-heading text-base font-medium">{t("Baz Yıla Göre Performans")}</h3>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col justify-center">
         <div className="divide-y">
-          {satir("Baz Yıl", String(b.bazYil))}
-          {satir("Baz Yıl TEP/ton", b.bazDeger)}
+          {satir(t("Baz Yıl"), String(b.bazYil))}
+          {satir(t("Baz Yıl TEP/ton"), b.bazDeger)}
           {satir("2026 TEP/ton", b.guncelDeger)}
           <div className="flex items-center justify-between gap-2 py-2 text-sm">
-            <span className="text-muted-foreground">İyileşme</span>
+            <span className="text-muted-foreground">{t("İyileşme")}</span>
             <span
               className={cn(
                 "inline-flex items-center gap-1 font-semibold",

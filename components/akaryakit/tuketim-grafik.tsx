@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAkaryakitAnaliz } from "@/lib/queries/akaryakit";
+import { useDil } from "@/components/providers/dil-provider";
 import { AKARYAKIT_TEP_FAKTOR } from "@/lib/data/akaryakit";
 import { sayi, sayiKisa, sayiOndalik } from "@/lib/format";
 
@@ -40,6 +41,7 @@ type BirimTuru = keyof typeof BIRIM;
 
 export function AkaryakitTuketimGrafik() {
   const { data, isLoading } = useAkaryakitAnaliz();
+  const { t } = useDil();
   const [birim, setBirim] = React.useState<BirimTuru>("Litre");
   const b = BIRIM[birim];
 
@@ -61,7 +63,7 @@ export function AkaryakitTuketimGrafik() {
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="space-y-2.5">
             <h3 className="font-heading text-base font-medium">
-              Aylık Akaryakıt Tüketimi{" "}
+              {t("Aylık Akaryakıt Tüketimi")}{" "}
               <span className="text-sm font-normal text-muted-foreground">({birim})</span>
             </h3>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
@@ -85,7 +87,7 @@ export function AkaryakitTuketimGrafik() {
               </SelectContent>
             </Select>
             <div className="relative size-8">
-              <KartMenu baslik="Akaryakıt tüketimi" />
+              <KartMenu baslik={t("Akaryakıt tüketimi")} />
             </div>
           </div>
         </div>

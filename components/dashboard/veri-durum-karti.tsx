@@ -11,6 +11,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useVeriDurum } from "@/lib/queries/enerji";
+import { useDil } from "@/components/providers/dil-provider";
 
 const IKON: Record<string, string> = {
   Elektrik: "solar:bolt-bold-duotone",
@@ -22,11 +23,12 @@ const IKON: Record<string, string> = {
 
 export function VeriDurumKarti() {
   const { data, isLoading } = useVeriDurum();
+  const { t } = useDil();
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Veri Durumu</CardTitle>
+        <CardTitle>{t("Veri Durumu")}</CardTitle>
       </CardHeader>
       <CardContent>
         {isLoading ? (
@@ -40,7 +42,7 @@ export function VeriDurumKarti() {
                 return (
                   <li key={k.etiket} className="flex items-center gap-2">
                     <Icon icon={ikon} className="size-4.5 text-muted-foreground" />
-                    <span className="flex-1">{k.etiket}</span>
+                    <span className="flex-1">{t(k.etiket)}</span>
                     <span className="tabular-nums text-muted-foreground">
                       {k.mevcut} / {k.toplam}
                     </span>

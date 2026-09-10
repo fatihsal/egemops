@@ -10,6 +10,7 @@ import {
   yilOlcek,
   olcekliDeger,
 } from "@/components/providers/analiz-filtre-provider";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayiOndalik } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { DogalgazKpi } from "@/lib/types";
@@ -25,6 +26,7 @@ const IKON: Record<string, { ikon: string; sinif: string }> = {
 
 function KpiKart({ kpi }: { kpi: DogalgazKpi }) {
   const { yil } = useAnalizFiltre();
+  const { t } = useDil();
   const olcek = kpi.birim === "%" ? 1 : yilOlcek(yil);
   const ik = IKON[kpi.anahtar];
   const arti = (kpi.degisimYuzde ?? 0) >= 0;
@@ -39,7 +41,7 @@ function KpiKart({ kpi }: { kpi: DogalgazKpi }) {
             </span>
           ) : null}
           <span className="mt-0.5 min-h-[32px] flex-1 text-xs font-medium leading-tight text-muted-foreground">
-            {kpi.baslik}
+            {t(kpi.baslik)}
           </span>
         </div>
 
@@ -60,7 +62,7 @@ function KpiKart({ kpi }: { kpi: DogalgazKpi }) {
                 <Icon icon={arti ? "solar:alt-arrow-up-bold" : "solar:alt-arrow-down-bold"} className="size-3" />
                 %{sayiOndalik(Math.abs(kpi.degisimYuzde))}
               </span>
-              <p className="text-[11px] leading-tight text-muted-foreground">Geçen yılın aynı dönemine göre</p>
+              <p className="text-[11px] leading-tight text-muted-foreground">{t("Geçen yılın aynı dönemine göre")}</p>
             </div>
           ) : kpi.altMetin ? (
             <span className="inline-flex items-center gap-1.5 rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">

@@ -14,6 +14,7 @@ import {
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTepAnaliz } from "@/lib/queries/tep";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayiOndalik } from "@/lib/format";
 import type { TepWaterfall } from "@/lib/types";
 
@@ -49,13 +50,14 @@ function adimlariUret(veri: TepWaterfall[]): Adim[] {
 
 export function TepDegisimWaterfall() {
   const { data, isLoading } = useTepAnaliz();
+  const { t } = useDil();
   const adimlar = data ? adimlariUret(data.waterfall) : [];
 
   return (
     <Card className="h-full">
       <CardHeader>
         <h3 className="font-heading text-base font-medium">
-          TEP Değişim Analizi <span className="text-sm font-normal text-muted-foreground">(YTD)</span>
+          {t("TEP Değişim Analizi")} <span className="text-sm font-normal text-muted-foreground">(YTD)</span>
         </h3>
       </CardHeader>
       <CardContent className="flex-1">
@@ -71,7 +73,7 @@ export function TepDegisimWaterfall() {
                   cursor={{ fill: "var(--muted)", opacity: 0.4 }}
                   contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
                   formatter={(_v, name, item) =>
-                    name === "base" ? ["", ""] : [`${item?.payload?.etiketDeger} TEP`, "Değişim"]
+                    name === "base" ? ["", ""] : [`${item?.payload?.etiketDeger} TEP`, t("Değişim")]
                   }
                 />
                 <Bar dataKey="base" stackId="w" fill="transparent" />

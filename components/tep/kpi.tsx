@@ -10,6 +10,7 @@ import {
   yilOlcek,
   olcekliDeger,
 } from "@/components/providers/analiz-filtre-provider";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayiOndalik } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { TepKpi } from "@/lib/types";
@@ -25,6 +26,7 @@ const IKON: Record<string, { ikon: string; sinif: string }> = {
 
 function KpiKart({ kpi }: { kpi: TepKpi }) {
   const { yil } = useAnalizFiltre();
+  const { t } = useDil();
   const olcek = kpi.birim === "%" ? 1 : yilOlcek(yil);
   const ik = IKON[kpi.anahtar];
   const arti = (kpi.degisimYuzde ?? 0) >= 0;
@@ -50,14 +52,14 @@ function KpiKart({ kpi }: { kpi: TepKpi }) {
             </span>
           ) : null}
           <span className="mt-0.5 min-h-[32px] flex-1 text-xs font-medium leading-tight text-muted-foreground">
-            {kpi.baslik}
+            {t(kpi.baslik)}
           </span>
         </div>
 
         {kpi.sadeDegisim ? (
           <div className="mt-auto pt-4">
             <div className="text-[22px] leading-none">{yon}</div>
-            <p className="mt-1.5 text-[11px] leading-tight text-muted-foreground">Geçen yılın aynı dönemine göre</p>
+            <p className="mt-1.5 text-[11px] leading-tight text-muted-foreground">{t("Geçen yılın aynı dönemine göre")}</p>
           </div>
         ) : (
           <>
@@ -67,7 +69,7 @@ function KpiKart({ kpi }: { kpi: TepKpi }) {
             </div>
             <div className="mt-auto space-y-0.5 pt-3 text-xs">
               {yon}
-              <p className="text-[11px] leading-tight text-muted-foreground">Geçen yılın aynı dönemine göre</p>
+              <p className="text-[11px] leading-tight text-muted-foreground">{t("Geçen yılın aynı dönemine göre")}</p>
             </div>
           </>
         )}

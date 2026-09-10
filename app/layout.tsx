@@ -4,10 +4,9 @@ import "./globals.css";
 
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { QueryProvider } from "@/components/providers/query-provider";
-import { AppSidebar } from "@/components/layout/app-sidebar";
-import { MarkaHeader } from "@/components/layout/marka-header";
+import { DilProvider } from "@/components/providers/dil-provider";
+import { AppShell } from "@/components/layout/app-shell";
 import { Toaster } from "@/components/ui/sonner";
-import { SayfaGecis } from "@/components/layout/sayfa-gecis";
 
 const geistSans = Geist({
   variable: "--font-sans",
@@ -39,18 +38,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           disableTransitionOnChange
         >
           <QueryProvider>
-            <div className="flex min-h-screen">
-              <AppSidebar />
-              <div className="flex min-w-0 flex-1 flex-col">
-                <MarkaHeader />
-                <main className="flex-1 p-4 sm:p-6">
-                  <div className="w-full">
-                    <SayfaGecis>{children}</SayfaGecis>
-                  </div>
-                </main>
-              </div>
-            </div>
-            <Toaster position="bottom-right" />
+            <DilProvider>
+              <AppShell>{children}</AppShell>
+              <Toaster position="bottom-right" />
+            </DilProvider>
           </QueryProvider>
         </ThemeProvider>
       </body>

@@ -6,8 +6,10 @@ import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { GlobalArama } from "@/components/layout/global-arama";
+import { DilSecici } from "@/components/layout/dil-secici";
 import { BildirimMenu } from "@/components/layout/bildirim-menu";
 import { KullaniciMenu } from "@/components/layout/kullanici-menu";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayfaMeta } from "@/lib/sayfa-meta";
 
 /**
@@ -17,6 +19,7 @@ import { sayfaMeta } from "@/lib/sayfa-meta";
  */
 export function MarkaHeader() {
   const { baslik, altBaslik } = sayfaMeta(usePathname());
+  const { t } = useDil();
   return (
     <header className="relative overflow-hidden border-b bg-card">
       {/* Dekoratif akışkan dalga (yalnızca geniş ekran) */}
@@ -54,10 +57,10 @@ export function MarkaHeader() {
         </svg>
       </div>
       {/* Sağ filigran */}
-      <div className="pointer-events-none absolute top-1/2 right-[22rem] hidden -translate-y-1/2 flex-col items-center gap-0.5 text-center xl:flex">
+      <div className="pointer-events-none absolute top-1/2 right-[26rem] hidden -translate-y-1/2 flex-col items-center gap-0.5 text-center xl:flex">
         <Icon icon="solar:leaf-bold-duotone" className="size-4 text-emerald-400/70" />
         <span className="text-[8px] font-semibold tracking-[0.18em] text-muted-foreground/50 uppercase leading-tight">
-          Bugünün Enerjisi<br />Yarının Geleceği
+          {t("Bugünün Enerjisi")}<br />{t("Yarının Geleceği")}
         </span>
       </div>
 
@@ -66,7 +69,7 @@ export function MarkaHeader() {
         <div className="hidden items-center gap-1.5 border-r px-4 md:flex">
           <Icon icon="solar:leaf-bold-duotone" className="size-5 text-emerald-500" />
           <span className="text-[9px] font-semibold tracking-[0.12em] text-emerald-700 uppercase leading-tight dark:text-emerald-400">
-            Daha Temiz<br />Yarınlar İçin
+            {t("Daha Temiz")}<br />{t("Yarınlar İçin")}
           </span>
         </div>
 
@@ -78,20 +81,21 @@ export function MarkaHeader() {
         {/* Başlık alanı */}
         <div className="flex min-w-0 flex-1 flex-col justify-center px-4">
           <div className="flex min-w-0 flex-wrap items-center gap-x-2.5 gap-y-1">
-            <h1 className="truncate font-heading text-lg font-bold tracking-tight">{baslik}</h1>
+            <h1 className="truncate font-heading text-lg font-bold tracking-tight">{t(baslik)}</h1>
             <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-medium text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
               <Icon icon="solar:leaf-bold-duotone" className="size-3" />
-              Sürdürülebilirlik Modülü
+              {t("Sürdürülebilirlik Modülü")}
             </span>
           </div>
           <p className="mt-0.5 hidden text-[11px] leading-tight text-muted-foreground sm:line-clamp-2">
-            {altBaslik}
+            {t(altBaslik)}
           </p>
         </div>
 
         {/* Aksiyonlar + kullanıcı */}
         <div className="flex shrink-0 items-center gap-0.5 border-l px-2 sm:gap-1.5 sm:px-3">
           <GlobalArama />
+          <DilSecici className="hidden sm:inline-flex" />
           <ThemeToggle />
           <BildirimMenu />
           <KullaniciMenu />

@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useDogalgazAnaliz } from "@/lib/queries/dogalgaz";
+import { useDil } from "@/components/providers/dil-provider";
 import { DOGALGAZ_TEP_FAKTOR } from "@/lib/data/dogalgaz";
 import { sayi, sayiKisa, sayiOndalik } from "@/lib/format";
 
@@ -40,6 +41,7 @@ type BirimTuru = keyof typeof BIRIM;
 
 export function DogalgazTuketimGrafik() {
   const { data, isLoading } = useDogalgazAnaliz();
+  const { t } = useDil();
   const [birim, setBirim] = React.useState<BirimTuru>("Sm³");
   const b = BIRIM[birim];
 
@@ -61,7 +63,7 @@ export function DogalgazTuketimGrafik() {
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="space-y-2.5">
             <h3 className="font-heading text-base font-medium">
-              Aylık Doğalgaz Tüketimi{" "}
+              {t("Aylık Doğalgaz Tüketimi")}{" "}
               <span className="text-sm font-normal text-muted-foreground">({birim})</span>
             </h3>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
@@ -85,7 +87,7 @@ export function DogalgazTuketimGrafik() {
               </SelectContent>
             </Select>
             <div className="relative size-8">
-              <KartMenu baslik="Doğalgaz tüketimi" />
+              <KartMenu baslik={t("Doğalgaz tüketimi")} />
             </div>
           </div>
         </div>

@@ -11,6 +11,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEnerjiKaynakDagilimi } from "@/lib/queries/enerji";
 import { useDonem } from "@/components/providers/donem-provider";
+import { useDil } from "@/components/providers/dil-provider";
 import { donemGunSayisi } from "@/lib/donem";
 import { sayi, sayi2, sayiOndalik } from "@/lib/format";
 import type { KaynakTuru } from "@/lib/types";
@@ -24,13 +25,14 @@ const RENK: Record<KaynakTuru, string> = {
 export function EnerjiKaynakDagilimi() {
   const { data, isLoading } = useEnerjiKaynakDagilimi();
   const { donem } = useDonem();
+  const { t } = useDil();
   // Kümülatif değerler (GWh, TEP) döneme göre ölçeklenir; yüzde payları sabit.
   const olcek = donemGunSayisi(donem) / 7;
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Enerji Kaynaklarının Dağılımı</CardTitle>
+        <CardTitle>{t("Enerji Kaynaklarının Dağılımı")}</CardTitle>
       </CardHeader>
       <CardContent>
         {isLoading ? (
@@ -79,7 +81,7 @@ export function EnerjiKaynakDagilimi() {
                     />
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
-                        <span>{k.etiket}</span>
+                        <span>{t(k.etiket)}</span>
                         <span className="font-semibold">%{k.yuzde}</span>
                       </div>
                       <div className="text-xs text-muted-foreground">
@@ -92,7 +94,7 @@ export function EnerjiKaynakDagilimi() {
             </div>
 
             <div className="border-t pt-3 text-sm">
-              <span className="text-muted-foreground">Toplam Enerji: </span>
+              <span className="text-muted-foreground">{t("Toplam Enerji")}: </span>
               <span className="font-semibold">
                 {sayiOndalik((data?.toplamTep ?? 0) * olcek)} TEP
               </span>

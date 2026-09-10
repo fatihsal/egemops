@@ -13,6 +13,7 @@ import {
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTepAnaliz } from "@/lib/queries/tep";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayiOndalik } from "@/lib/format";
 import type { TepYilBar } from "@/lib/types";
 
@@ -42,12 +43,13 @@ function YilTick(props: { x?: number | string; y?: number | string; payload?: { 
 
 export function TepYillikGrafik() {
   const { data, isLoading } = useTepAnaliz();
+  const { t } = useDil();
 
   return (
     <Card className="h-full">
       <CardHeader>
         <div className="flex items-start justify-between gap-2">
-          <h3 className="font-heading text-base font-medium">Yıllık Enerji Tüketimi</h3>
+          <h3 className="font-heading text-base font-medium">{t("Yıllık Enerji Tüketimi")}</h3>
           <span className="text-sm font-normal text-muted-foreground">(TEP)</span>
         </div>
       </CardHeader>

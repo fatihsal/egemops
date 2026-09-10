@@ -14,18 +14,20 @@ import {
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAkaryakitAnaliz } from "@/lib/queries/akaryakit";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi, sayiKisa } from "@/lib/format";
 
 const RENK = ["#7c3aed", "#2563eb", "#06b6d4", "#16a34a"];
 
 export function AkaryakitYillikKarsilastirma() {
   const { data, isLoading } = useAkaryakitAnaliz();
+  const { t } = useDil();
 
   return (
     <Card className="h-full">
       <CardHeader>
         <div className="flex items-start justify-between gap-2">
-          <h3 className="font-heading text-base font-medium">Yıllık Akaryakıt Karşılaştırması</h3>
+          <h3 className="font-heading text-base font-medium">{t("Yıllık Akaryakıt Karşılaştırması")}</h3>
           <span className="text-sm font-normal text-muted-foreground">Litre</span>
         </div>
       </CardHeader>

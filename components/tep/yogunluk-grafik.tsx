@@ -13,18 +13,20 @@ import {
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTepAnaliz } from "@/lib/queries/tep";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi2 } from "@/lib/format";
 
 const RENK = "#14b8a6";
 
 export function TepYogunlukGrafik() {
   const { data, isLoading } = useTepAnaliz();
+  const { t } = useDil();
 
   return (
     <Card className="h-full">
       <CardHeader>
         <h3 className="font-heading text-base font-medium">
-          Enerji Yoğunluğu <span className="text-sm font-normal text-muted-foreground">(TEP / ton)</span>
+          {t("Enerji Yoğunluğu")} <span className="text-sm font-normal text-muted-foreground">(TEP / ton)</span>
         </h3>
       </CardHeader>
       <CardContent className="flex-1">
@@ -48,7 +50,7 @@ export function TepYogunlukGrafik() {
                 <Tooltip
                   cursor={{ stroke: "var(--border)" }}
                   contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
-                  formatter={(value) => [`${sayi2(Number(value))} TEP/ton`, "Yoğunluk"]}
+                  formatter={(value) => [`${sayi2(Number(value))} TEP/ton`, t("Yoğunluk")]}
                 />
                 <Line type="monotone" dataKey="deger" stroke={RENK} strokeWidth={2.5} dot={{ r: 3, fill: RENK }} activeDot={{ r: 5 }} />
               </LineChart>

@@ -4,9 +4,11 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sparkline } from "@/components/common/sparkline";
 import { useTepAnaliz } from "@/lib/queries/tep";
+import { useDil } from "@/components/providers/dil-provider";
 
 export function TepUcNoktaKarti({ tur }: { tur: "yuksek" | "dusuk" }) {
   const { data, isLoading } = useTepAnaliz();
+  const { t } = useDil();
 
   const baslik = tur === "yuksek" ? "En Yüksek TEP Tüketimi" : "En Düşük TEP Tüketimi";
   const renk = tur === "yuksek" ? "#059669" : "#2563eb";
@@ -27,7 +29,7 @@ export function TepUcNoktaKarti({ tur }: { tur: "yuksek" | "dusuk" }) {
   return (
     <Card className="h-full">
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">{baslik}</h3>
+        <h3 className="font-heading text-base font-medium">{t(baslik)}</h3>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col gap-1.5">
         <div className="text-xs text-muted-foreground">{nokta.donem}</div>

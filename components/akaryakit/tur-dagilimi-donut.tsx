@@ -5,6 +5,7 @@ import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAkaryakitAnaliz } from "@/lib/queries/akaryakit";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi } from "@/lib/format";
 import type { AkaryakitTurDilim } from "@/lib/types";
 
@@ -16,11 +17,12 @@ const RENK: Record<AkaryakitTurDilim["anahtar"], string> = {
 
 export function AkaryakitTurDagilimiDonut() {
   const { data, isLoading } = useAkaryakitAnaliz();
+  const { t } = useDil();
 
   return (
     <Card className="h-full">
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">Yakıt Türü Dağılımı</h3>
+        <h3 className="font-heading text-base font-medium">{t("Yakıt Türü Dağılımı")}</h3>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col items-center justify-center gap-6">
         {isLoading || !data ? (
@@ -42,8 +44,8 @@ export function AkaryakitTurDagilimiDonut() {
                     startAngle={90}
                     endAngle={-270}
                   >
-                    {data.turDagilimi.map((t) => (
-                      <Cell key={t.anahtar} fill={RENK[t.anahtar]} />
+                    {data.turDagilimi.map((d) => (
+                      <Cell key={d.anahtar} fill={RENK[d.anahtar]} />
                     ))}
                   </Pie>
                   <Tooltip
@@ -59,12 +61,12 @@ export function AkaryakitTurDagilimiDonut() {
             </div>
 
             <ul className="w-full space-y-2.5 text-sm">
-              {data.turDagilimi.map((t) => (
-                <li key={t.anahtar} className="flex items-center gap-2.5">
-                  <span className="size-2.5 shrink-0 rounded-full" style={{ background: RENK[t.anahtar] }} aria-hidden />
-                  <span className="flex-1">{t.etiket}</span>
-                  <span className="font-semibold tabular-nums">%{t.yuzde}</span>
-                  <span className="w-24 text-right text-xs tabular-nums text-muted-foreground">{sayi(t.litre)} Litre</span>
+              {data.turDagilimi.map((d) => (
+                <li key={d.anahtar} className="flex items-center gap-2.5">
+                  <span className="size-2.5 shrink-0 rounded-full" style={{ background: RENK[d.anahtar] }} aria-hidden />
+                  <span className="flex-1">{t(d.etiket)}</span>
+                  <span className="font-semibold tabular-nums">%{d.yuzde}</span>
+                  <span className="w-24 text-right text-xs tabular-nums text-muted-foreground">{sayi(d.litre)} Litre</span>
                 </li>
               ))}
             </ul>

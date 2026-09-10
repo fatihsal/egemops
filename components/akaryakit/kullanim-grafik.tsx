@@ -13,6 +13,7 @@ import {
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAkaryakitAnaliz } from "@/lib/queries/akaryakit";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi, sayiKisa } from "@/lib/format";
 
 const SERI = [
@@ -22,18 +23,19 @@ const SERI = [
 
 export function AkaryakitKullanimGrafik() {
   const { data, isLoading } = useAkaryakitAnaliz();
+  const { t } = useDil();
 
   return (
     <Card className="h-full">
       <CardHeader>
         <div className="flex items-start justify-between gap-2">
           <div className="space-y-2">
-            <h3 className="font-heading text-base font-medium">Araç &amp; Jeneratör Bazında Tüketim</h3>
+            <h3 className="font-heading text-base font-medium">{t("Araç & Jeneratör Bazında Tüketim")}</h3>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
               {SERI.map((s) => (
                 <span key={s.anahtar} className="inline-flex items-center gap-1.5">
                   <span className="size-2.5 shrink-0 rounded-full" style={{ background: s.renk }} />
-                  {s.etiket}
+                  {t(s.etiket)}
                 </span>
               ))}
             </div>
@@ -56,7 +58,7 @@ export function AkaryakitKullanimGrafik() {
                   contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
                   formatter={(value, name) => {
                     const s = SERI.find((x) => x.anahtar === name);
-                    return [`${sayi(Number(value))} Litre`, s?.etiket ?? String(name)];
+                    return [`${sayi(Number(value))} Litre`, t(s?.etiket ?? String(name))];
                   }}
                 />
                 {SERI.map((s) => (

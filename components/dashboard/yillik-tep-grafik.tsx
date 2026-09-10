@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useYillikTep } from "@/lib/queries/enerji";
+import { useDil } from "@/components/providers/dil-provider";
 import { BUGUN } from "@/lib/donem";
 import { sayi } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -41,6 +42,7 @@ const SERI = [
 
 export function YillikTepGrafik() {
   const { data, isLoading } = useYillikTep();
+  const { t } = useDil();
 
   // Sağ üst kutu: 2025 vs 2026 — yalnızca karşılaştırılabilir aylar (buYil dolu).
   let degisim: number | null = null;
@@ -58,7 +60,7 @@ export function YillikTepGrafik() {
     <Card>
       <CardHeader>
         <div className="flex flex-wrap items-start justify-between gap-3">
-          <CardTitle>Aylık Toplam Enerji Tüketimi (TEP)</CardTitle>
+          <CardTitle>{t("Aylık Toplam Enerji Tüketimi (TEP)")}</CardTitle>
 
           {/* Sağ üst: son iki yılın değişimi */}
           {degisim !== null ? (

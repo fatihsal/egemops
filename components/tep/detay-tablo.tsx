@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/select";
 import { Degisim } from "@/components/kayit-detay/parcalar";
 import { useTepAnaliz } from "@/lib/queries/tep";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi, sayi2 } from "@/lib/format";
 
 const BOYUTLAR = ["4", "10", "25"];
@@ -34,6 +35,7 @@ const uc = (n: number) =>
 
 export function TepDetayTablo() {
   const { data, isLoading } = useTepAnaliz();
+  const { t } = useDil();
   const [sayfa, setSayfa] = React.useState(1);
   const [boyut, setBoyut] = React.useState(4);
 
@@ -51,7 +53,7 @@ export function TepDetayTablo() {
   return (
     <Card>
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">Aylık Detaylı Veriler</h3>
+        <h3 className="font-heading text-base font-medium">{t("Aylık Detaylı Veriler")}</h3>
       </CardHeader>
       <CardContent className="space-y-4">
         {isLoading ? (
@@ -66,16 +68,16 @@ export function TepDetayTablo() {
               <Table>
                 <TableHeader>
                   <TableRow className="bg-muted/40">
-                    <TableHead className="whitespace-nowrap">Dönem</TableHead>
-                    <TableHead className="text-right whitespace-nowrap">Elektrik TEP</TableHead>
-                    <TableHead className="text-right whitespace-nowrap">Doğalgaz TEP</TableHead>
-                    <TableHead className="text-right whitespace-nowrap">Akaryakıt TEP</TableHead>
-                    <TableHead className="text-right whitespace-nowrap">Toplam TEP</TableHead>
-                    <TableHead className="text-right whitespace-nowrap">Üretim <span className="font-normal text-muted-foreground">(ton)</span></TableHead>
-                    <TableHead className="text-right whitespace-nowrap">TEP / ton</TableHead>
-                    <TableHead className="text-right whitespace-nowrap">Önceki Ay</TableHead>
-                    <TableHead className="text-right whitespace-nowrap">Geçen Yıl</TableHead>
-                    <TableHead className="text-right">İşlem</TableHead>
+                    <TableHead className="whitespace-nowrap">{t("Dönem")}</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("Elektrik TEP")}</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("Doğalgaz TEP")}</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("Akaryakıt TEP")}</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("Toplam TEP")}</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("Üretim")} <span className="font-normal text-muted-foreground">(ton)</span></TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("TEP / ton")}</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("Önceki Ay")}</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("Geçen Yıl")}</TableHead>
+                    <TableHead className="text-right">{t("İşlem")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -104,10 +106,10 @@ export function TepDetayTablo() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center justify-end gap-0.5">
-                          <Button variant="ghost" size="icon-sm" aria-label="Görüntüle" className="text-muted-foreground hover:text-foreground" onClick={() => toast(`${r.donem} detayı açılıyor`)}>
+                          <Button variant="ghost" size="icon-sm" aria-label={t("Görüntüle")} className="text-muted-foreground hover:text-foreground" onClick={() => toast(`${r.donem} detayı açılıyor`)}>
                             <Icon icon="solar:eye-bold-duotone" className="size-4.5" />
                           </Button>
-                          <Button variant="ghost" size="icon-sm" aria-label="Analiz" className="text-muted-foreground hover:text-foreground" onClick={() => toast(`${r.donem} grafiği açılıyor`)}>
+                          <Button variant="ghost" size="icon-sm" aria-label={t("Analiz")} className="text-muted-foreground hover:text-foreground" onClick={() => toast(`${r.donem} grafiği açılıyor`)}>
                             <Icon icon="solar:chart-2-bold-duotone" className="size-4.5" />
                           </Button>
                         </div>
@@ -124,10 +126,10 @@ export function TepDetayTablo() {
                 <span className="tabular-nums">
                   {sayi(bas + 1)}–{sayi(Math.min(bas + boyut, satirlar.length))}
                 </span>{" "}
-                / {sayi(satirlar.length)} kayıt
+                / {sayi(satirlar.length)} {t("kayıt")}
               </span>
               <div className="flex items-center gap-1">
-                <Button variant="outline" size="icon-sm" aria-label="Önceki" disabled={geciliSayfa <= 1} onClick={() => setSayfa((s) => Math.max(1, s - 1))}>
+                <Button variant="outline" size="icon-sm" aria-label={t("Önceki")} disabled={geciliSayfa <= 1} onClick={() => setSayfa((s) => Math.max(1, s - 1))}>
                   <ChevronLeft className="size-4" />
                 </Button>
                 {Array.from({ length: toplamSayfa }, (_, i) => i + 1).map((n) => (
@@ -135,12 +137,12 @@ export function TepDetayTablo() {
                     {n}
                   </Button>
                 ))}
-                <Button variant="outline" size="icon-sm" aria-label="Sonraki" disabled={geciliSayfa >= toplamSayfa} onClick={() => setSayfa((s) => Math.min(toplamSayfa, s + 1))}>
+                <Button variant="outline" size="icon-sm" aria-label={t("Sonraki")} disabled={geciliSayfa >= toplamSayfa} onClick={() => setSayfa((s) => Math.min(toplamSayfa, s + 1))}>
                   <ChevronRight className="size-4" />
                 </Button>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-muted-foreground">Sayfa başına:</span>
+                <span className="text-muted-foreground">{t("Sayfa başına")}:</span>
                 <Select value={String(boyut)} onValueChange={(v) => { setBoyut(Number(v)); setSayfa(1); }}>
                   <SelectTrigger size="sm" className="w-[68px] bg-card">
                     <SelectValue />

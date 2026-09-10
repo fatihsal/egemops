@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePerformansAnaliz } from "@/lib/queries/performans";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayiOndalik } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { PerformansKpi } from "@/lib/types";
@@ -19,6 +20,7 @@ const IKON: Record<string, { ikon: string; sinif: string }> = {
 };
 
 function KpiKart({ kpi }: { kpi: PerformansKpi }) {
+  const { t } = useDil();
   const ik = IKON[kpi.anahtar];
   const dusus = (kpi.degisimYuzde ?? 0) < 0;
 
@@ -32,7 +34,7 @@ function KpiKart({ kpi }: { kpi: PerformansKpi }) {
             </span>
           ) : null}
           <span className="mt-0.5 min-h-[32px] flex-1 text-xs font-medium leading-tight text-muted-foreground">
-            {kpi.baslik}
+            {t(kpi.baslik)}
           </span>
         </div>
 
@@ -47,7 +49,7 @@ function KpiKart({ kpi }: { kpi: PerformansKpi }) {
               <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
                 <div className="h-full rounded-full bg-emerald-500" style={{ width: `${kpi.progress}%` }} />
               </div>
-              <p className="text-[11px] text-muted-foreground">Hedefin %{kpi.progress}'ü</p>
+              <p className="text-[11px] text-muted-foreground">{t("Hedefin %{p}'ü").replace("{p}", String(kpi.progress))}</p>
             </div>
           ) : kpi.degisimYuzde !== undefined ? (
             <span className="inline-flex items-center gap-1 text-xs">
@@ -55,11 +57,11 @@ function KpiKart({ kpi }: { kpi: PerformansKpi }) {
                 <Icon icon={dusus ? "solar:alt-arrow-down-bold" : "solar:alt-arrow-up-bold"} className="size-3" />
                 %{sayiOndalik(Math.abs(kpi.degisimYuzde))}
               </span>
-              {kpi.altMetin ? <span className="text-muted-foreground">{kpi.altMetin}</span> : null}
+              {kpi.altMetin ? <span className="text-muted-foreground">{t(kpi.altMetin)}</span> : null}
             </span>
           ) : kpi.altMetin ? (
             <p className={cn("text-[11px] leading-tight", kpi.amber ? "font-medium text-amber-600 dark:text-amber-400" : "text-muted-foreground")}>
-              {kpi.altMetin}
+              {t(kpi.altMetin)}
             </p>
           ) : null}
         </div>

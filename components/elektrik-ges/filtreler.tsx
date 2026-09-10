@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAnalizFiltre } from "@/components/providers/analiz-filtre-provider";
+import { useDil } from "@/components/providers/dil-provider";
 
 const VARSAYILAN: DateRange = {
   from: new Date(2026, 0, 1),
@@ -36,11 +37,12 @@ export function ElektrikFiltreler() {
   const [aralik, setAralik] = React.useState<DateRange | undefined>(VARSAYILAN);
   const [acik, setAcik] = React.useState(false);
   const { yil, setYil } = useAnalizFiltre();
+  const { t } = useDil();
 
   const etiket =
     aralik?.from && aralik?.to
       ? `${format(aralik.from, "dd.MM.yyyy")} – ${format(aralik.to, "dd.MM.yyyy")}`
-      : "Tarih aralığı seçin";
+      : t("Tarih aralığı seçin");
 
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -67,12 +69,12 @@ export function ElektrikFiltreler() {
       </Popover>
 
       <div className="flex items-center gap-2 rounded-lg border bg-card px-3 h-9">
-        <span className="text-sm text-muted-foreground">Yıl</span>
+        <span className="text-sm text-muted-foreground">{t("Yıl")}</span>
         <Select
           value={yil}
           onValueChange={(v) => {
             setYil(v as string);
-            toast.success(`${v} yılı verileri yüklendi`);
+            toast.success(t("{yil} yılı verileri yüklendi").replace("{yil}", String(v)));
           }}
         >
           <SelectTrigger size="sm" className="w-[84px] border-0 bg-transparent px-1 shadow-none focus-visible:ring-0">
@@ -91,10 +93,10 @@ export function ElektrikFiltreler() {
       <Button
         variant="outline"
         className="h-9 gap-1.5 bg-card"
-        onClick={() => toast.success("Rapor Excel'e aktarıldı")}
+        onClick={() => toast.success(t("Rapor Excel'e aktarıldı"))}
       >
         <Icon icon="vscode-icons:file-type-excel" className="size-4" />
-        Excel&apos;e Aktar
+        {t("Excel'e Aktar")}
       </Button>
     </div>
   );

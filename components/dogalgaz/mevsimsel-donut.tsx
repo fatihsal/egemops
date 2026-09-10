@@ -5,6 +5,7 @@ import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDogalgazAnaliz } from "@/lib/queries/dogalgaz";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi } from "@/lib/format";
 import type { DogalgazMevsim } from "@/lib/types";
 
@@ -17,11 +18,12 @@ const RENK: Record<DogalgazMevsim["anahtar"], string> = {
 
 export function DogalgazMevsimselDonut() {
   const { data, isLoading } = useDogalgazAnaliz();
+  const { t } = useDil();
 
   return (
     <Card className="h-full">
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">Mevsimsel Dağılım</h3>
+        <h3 className="font-heading text-base font-medium">{t("Mevsimsel Dağılım")}</h3>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col items-center justify-center gap-6">
         {isLoading || !data ? (
@@ -63,7 +65,7 @@ export function DogalgazMevsimselDonut() {
               {data.mevsimsel.map((m) => (
                 <li key={m.anahtar} className="flex items-center gap-2.5">
                   <span className="size-2.5 shrink-0 rounded-full" style={{ background: RENK[m.anahtar] }} aria-hidden />
-                  <span className="flex-1">{m.etiket}</span>
+                  <span className="flex-1">{t(m.etiket)}</span>
                   <span className="font-semibold tabular-nums">%{m.yuzde}</span>
                   <span className="w-24 text-right text-xs tabular-nums text-muted-foreground">{sayi(m.sm3)} Sm³</span>
                 </li>

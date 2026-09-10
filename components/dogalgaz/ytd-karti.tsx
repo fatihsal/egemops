@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDogalgazAnaliz } from "@/lib/queries/dogalgaz";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayiOndalik } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -23,6 +24,7 @@ function Fark({ yuzde }: { yuzde: number }) {
 
 export function DogalgazYtdKarti() {
   const { data, isLoading } = useDogalgazAnaliz();
+  const { t } = useDil();
 
   if (isLoading || !data) {
     return (
@@ -37,16 +39,16 @@ export function DogalgazYtdKarti() {
 
   const o = data.ytd;
   const satirlar = [
-    { etiket: "Toplam Doğalgaz", deger: o.toplamSm3, birim: "Sm³", degisim: o.toplamDegisim },
-    { etiket: "Toplam TEP", deger: o.tep, birim: "TEP", degisim: o.tepDegisim },
-    { etiket: "Ortalama", deger: o.ortalama, birim: "Sm³", degisim: o.ortalamaDegisim },
-    { etiket: "Yoğunluk", deger: o.yogunluk, birim: "Sm³/ton", degisim: o.yogunlukDegisim },
+    { etiket: t("Toplam Doğalgaz"), deger: o.toplamSm3, birim: "Sm³", degisim: o.toplamDegisim },
+    { etiket: t("Toplam TEP"), deger: o.tep, birim: "TEP", degisim: o.tepDegisim },
+    { etiket: t("Ortalama"), deger: o.ortalama, birim: "Sm³", degisim: o.ortalamaDegisim },
+    { etiket: t("Yoğunluk"), deger: o.yogunluk, birim: "Sm³/ton", degisim: o.yogunlukDegisim },
   ];
 
   return (
     <Card className="h-full">
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">Yılbaşından Bu Yana (YTD)</h3>
+        <h3 className="font-heading text-base font-medium">{t("Yılbaşından Bu Yana (YTD)")}</h3>
       </CardHeader>
       <CardContent className="flex-1">
         <ul className="flex h-full flex-col justify-between divide-y">

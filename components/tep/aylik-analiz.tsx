@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/select";
 import { Degisim } from "@/components/kayit-detay/parcalar";
 import { useTepAnaliz } from "@/lib/queries/tep";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayiOndalik } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { TepAylik } from "@/lib/types";
@@ -54,6 +55,7 @@ function mom(cur: number, onceki: number | undefined) {
 
 export function TepAylikAnaliz() {
   const { data, isLoading } = useTepAnaliz();
+  const { t } = useDil();
   const [si, setSi] = React.useState(6);
 
   if (isLoading || !data) return <Skeleton className="h-[520px] w-full rounded-xl" />;
@@ -73,11 +75,11 @@ export function TepAylikAnaliz() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div className="space-y-0.5">
-          <p className="text-xs text-muted-foreground">Seçili Dönem</p>
+          <p className="text-xs text-muted-foreground">{t("Seçili Dönem")}</p>
           <h2 className="font-heading text-xl font-semibold tracking-tight">{secili.donem}</h2>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">Ay</span>
+          <span className="text-sm text-muted-foreground">{t("Ay")}</span>
           <Select value={secili.donem} onValueChange={(v) => setSi(aylar.findIndex((a) => a.donem === v))}>
             <SelectTrigger className="w-[150px] bg-card">
               <SelectValue />
@@ -103,12 +105,12 @@ export function TepAylikAnaliz() {
                   <Icon icon={k.ikon} className="size-6" />
                 </span>
                 <div className="min-w-0">
-                  <p className="text-xs text-muted-foreground">{k.etiket}</p>
+                  <p className="text-xs text-muted-foreground">{t(k.etiket)}</p>
                   <p className="mt-0.5 font-heading text-lg font-bold tracking-tight tabular-nums">
                     {sayiOndalik(deger)} <span className="text-xs font-normal text-muted-foreground">TEP</span>
                   </p>
                   <div className="mt-1">
-                    {onceki ? <Degisim yuzde={mom(deger, onc)} etiket="önceki ay" /> : <span className="text-xs text-muted-foreground">İlk dönem</span>}
+                    {onceki ? <Degisim yuzde={mom(deger, onc)} etiket={t("önceki ay")} /> : <span className="text-xs text-muted-foreground">{t("İlk dönem")}</span>}
                   </div>
                 </div>
               </CardContent>
@@ -122,10 +124,10 @@ export function TepAylikAnaliz() {
         <Card className="h-full xl:col-span-8">
           <CardHeader>
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <h3 className="font-heading text-base font-medium">Aylık Toplam TEP ve Değişim</h3>
+              <h3 className="font-heading text-base font-medium">{t("Aylık Toplam TEP ve Değişim")}</h3>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
-                <span className="inline-flex items-center gap-1.5"><span className="size-2 rounded-full bg-teal-600" /> Toplam TEP</span>
-                <span className="inline-flex items-center gap-1.5"><span className="h-[3px] w-3.5 rounded-full bg-amber-500" /> Aylık Değişim (%)</span>
+                <span className="inline-flex items-center gap-1.5"><span className="size-2 rounded-full bg-teal-600" /> {t("Toplam TEP")}</span>
+                <span className="inline-flex items-center gap-1.5"><span className="h-[3px] w-3.5 rounded-full bg-amber-500" /> {t("Aylık Değişim (%)")}</span>
               </div>
             </div>
           </CardHeader>
@@ -143,8 +145,8 @@ export function TepAylikAnaliz() {
                     labelFormatter={(_, p) => p?.[0]?.payload?.donem ?? ""}
                     formatter={(value, name) =>
                       name === "mom"
-                        ? [value === null ? "—" : `%${sayiOndalik(Number(value))}`, "Aylık Değişim"]
-                        : [`${sayiOndalik(Number(value))} TEP`, "Toplam TEP"]
+                        ? [value === null ? "—" : `%${sayiOndalik(Number(value))}`, t("Aylık Değişim")]
+                        : [`${sayiOndalik(Number(value))} TEP`, t("Toplam TEP")]
                     }
                   />
                   <Bar yAxisId="sol" dataKey="toplam" radius={[3, 3, 0, 0]} maxBarSize={44}>
@@ -161,8 +163,8 @@ export function TepAylikAnaliz() {
 
         <Card className="h-full xl:col-span-4">
           <CardHeader>
-            <h3 className="font-heading text-base font-medium">Önceki Aya Göre</h3>
-            <p className="text-xs text-muted-foreground">{onceki ? `${onceki.donem} → ${secili.donem}` : "Karşılaştırılacak önceki ay yok"}</p>
+            <h3 className="font-heading text-base font-medium">{t("Önceki Aya Göre")}</h3>
+            <p className="text-xs text-muted-foreground">{onceki ? `${onceki.donem} → ${secili.donem}` : t("Karşılaştırılacak önceki ay yok")}</p>
           </CardHeader>
           <CardContent>
             <ul className="divide-y">
@@ -172,7 +174,7 @@ export function TepAylikAnaliz() {
                 const bicim = s.anahtar === "uretim" ? String(Math.round(cur)) : sayiOndalik(cur);
                 return (
                   <li key={s.anahtar} className="flex items-center justify-between gap-2 py-2.5 text-sm">
-                    <span className="text-muted-foreground">{s.etiket}</span>
+                    <span className="text-muted-foreground">{t(s.etiket)}</span>
                     <div className="flex items-center gap-3">
                       <span className="font-medium tabular-nums">{bicim}</span>
                       {onceki ? <Degisim yuzde={mom(cur, onc)} className="w-14 justify-end" /> : <span className="w-14 text-right text-xs text-muted-foreground">—</span>}

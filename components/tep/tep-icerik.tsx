@@ -15,6 +15,7 @@ import { TepAylikAnaliz } from "@/components/tep/aylik-analiz";
 import { TepYillarAnaliz } from "@/components/tep/yillar-analiz";
 import { TepYogunlukAnaliz } from "@/components/tep/yogunluk-analiz";
 import { TepDetayVeriler } from "@/components/tep/detay-veriler";
+import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
 
 const SEKMELER = [
@@ -28,6 +29,7 @@ const SEKMELER = [
 type Sekme = (typeof SEKMELER)[number]["anahtar"];
 
 export function TepIcerik() {
+  const { t } = useDil();
   const [sekme, setSekme] = React.useState<Sekme>("genel");
 
   return (
@@ -46,7 +48,7 @@ export function TepIcerik() {
                 : "border-transparent text-muted-foreground hover:text-foreground",
             )}
           >
-            {s.etiket}
+            {t(s.etiket)}
           </button>
         ))}
       </div>

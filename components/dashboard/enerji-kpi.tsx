@@ -3,6 +3,7 @@
 import { StatCard, StatCardSkeleton } from "@/components/common/stat-card";
 import { useEnerjiKpi } from "@/lib/queries/enerji";
 import { useDonem } from "@/components/providers/donem-provider";
+import { useDil } from "@/components/providers/dil-provider";
 import { BUGUN, donemGunSayisi } from "@/lib/donem";
 import { sayi, sayi2, sayiOndalik } from "@/lib/format";
 import type { EnerjiKpi as EnerjiKpiTip } from "@/lib/types";
@@ -70,6 +71,7 @@ function gosterim(
 export function EnerjiKpi() {
   const { data, isLoading } = useEnerjiKpi();
   const { donem } = useDonem();
+  const { t } = useDil();
   // Temel veri haftalık; seçilen dönemin gün sayısına göre ölçeklenir.
   const olcek = donemGunSayisi(donem) / 7;
 
@@ -91,7 +93,7 @@ export function EnerjiKpi() {
         return (
           <StatCard
             key={kpi.anahtar}
-            baslik={kpi.baslik}
+            baslik={t(kpi.baslik)}
             deger={g.deger}
             birim={g.birim}
             degisimYuzde={kpi.degisimYuzde}

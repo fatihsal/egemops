@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEnerjiYogunluk } from "@/lib/queries/enerji";
+import { useDil } from "@/components/providers/dil-provider";
 import { BUGUN } from "@/lib/donem";
 import { sayiOndalik } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -15,6 +16,7 @@ const f3 = (n: number) =>
 
 export function EnerjiYogunluk() {
   const { data, isLoading } = useEnerjiYogunluk();
+  const { t } = useDil();
 
   return (
     <Card>
@@ -23,7 +25,7 @@ export function EnerjiYogunluk() {
           <span className="flex size-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300">
             <Icon icon="solar:graph-up-bold-duotone" className="size-5" />
           </span>
-          <CardTitle>Enerji Yoğunluğu</CardTitle>
+          <CardTitle>{t("Enerji Yoğunluğu")}</CardTitle>
         </div>
       </CardHeader>
       <CardContent className="space-y-2">
@@ -35,7 +37,7 @@ export function EnerjiYogunluk() {
               <span className="text-2xl font-bold tracking-tight">
                 {f3(data?.deger ?? 0)}
                 <span className="ml-1 text-sm font-normal text-muted-foreground">
-                  TEP / ton
+                  {t("TEP / ton")}
                 </span>
               </span>
               {/* düşüş iyidir → yeşil */}
@@ -55,7 +57,7 @@ export function EnerjiYogunluk() {
               <span className="text-xs text-muted-foreground">vs {ONCEKI_YIL}</span>
             </div>
             <div className="text-xs text-muted-foreground">
-              Geçen yıl: {f3(data?.gecenYil ?? 0)} TEP / ton
+              {t("Geçen yıl")}: {f3(data?.gecenYil ?? 0)} {t("TEP / ton")}
             </div>
           </>
         )}

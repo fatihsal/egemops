@@ -9,6 +9,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useDil } from "@/components/providers/dil-provider";
 
 interface AramaOgesi {
   baslik: string;
@@ -44,6 +45,7 @@ const kucult = (s: string) => s.toLocaleLowerCase("tr");
 
 export function GlobalArama() {
   const router = useRouter();
+  const { t } = useDil();
   const [acik, setAcik] = React.useState(false);
   const [q, setQ] = React.useState("");
   const [vurgu, setVurgu] = React.useState(0);
@@ -98,7 +100,7 @@ export function GlobalArama() {
         }
       >
         <Icon icon="solar:magnifer-linear" className="size-4" />
-        <span className="hidden text-xs lg:inline">Ara…</span>
+        <span className="hidden text-xs lg:inline">{t("Ara…")}</span>
       </PopoverTrigger>
       <PopoverContent align="end" sideOffset={8} className="w-80 gap-0 p-0">
         {/* Arama kutusu */}
@@ -109,7 +111,7 @@ export function GlobalArama() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             onKeyDown={tusla}
-            placeholder="Sayfa veya kayıt ara…"
+            placeholder={t("Sayfa veya kayıt ara…")}
             className="h-10 w-full min-w-0 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
           />
           {q ? (
@@ -130,14 +132,14 @@ export function GlobalArama() {
             <div className="flex flex-col items-center gap-1.5 py-8 text-center">
               <Icon icon="solar:magnifer-linear" className="size-6 text-muted-foreground" />
               <p className="text-xs text-muted-foreground">
-                “{q}” için sonuç bulunamadı
+                “{q}” · {t("sonuç bulunamadı")}
               </p>
             </div>
           ) : (
             Object.entries(gruplar).map(([grup, ogeler]) => (
               <div key={grup} className="mb-1 last:mb-0">
                 <div className="px-2 py-1 text-[10px] font-semibold tracking-wide text-muted-foreground uppercase">
-                  {grup}
+                  {t(grup)}
                 </div>
                 {ogeler.map((o) => {
                   sira += 1;
@@ -153,7 +155,7 @@ export function GlobalArama() {
                       }
                     >
                       <Icon icon={o.ikon} className="size-4.5 shrink-0 text-muted-foreground" />
-                      <span className="truncate">{o.baslik}</span>
+                      <span className="truncate">{t(o.baslik)}</span>
                     </button>
                   );
                 })}

@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSebekeGes } from "@/lib/queries/enerji";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi } from "@/lib/format";
 
 const RENK = { sebeke: "#3b82f6", ges: "#22c55e" };
@@ -25,6 +26,7 @@ const ETIKET: Record<string, string> = { sebeke: "Şebeke", ges: "GES" };
 
 export function SebekeGesGrafik() {
   const { data, isLoading } = useSebekeGes();
+  const { t } = useDil();
 
   const toplamSebeke = data?.reduce((t, d) => t + d.sebeke, 0) ?? 0;
   const toplamGes = data?.reduce((t, d) => t + d.ges, 0) ?? 0;
@@ -35,7 +37,7 @@ export function SebekeGesGrafik() {
       <CardHeader>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <CardTitle>
-            Şebeke / GES / Toplam Elektrik{" "}
+            {t("Şebeke / GES / Toplam Elektrik")}{" "}
             <span className="text-sm font-normal text-muted-foreground">
               (kWh)
             </span>
@@ -44,14 +46,14 @@ export function SebekeGesGrafik() {
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
               <span className="inline-flex items-center gap-1.5">
                 <span className="size-2 rounded-full" style={{ background: RENK.sebeke }} />
-                Şebeke <span className="font-semibold">{sayi(toplamSebeke)}</span>
+                {t("Şebeke")} <span className="font-semibold">{sayi(toplamSebeke)}</span>
               </span>
               <span className="inline-flex items-center gap-1.5">
                 <span className="size-2 rounded-full" style={{ background: RENK.ges }} />
-                GES <span className="font-semibold">{sayi(toplamGes)}</span>
+                {t("GES")} <span className="font-semibold">{sayi(toplamGes)}</span>
               </span>
               <span className="inline-flex items-center gap-1.5 text-muted-foreground">
-                Toplam <span className="font-semibold text-foreground">{sayi(toplam)}</span>
+                {t("Toplam")} <span className="font-semibold text-foreground">{sayi(toplam)}</span>
               </span>
             </div>
           ) : null}
@@ -92,7 +94,7 @@ export function SebekeGesGrafik() {
                   }}
                   formatter={(value, name) => [
                     `${sayi(Number(value))} kWh`,
-                    ETIKET[String(name)] ?? String(name),
+                    t(ETIKET[String(name)] ?? String(name)),
                   ]}
                 />
                 <Bar dataKey="sebeke" stackId="e" fill={RENK.sebeke} />

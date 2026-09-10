@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEnerjiHedef } from "@/lib/queries/enerji";
+import { useDil } from "@/components/providers/dil-provider";
 import { BUGUN } from "@/lib/donem";
 import { sayiOndalik } from "@/lib/format";
 
@@ -12,6 +13,7 @@ const BU_YIL = BUGUN.getFullYear();
 
 export function EnerjiHedef() {
   const { data, isLoading } = useEnerjiHedef();
+  const { t } = useDil();
 
   return (
     <Card>
@@ -20,7 +22,7 @@ export function EnerjiHedef() {
           <span className="flex size-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-300">
             <Icon icon="solar:target-bold-duotone" className="size-5" />
           </span>
-          <CardTitle>Enerji Performansı</CardTitle>
+          <CardTitle>{t("Enerji Performansı")}</CardTitle>
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -31,14 +33,14 @@ export function EnerjiHedef() {
             <div className="flex items-end justify-between">
               <div>
                 <div className="text-xs text-muted-foreground">
-                  {BU_YIL} Hedefi
+                  {BU_YIL} {t("Hedefi")}
                 </div>
                 <div className="text-2xl font-bold tracking-tight">
                   %{sayiOndalik(data?.hedef ?? 0)}
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-xs text-muted-foreground">Gerçekleşen</div>
+                <div className="text-xs text-muted-foreground">{t("Gerçekleşen")}</div>
                 <div className="text-2xl font-bold tracking-tight">
                   %{sayiOndalik(data?.gerceklesen ?? 0)}
                 </div>
@@ -57,7 +59,7 @@ export function EnerjiHedef() {
               </span>
             </div>
 
-            <div className="text-xs text-muted-foreground">{data?.mesaj}</div>
+            <div className="text-xs text-muted-foreground">{t(data?.mesaj ?? "")}</div>
           </>
         )}
       </CardContent>

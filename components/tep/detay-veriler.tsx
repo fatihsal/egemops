@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/select";
 import { Degisim } from "@/components/kayit-detay/parcalar";
 import { useTepAnaliz } from "@/lib/queries/tep";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi, sayiOndalik } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { TepAylik } from "@/lib/types";
@@ -46,6 +47,7 @@ function ToplamHucre({ deger, max }: { deger: number; max: number }) {
 
 export function TepDetayVeriler() {
   const { data, isLoading } = useTepAnaliz();
+  const { t } = useDil();
   const [sayfa, setSayfa] = React.useState(1);
   const [boyut, setBoyut] = React.useState(6);
 
@@ -65,12 +67,12 @@ export function TepDetayVeriler() {
       <CardHeader>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="space-y-0.5">
-            <h3 className="font-heading text-base font-medium">Detaylı Veriler</h3>
-            <p className="text-xs text-muted-foreground">Tüm dönemlerin tam kırılımı · 12 dönem</p>
+            <h3 className="font-heading text-base font-medium">{t("Detaylı Veriler")}</h3>
+            <p className="text-xs text-muted-foreground">{t("Tüm dönemlerin tam kırılımı · 12 dönem")}</p>
           </div>
-          <Button variant="outline" size="sm" className="gap-1.5 bg-card" onClick={() => toast.success("Detaylı veriler Excel'e aktarıldı")}>
+          <Button variant="outline" size="sm" className="gap-1.5 bg-card" onClick={() => toast.success(t("Detaylı veriler Excel'e aktarıldı"))}>
             <Icon icon="vscode-icons:file-type-excel" className="size-4" />
-            Excel&apos;e Aktar
+            {t("Excel'e Aktar")}
           </Button>
         </div>
       </CardHeader>
@@ -84,20 +86,20 @@ export function TepDetayVeriler() {
                 <TableHeader>
                   <TableRow className="border-b-0 hover:bg-transparent">
                     <TableHead rowSpan={2} className="align-bottom whitespace-nowrap">Dönem</TableHead>
-                    <TableHead colSpan={3} className={cn("text-center text-[11px] font-semibold uppercase tracking-wide text-muted-foreground", grup)}>Kaynak Kırılımı (TEP)</TableHead>
-                    <TableHead colSpan={1} className={cn("text-center text-[11px] font-semibold uppercase tracking-wide text-teal-600 dark:text-teal-400", grup)}>Toplam</TableHead>
-                    <TableHead colSpan={2} className={cn("text-center text-[11px] font-semibold uppercase tracking-wide text-muted-foreground", grup)}>Verimlilik</TableHead>
-                    <TableHead colSpan={2} className={cn("text-center text-[11px] font-semibold uppercase tracking-wide text-muted-foreground", grup)}>Değişim</TableHead>
+                    <TableHead colSpan={3} className={cn("text-center text-[11px] font-semibold uppercase tracking-wide text-muted-foreground", grup)}>{t("Kaynak Kırılımı (TEP)")}</TableHead>
+                    <TableHead colSpan={1} className={cn("text-center text-[11px] font-semibold uppercase tracking-wide text-teal-600 dark:text-teal-400", grup)}>{t("Toplam")}</TableHead>
+                    <TableHead colSpan={2} className={cn("text-center text-[11px] font-semibold uppercase tracking-wide text-muted-foreground", grup)}>{t("Verimlilik")}</TableHead>
+                    <TableHead colSpan={2} className={cn("text-center text-[11px] font-semibold uppercase tracking-wide text-muted-foreground", grup)}>{t("Değişim")}</TableHead>
                   </TableRow>
                   <TableRow className="hover:bg-transparent">
-                    <TableHead className={cn("text-right whitespace-nowrap", grup)}>Elektrik</TableHead>
-                    <TableHead className="text-right whitespace-nowrap">Doğalgaz</TableHead>
-                    <TableHead className="text-right whitespace-nowrap">Akaryakıt</TableHead>
-                    <TableHead className={cn("text-right whitespace-nowrap", grup)}>Toplam TEP</TableHead>
-                    <TableHead className={cn("text-right whitespace-nowrap", grup)}>Üretim <span className="font-normal text-muted-foreground">(ton)</span></TableHead>
-                    <TableHead className="text-right whitespace-nowrap">TEP / ton</TableHead>
-                    <TableHead className={cn("text-right whitespace-nowrap", grup)}>Önceki Ay</TableHead>
-                    <TableHead className="text-right whitespace-nowrap">Geçen Yıl</TableHead>
+                    <TableHead className={cn("text-right whitespace-nowrap", grup)}>{t("Elektrik")}</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("Doğalgaz")}</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("Akaryakıt")}</TableHead>
+                    <TableHead className={cn("text-right whitespace-nowrap", grup)}>{t("Toplam TEP")}</TableHead>
+                    <TableHead className={cn("text-right whitespace-nowrap", grup)}>{t("Üretim")} <span className="font-normal text-muted-foreground">(ton)</span></TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("TEP / ton")}</TableHead>
+                    <TableHead className={cn("text-right whitespace-nowrap", grup)}>{t("Önceki Ay")}</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("Geçen Yıl")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -121,7 +123,7 @@ export function TepDetayVeriler() {
                 </TableBody>
                 <tfoot>
                   <TableRow className="border-t-2 bg-muted/40 font-medium hover:bg-muted/40">
-                    <TableCell className="whitespace-nowrap text-xs uppercase tracking-wide text-muted-foreground">Toplam / Ort.</TableCell>
+                    <TableCell className="whitespace-nowrap text-xs uppercase tracking-wide text-muted-foreground">{t("Toplam / Ort.")}</TableCell>
                     <TableCell className={cn("text-right tabular-nums", grup)}>{sayiOndalik(topla((r) => r.elektrik))}</TableCell>
                     <TableCell className="text-right tabular-nums">{sayiOndalik(topla((r) => r.dogalgaz))}</TableCell>
                     <TableCell className="text-right tabular-nums">{sayiOndalik(topla((r) => r.akaryakit))}</TableCell>
@@ -138,21 +140,21 @@ export function TepDetayVeriler() {
             {/* Sayfalama */}
             <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
               <span className="text-muted-foreground">
-                <span className="tabular-nums">{sayi(bas + 1)}–{sayi(Math.min(bas + boyut, satirlar.length))}</span> / {sayi(satirlar.length)} dönem
+                <span className="tabular-nums">{sayi(bas + 1)}–{sayi(Math.min(bas + boyut, satirlar.length))}</span> / {sayi(satirlar.length)} {t("dönem")}
               </span>
               <div className="flex items-center gap-1">
-                <Button variant="outline" size="icon-sm" aria-label="Önceki" disabled={geciliSayfa <= 1} onClick={() => setSayfa((s) => Math.max(1, s - 1))}>
+                <Button variant="outline" size="icon-sm" aria-label={t("Önceki")} disabled={geciliSayfa <= 1} onClick={() => setSayfa((s) => Math.max(1, s - 1))}>
                   <ChevronLeft className="size-4" />
                 </Button>
                 {Array.from({ length: toplamSayfa }, (_, i) => i + 1).map((n) => (
                   <Button key={n} variant={n === geciliSayfa ? "default" : "ghost"} size="icon-sm" className="tabular-nums" onClick={() => setSayfa(n)}>{n}</Button>
                 ))}
-                <Button variant="outline" size="icon-sm" aria-label="Sonraki" disabled={geciliSayfa >= toplamSayfa} onClick={() => setSayfa((s) => Math.min(toplamSayfa, s + 1))}>
+                <Button variant="outline" size="icon-sm" aria-label={t("Sonraki")} disabled={geciliSayfa >= toplamSayfa} onClick={() => setSayfa((s) => Math.min(toplamSayfa, s + 1))}>
                   <ChevronRight className="size-4" />
                 </Button>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-muted-foreground">Sayfa başına:</span>
+                <span className="text-muted-foreground">{t("Sayfa başına")}:</span>
                 <Select value={String(boyut)} onValueChange={(v) => { setBoyut(Number(v)); setSayfa(1); }}>
                   <SelectTrigger size="sm" className="w-[68px] bg-card"><SelectValue /></SelectTrigger>
                   <SelectContent>{BOYUTLAR.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}</SelectContent>

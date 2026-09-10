@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAkaryakitAnaliz } from "@/lib/queries/akaryakit";
+import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
 import type { AkaryakitFirsat } from "@/lib/types";
 
@@ -19,11 +20,12 @@ const DURUM_SINIF: Record<AkaryakitFirsat["durum"], string> = {
 
 export function AkaryakitVerimlilikFirsatlari() {
   const { data, isLoading } = useAkaryakitAnaliz();
+  const { t } = useDil();
 
   return (
     <Card className="h-full">
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">Verimlilik Fırsatları</h3>
+        <h3 className="font-heading text-base font-medium">{t("Verimlilik Fırsatları")}</h3>
       </CardHeader>
       <CardContent className="flex-1">
         {isLoading || !data ? (
@@ -46,11 +48,11 @@ export function AkaryakitVerimlilikFirsatlari() {
                       <Icon icon="solar:lightbulb-bolt-bold-duotone" className="size-5" />
                     </span>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium">{f.baslik}</p>
-                      <p className="truncate text-xs text-muted-foreground">{f.aciklama}</p>
+                      <p className="text-sm font-medium">{t(f.baslik)}</p>
+                      <p className="truncate text-xs text-muted-foreground">{t(f.aciklama)}</p>
                     </div>
                     <span className={cn("shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium", DURUM_SINIF[f.durum])}>
-                      {f.durum}
+                      {t(f.durum)}
                     </span>
                     <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
                   </button>
@@ -61,7 +63,7 @@ export function AkaryakitVerimlilikFirsatlari() {
               href="/firsatlar"
               className="mt-auto flex items-center justify-center gap-1 pt-3 text-sm font-medium text-primary transition-opacity hover:opacity-80"
             >
-              Tüm Fırsatları Görüntüle
+              {t("Tüm Fırsatları Görüntüle")}
               <Icon icon="solar:alt-arrow-right-linear" className="size-4" />
             </Link>
           </div>

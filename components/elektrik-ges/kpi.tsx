@@ -11,6 +11,7 @@ import {
   yilOlcek,
   olcekliDeger,
 } from "@/components/providers/analiz-filtre-provider";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayiOndalik } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { ElektrikKpi } from "@/lib/types";
@@ -24,6 +25,7 @@ const IKON: Record<string, { ikon: string; sinif: string }> = {
 };
 
 function Yon({ kpi }: { kpi: ElektrikKpi }) {
+  const { t } = useDil();
   const arti = kpi.degisimYuzde >= 0;
   const metin =
     kpi.degisimBirim === "puan"
@@ -46,7 +48,7 @@ function Yon({ kpi }: { kpi: ElektrikKpi }) {
         {metin}
       </span>
       <p className="text-[11px] leading-tight text-muted-foreground">
-        Geçen yılın aynı dönemine göre
+        {t("Geçen yılın aynı dönemine göre")}
       </p>
     </div>
   );
@@ -54,6 +56,7 @@ function Yon({ kpi }: { kpi: ElektrikKpi }) {
 
 function KpiKart({ kpi }: { kpi: ElektrikKpi }) {
   const { yil } = useAnalizFiltre();
+  const { t } = useDil();
   const olcek = kpi.birim === "%" || kpi.radyal !== undefined ? 1 : yilOlcek(yil);
   const ik = IKON[kpi.anahtar];
   const gorsel = kpi.radyal !== undefined
@@ -72,7 +75,7 @@ function KpiKart({ kpi }: { kpi: ElektrikKpi }) {
         <div className="flex items-start gap-2.5">
           {gorsel}
           <span className="mt-0.5 min-h-[32px] flex-1 text-xs font-medium leading-tight text-muted-foreground">
-            {kpi.baslik}
+            {t(kpi.baslik)}
           </span>
         </div>
 

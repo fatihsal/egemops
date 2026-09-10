@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAkaryakitAnaliz } from "@/lib/queries/akaryakit";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayiOndalik } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -23,6 +24,7 @@ function Fark({ yuzde }: { yuzde: number }) {
 
 export function AkaryakitYtdKarti() {
   const { data, isLoading } = useAkaryakitAnaliz();
+  const { t } = useDil();
 
   if (isLoading || !data) {
     return (
@@ -37,16 +39,16 @@ export function AkaryakitYtdKarti() {
 
   const o = data.ytd;
   const satirlar = [
-    { etiket: "Toplam Akaryakıt", deger: o.toplamLitre, birim: "Litre", degisim: o.toplamDegisim },
-    { etiket: "Toplam TEP", deger: o.tep, birim: "TEP", degisim: o.tepDegisim },
-    { etiket: "Ortalama", deger: o.ortalama, birim: "Litre", degisim: o.ortalamaDegisim },
-    { etiket: "Araç Başına", deger: o.aracBasi, birim: "L/araç", degisim: o.aracBasiDegisim },
+    { etiket: t("Toplam Akaryakıt"), deger: o.toplamLitre, birim: "Litre", degisim: o.toplamDegisim },
+    { etiket: t("Toplam TEP"), deger: o.tep, birim: "TEP", degisim: o.tepDegisim },
+    { etiket: t("Ortalama"), deger: o.ortalama, birim: "Litre", degisim: o.ortalamaDegisim },
+    { etiket: t("Araç Başına"), deger: o.aracBasi, birim: "L/araç", degisim: o.aracBasiDegisim },
   ];
 
   return (
     <Card className="h-full">
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">Yılbaşından Bu Yana (YTD)</h3>
+        <h3 className="font-heading text-base font-medium">{t("Yılbaşından Bu Yana (YTD)")}</h3>
       </CardHeader>
       <CardContent className="flex-1">
         <ul className="flex h-full flex-col justify-between divide-y">

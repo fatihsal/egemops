@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useTepAnaliz } from "@/lib/queries/tep";
+import { useDil } from "@/components/providers/dil-provider";
 import { TEP_KWH } from "@/lib/data/tep";
 import { sayiKisa, sayiOndalik } from "@/lib/format";
 
@@ -42,6 +43,7 @@ type BirimTuru = keyof typeof BIRIM;
 
 export function TepTuketimGrafik() {
   const { data, isLoading } = useTepAnaliz();
+  const { t } = useDil();
   const [birim, setBirim] = React.useState<BirimTuru>("TEP");
   const b = BIRIM[birim];
 
@@ -64,7 +66,7 @@ export function TepTuketimGrafik() {
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="space-y-2.5">
             <h3 className="font-heading text-base font-medium">
-              Aylık Toplam Enerji Tüketimi{" "}
+              {t("Aylık Toplam Enerji Tüketimi")}{" "}
               <span className="text-sm font-normal text-muted-foreground">({birim})</span>
             </h3>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
@@ -74,7 +76,7 @@ export function TepTuketimGrafik() {
                     className="rounded-full"
                     style={{ background: s.renk, width: s.tip === "line" ? 14 : 8, height: s.tip === "line" ? 3 : 8 }}
                   />
-                  {s.etiket}
+                  {t(s.etiket)}
                 </span>
               ))}
             </div>
@@ -91,7 +93,7 @@ export function TepTuketimGrafik() {
               </SelectContent>
             </Select>
             <div className="relative size-8">
-              <KartMenu baslik="Aylık enerji tüketimi" />
+              <KartMenu baslik={t("Aylık enerji tüketimi")} />
             </div>
           </div>
         </div>
@@ -112,7 +114,7 @@ export function TepTuketimGrafik() {
                   labelFormatter={(_, p) => p?.[0]?.payload?.donem ?? ""}
                   formatter={(value, name) => {
                     const s = SERI.find((x) => x.anahtar === name);
-                    return [b.tooltip(Number(value)), s?.etiket ?? String(name)];
+                    return [b.tooltip(Number(value)), t(s?.etiket ?? String(name))];
                   }}
                 />
                 <Bar dataKey="elektrik" stackId="t" fill={RENK.elektrik} maxBarSize={34} />

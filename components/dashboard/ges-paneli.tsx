@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGesPerformans } from "@/lib/queries/enerji";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi2, sayiOndalik } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -51,6 +52,7 @@ function Satir({ ikon, ikonSinif, etiket, deger, birim }: SatirProps) {
 
 export function GesPaneli() {
   const { data, isLoading } = useGesPerformans();
+  const { t } = useDil();
 
   if (isLoading) {
     return (
@@ -69,27 +71,27 @@ export function GesPaneli() {
       {/* GES Performansı */}
       <Card>
         <CardHeader>
-          <CardTitle>GES Performansı</CardTitle>
+          <CardTitle>{t("GES Performansı")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <Satir
             ikon="solar:sun-2-bold-duotone"
             ikonSinif="bg-green-50 text-green-600 dark:bg-green-950 dark:text-green-300"
-            etiket="Yıllık Üretim"
+            etiket={t("Yıllık Üretim")}
             deger={sayi2(data?.yillikUretim ?? 0)}
             birim="GWh"
           />
           <Satir
             ikon="solar:buildings-2-bold-duotone"
             ikonSinif="bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300"
-            etiket="Öz Tüketim"
+            etiket={t("Öz Tüketim")}
             deger={sayi2(data?.ozTuketim ?? 0)}
             birim="GWh"
           />
           <Satir
             ikon="solar:plug-circle-bold-duotone"
             ikonSinif="bg-amber-50 text-amber-600 dark:bg-amber-950 dark:text-amber-300"
-            etiket="Şebekeye Verilen"
+            etiket={t("Şebekeye Verilen")}
             deger={sayi2(data?.sebekeyeVerilen ?? 0)}
             birim="GWh"
           />
@@ -99,7 +101,7 @@ export function GesPaneli() {
       {/* GES Karşılama Oranı */}
       <Card>
         <CardHeader>
-          <CardTitle>GES Karşılama Oranı</CardTitle>
+          <CardTitle>{t("GES Karşılama Oranı")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="relative mx-auto h-[150px] w-[150px]">
@@ -136,7 +138,7 @@ export function GesPaneli() {
               )}
             >
               <span className="text-[9px] leading-none">{arti ? "▲" : "▼"}</span>
-              {sayiOndalik(Math.abs(data?.karsilamaDegisim ?? 0))} puan
+              {sayiOndalik(Math.abs(data?.karsilamaDegisim ?? 0))} {t("puan")}
             </span>
             <span className="text-muted-foreground">vs 2025</span>
           </div>
@@ -146,7 +148,7 @@ export function GesPaneli() {
       {/* Tahmini Tasarruf */}
       <Card>
         <CardHeader>
-          <CardTitle>Tahmini Tasarruf</CardTitle>
+          <CardTitle>{t("Tahmini Tasarruf")}</CardTitle>
         </CardHeader>
         <CardContent className="flex items-center gap-3">
           <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-300">
@@ -156,11 +158,11 @@ export function GesPaneli() {
             <div className="text-xl font-bold tracking-tight">
               {sayiOndalik(data?.tahminiTasarruf ?? 0)}
               <span className="ml-1 text-sm font-normal text-muted-foreground">
-                TEP / yıl
+                {t("TEP / yıl")}
               </span>
             </div>
             <div className="text-xs text-muted-foreground">
-              Yıllık potansiyel tasarruf
+              {t("Yıllık potansiyel tasarruf")}
             </div>
           </div>
         </CardContent>

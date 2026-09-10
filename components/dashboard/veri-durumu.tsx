@@ -2,14 +2,16 @@
 
 import { useIsFetching } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { tr } from "date-fns/locale";
+import { tr, enUS } from "date-fns/locale";
 
 import { BUGUN } from "@/lib/donem";
+import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
 
 /** Veri durumu göstergesi — sorgular çalışırken "Güncelleniyor", aksi halde "Güncel". */
 export function VeriDurumu() {
   const fetching = useIsFetching();
+  const { t, dil } = useDil();
   const yukleniyor = fetching > 0;
 
   return (
@@ -31,10 +33,10 @@ export function VeriDurumu() {
           )}
           aria-hidden
         />
-        {yukleniyor ? "Güncelleniyor…" : "Veri güncel"}
+        {yukleniyor ? t("Güncelleniyor…") : t("Veri güncel")}
       </span>
       <span className="hidden sm:inline">
-        Son güncelleme: {format(BUGUN, "d MMM yyyy", { locale: tr })}
+        {t("Son güncelleme")}: {format(BUGUN, "d MMM yyyy", { locale: dil === "en" ? enUS : tr })}
       </span>
     </div>
   );

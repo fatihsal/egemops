@@ -11,6 +11,7 @@ import { AylikAnaliz } from "@/components/elektrik-ges/aylik-analiz";
 import { YillarAnaliz } from "@/components/elektrik-ges/yillar-analiz";
 import { GesPerformansi } from "@/components/elektrik-ges/ges-performansi";
 import { ElektrikDetayVeriler } from "@/components/elektrik-ges/detay-veriler";
+import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
 
 const SEKMELER = [
@@ -24,6 +25,7 @@ const SEKMELER = [
 type Sekme = (typeof SEKMELER)[number]["anahtar"];
 
 export function ElektrikGesIcerik() {
+  const { t } = useDil();
   const [sekme, setSekme] = React.useState<Sekme>("genel");
 
   return (
@@ -42,7 +44,7 @@ export function ElektrikGesIcerik() {
                 : "border-transparent text-muted-foreground hover:text-foreground",
             )}
           >
-            {s.etiket}
+            {t(s.etiket)}
           </button>
         ))}
       </div>
