@@ -5,6 +5,7 @@ import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useFirsatAnaliz } from "@/lib/queries/firsatlar";
+import { useDil } from "@/components/providers/dil-provider";
 import type { FirsatDurum } from "@/lib/types";
 
 export const DURUM_RENK: Record<FirsatDurum, string> = {
@@ -17,11 +18,12 @@ export const DURUM_RENK: Record<FirsatDurum, string> = {
 
 export function FirsatDurumDonut() {
   const { data, isLoading } = useFirsatAnaliz();
+  const { t } = useDil();
 
   return (
     <Card className="h-full">
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">Fırsat Durum Dağılımı</h3>
+        <h3 className="font-heading text-base font-medium">{t("Fırsat Durum Dağılımı")}</h3>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col items-center gap-5">
         {isLoading || !data ? (
@@ -36,20 +38,20 @@ export function FirsatDurumDonut() {
                   </Pie>
                   <Tooltip
                     contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
-                    formatter={(value, name) => [`${value} fırsat`, String(name)]}
+                    formatter={(value, name) => [`${value} ${t("fırsat")}`, t(String(name))]}
                   />
                 </PieChart>
               </ResponsiveContainer>
               <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
                 <span className="font-heading text-2xl font-bold tracking-tight">{data.toplamFirsat}</span>
-                <span className="text-xs text-muted-foreground">Toplam</span>
+                <span className="text-xs text-muted-foreground">{t("Toplam")}</span>
               </div>
             </div>
             <ul className="w-full space-y-2.5 text-sm">
               {data.durumDagilimi.map((d) => (
                 <li key={d.anahtar} className="flex items-center gap-2.5">
                   <span className="size-2.5 shrink-0 rounded-full" style={{ background: DURUM_RENK[d.anahtar] }} />
-                  <span className="flex-1 truncate text-muted-foreground">{d.etiket}</span>
+                  <span className="flex-1 truncate text-muted-foreground">{t(d.etiket)}</span>
                   <span className="font-medium tabular-nums">{d.adet}</span>
                   <span className="w-12 text-right text-xs tabular-nums text-muted-foreground">%{d.yuzde}</span>
                 </li>

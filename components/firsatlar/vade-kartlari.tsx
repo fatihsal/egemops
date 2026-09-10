@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useFirsatAnaliz } from "@/lib/queries/firsatlar";
+import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
 
 const IKON: Record<string, { ikon: string; sinif: string }> = {
@@ -16,6 +17,7 @@ const IKON: Record<string, { ikon: string; sinif: string }> = {
 
 export function FirsatVadeKartlari() {
   const { data, isLoading } = useFirsatAnaliz();
+  const { t } = useDil();
 
   if (isLoading || !data) {
     return (
@@ -38,12 +40,12 @@ export function FirsatVadeKartlari() {
                 <Icon icon={ik?.ikon} className="size-6" />
               </span>
               <div className="min-w-0 flex-1">
-                <p className="text-xs text-muted-foreground">{v.baslik}</p>
+                <p className="text-xs text-muted-foreground">{t(v.baslik)}</p>
                 <p className="mt-0.5 flex items-baseline gap-1">
                   <span className="font-heading text-2xl font-bold tracking-tight tabular-nums">{v.deger}</span>
-                  <span className="text-xs font-medium text-muted-foreground">{v.birim}</span>
+                  <span className="text-xs font-medium text-muted-foreground">{t(v.birim)}</span>
                 </p>
-                <p className="mt-1 text-[11px] leading-tight text-muted-foreground">{v.aciklama}</p>
+                <p className="mt-1 text-[11px] leading-tight text-muted-foreground">{t(v.aciklama)}</p>
               </div>
             </CardContent>
           </Card>

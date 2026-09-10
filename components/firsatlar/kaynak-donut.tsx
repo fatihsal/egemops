@@ -6,15 +6,17 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { KAYNAK_RENK } from "@/components/firsatlar/stiller";
 import { useFirsatAnaliz } from "@/lib/queries/firsatlar";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayiOndalik } from "@/lib/format";
 
 export function FirsatKaynakDonut() {
   const { data, isLoading } = useFirsatAnaliz();
+  const { t } = useDil();
 
   return (
     <Card className="h-full">
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">Kaynak Bazlı Tasarruf Dağılımı</h3>
+        <h3 className="font-heading text-base font-medium">{t("Kaynak Bazlı Tasarruf Dağılımı")}</h3>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col items-center gap-5">
         {isLoading || !data ? (
@@ -29,20 +31,20 @@ export function FirsatKaynakDonut() {
                   </Pie>
                   <Tooltip
                     contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
-                    formatter={(value, name) => [`${sayiOndalik(Number(value))} TEP`, String(name)]}
+                    formatter={(value, name) => [`${sayiOndalik(Number(value))} TEP`, t(String(name))]}
                   />
                 </PieChart>
               </ResponsiveContainer>
               <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
                 <span className="font-heading text-xl font-bold tracking-tight">{sayiOndalik(data.toplamTasarruf)}</span>
-                <span className="text-xs text-muted-foreground">TEP / yıl</span>
+                <span className="text-xs text-muted-foreground">{t("TEP / yıl")}</span>
               </div>
             </div>
             <ul className="w-full space-y-3 text-sm">
               {data.kaynakTasarruf.map((k) => (
                 <li key={k.anahtar} className="flex items-center gap-2.5">
                   <span className="size-2.5 shrink-0 rounded-full" style={{ background: KAYNAK_RENK[k.anahtar] }} />
-                  <span className="flex-1 truncate text-muted-foreground">{k.etiket}</span>
+                  <span className="flex-1 truncate text-muted-foreground">{t(k.etiket)}</span>
                   <span className="font-medium tabular-nums">{sayiOndalik(k.tep)} TEP</span>
                   <span className="w-14 text-right font-semibold tabular-nums">%{sayiOndalik(k.yuzde)}</span>
                 </li>

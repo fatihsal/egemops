@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useFirsatAnaliz } from "@/lib/queries/firsatlar";
+import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
 
 const IKON: Record<string, { ikon: string; sinif: string }> = {
@@ -18,6 +19,7 @@ const IKON: Record<string, { ikon: string; sinif: string }> = {
 
 export function FirsatKpiKartlari() {
   const { data, isLoading } = useFirsatAnaliz();
+  const { t } = useDil();
 
   if (isLoading || !data) {
     return (
@@ -45,12 +47,12 @@ export function FirsatKpiKartlari() {
                 <Icon icon={ik?.ikon} className="size-7" />
               </span>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm text-muted-foreground">{k.baslik}</p>
+                <p className="truncate text-sm text-muted-foreground">{t(k.baslik)}</p>
                 <p className="mt-1 flex items-baseline gap-1.5">
                   <span className="font-heading text-2xl font-bold tracking-tight tabular-nums">{k.deger}</span>
-                  {k.birim ? <span className="text-sm font-medium text-muted-foreground">{k.birim}</span> : null}
+                  {k.birim ? <span className="text-sm font-medium text-muted-foreground">{t(k.birim)}</span> : null}
                 </p>
-                <p className="mt-0.5 truncate text-xs text-muted-foreground">{k.altMetin}</p>
+                <p className="mt-0.5 truncate text-xs text-muted-foreground">{t(k.altMetin)}</p>
               </div>
             </CardContent>
           </Card>
