@@ -36,6 +36,7 @@ import { DURUM_META, ROL_META } from "@/components/kullanicilar/stiller";
 import { KullaniciFormDrawer } from "@/components/kullanicilar/kullanici-form-drawer";
 import { useKullaniciFiltre } from "@/components/kullanicilar/filtre-store";
 import { useKullaniciAnaliz } from "@/lib/queries/kullanicilar";
+import { useDil } from "@/components/providers/dil-provider";
 import { queryKeys } from "@/lib/queries/keys";
 import { cn } from "@/lib/utils";
 import type { KullaniciAnaliz } from "@/lib/types";
@@ -47,12 +48,13 @@ const SAYFA_BOYUTU = 8;
 function FiltreSelect({ etiket, deger, secenekler, onChange, genislik }: {
   etiket: string; deger: string; secenekler: string[]; onChange: (v: string) => void; genislik: string;
 }) {
+  const { t } = useDil();
   return (
     <div className="flex items-center gap-2 rounded-lg border bg-card pl-3 shadow-sm">
       <span className="text-xs font-medium text-muted-foreground">{etiket}</span>
       <Select value={deger} onValueChange={(v) => onChange(v as string)}>
         <SelectTrigger className={`h-9 border-0 bg-transparent shadow-none ${genislik}`}><SelectValue /></SelectTrigger>
-        <SelectContent>{secenekler.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+        <SelectContent>{secenekler.map((s) => <SelectItem key={s} value={s}>{t(s)}</SelectItem>)}</SelectContent>
       </Select>
     </div>
   );
@@ -60,6 +62,7 @@ function FiltreSelect({ etiket, deger, secenekler, onChange, genislik }: {
 
 export function KullaniciListesi() {
   const { data, isLoading } = useKullaniciAnaliz();
+  const { t } = useDil();
   const { arama, rol, durum, set, aktifMi, sifirla } = useKullaniciFiltre();
   const qc = useQueryClient();
   const [sayfa, setSayfa] = React.useState(1);
@@ -86,17 +89,17 @@ export function KullaniciListesi() {
   return (
     <Card>
       <CardHeader className="flex-col gap-3 @2xl/card-header:flex-row @2xl/card-header:items-center @2xl/card-header:justify-between">
-        <h3 className="font-heading text-base font-medium">Kullanıcı Listesi</h3>
+        <h3 className="font-heading text-base font-medium">{t("Kullanıcı Listesi")}</h3>
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative">
             <Search className="absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input value={arama} onChange={(e) => set("arama", e.target.value)} placeholder="İsim, e-posta ara..." className="h-9 w-[210px] pl-8" />
+            <Input value={arama} onChange={(e) => set("arama", e.target.value)} placeholder={t("İsim, e-posta ara...")} className="h-9 w-[210px] pl-8" />
           </div>
-          <FiltreSelect etiket="Rol" deger={rol} secenekler={ROLLER} onChange={(v) => set("rol", v)} genislik="w-[130px]" />
-          <FiltreSelect etiket="Durum" deger={durum} secenekler={DURUMLAR} onChange={(v) => set("durum", v)} genislik="w-[140px]" />
+          <FiltreSelect etiket={t("Rol")} deger={rol} secenekler={ROLLER} onChange={(v) => set("rol", v)} genislik="w-[130px]" />
+          <FiltreSelect etiket={t("Durum")} deger={durum} secenekler={DURUMLAR} onChange={(v) => set("durum", v)} genislik="w-[140px]" />
           {aktifMi ? (
             <Button variant="ghost" size="sm" className="h-9 gap-1 text-muted-foreground" onClick={sifirla}>
-              <Icon icon="solar:restart-linear" className="size-4" />Sıfırla
+              <Icon icon="solar:restart-linear" className="size-4" />{t("Sıfırla")}
             </Button>
           ) : null}
         </div>
@@ -110,17 +113,17 @@ export function KullaniciListesi() {
               <Table>
                 <TableHeader>
                   <TableRow className="bg-muted/40">
-                    <TableHead className="whitespace-nowrap">Kullanıcı</TableHead>
-                    <TableHead className="whitespace-nowrap">Rol</TableHead>
-                    <TableHead className="whitespace-nowrap">Departman</TableHead>
-                    <TableHead className="whitespace-nowrap">Durum</TableHead>
-                    <TableHead className="whitespace-nowrap">Son Giriş</TableHead>
-                    <TableHead className="text-right whitespace-nowrap">İşlem</TableHead>
+                    <TableHead className="whitespace-nowrap">{t("Kullanıcı")}</TableHead>
+                    <TableHead className="whitespace-nowrap">{t("Rol")}</TableHead>
+                    <TableHead className="whitespace-nowrap">{t("Departman")}</TableHead>
+                    <TableHead className="whitespace-nowrap">{t("Durum")}</TableHead>
+                    <TableHead className="whitespace-nowrap">{t("Son Giriş")}</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("İşlem")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {sayfaVerisi.length === 0 ? (
-                    <TableRow><TableCell colSpan={6} className="py-10 text-center text-sm text-muted-foreground">Kullanıcı bulunamadı.</TableCell></TableRow>
+                    <TableRow><TableCell colSpan={6} className="py-10 text-center text-sm text-muted-foreground">{t("Kullanıcı bulunamadı.")}</TableCell></TableRow>
                   ) : null}
                   {sayfaVerisi.map((u) => {
                     const rm = ROL_META[u.rol];
@@ -137,49 +140,49 @@ export function KullaniciListesi() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <span className={cn("inline-block rounded-full px-2.5 py-0.5 text-[11px] font-medium whitespace-nowrap", rm.sinif)}>{rm.etiket}</span>
+                          <span className={cn("inline-block rounded-full px-2.5 py-0.5 text-[11px] font-medium whitespace-nowrap", rm.sinif)}>{t(rm.etiket)}</span>
                         </TableCell>
-                        <TableCell className="whitespace-nowrap text-muted-foreground">{u.departman}</TableCell>
+                        <TableCell className="whitespace-nowrap text-muted-foreground">{t(u.departman)}</TableCell>
                         <TableCell>
                           <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
                             <span className={cn("size-2 rounded-full", dm.nokta)} />
-                            <span className="text-sm">{dm.etiket}</span>
+                            <span className="text-sm">{t(dm.etiket)}</span>
                           </span>
                         </TableCell>
-                        <TableCell className="whitespace-nowrap tabular-nums text-muted-foreground">{u.sonGiris}</TableCell>
+                        <TableCell className="whitespace-nowrap tabular-nums text-muted-foreground">{t(u.sonGiris)}</TableCell>
                         <TableCell>
                           <div className="flex items-center justify-end gap-0.5">
                             <KullaniciFormDrawer
                               kullanici={u}
                               trigger={
-                                <Button variant="ghost" size="icon-sm" aria-label="Düzenle">
+                                <Button variant="ghost" size="icon-sm" aria-label={t("Düzenle")}>
                                   <Icon icon="solar:pen-2-bold-duotone" className="size-4 text-muted-foreground" />
                                 </Button>
                               }
                             />
                             <DropdownMenu>
-                              <DropdownMenuTrigger render={<Button variant="ghost" size="icon-sm" aria-label="Daha fazla" />}>
+                              <DropdownMenuTrigger render={<Button variant="ghost" size="icon-sm" aria-label={t("Daha fazla")} />}>
                                 <MoreVertical className="size-4 text-muted-foreground" />
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end" className="w-44">
-                                <DropdownMenuItem onClick={() => toast(`${u.ad} için şifre sıfırlama gönderildi`)}>
+                                <DropdownMenuItem onClick={() => toast(`${u.ad} ${t("için şifre sıfırlama gönderildi")}`)}>
                                   <Icon icon="solar:key-bold-duotone" className="size-4" />
-                                  Şifre Sıfırla
+                                  {t("Şifre Sıfırla")}
                                 </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => toast(`${u.ad} için izinler açıldı`)}>
+                                <DropdownMenuItem onClick={() => toast(`${u.ad} ${t("için izinler açıldı")}`)}>
                                   <Icon icon="solar:shield-user-bold-duotone" className="size-4" />
-                                  İzinleri Yönet
+                                  {t("İzinleri Yönet")}
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 {u.durum === "pasif" ? (
-                                  <DropdownMenuItem onClick={() => { durumDegistir(u.id, "aktif"); toast.success(`${u.ad} aktifleştirildi`); }}>
+                                  <DropdownMenuItem onClick={() => { durumDegistir(u.id, "aktif"); toast.success(`${u.ad} ${t("aktifleştirildi")}`); }}>
                                     <Icon icon="solar:user-check-bold-duotone" className="size-4" />
-                                    Aktifleştir
+                                    {t("Aktifleştir")}
                                   </DropdownMenuItem>
                                 ) : (
-                                  <DropdownMenuItem onClick={() => { durumDegistir(u.id, "pasif"); toast(`${u.ad} devre dışı bırakıldı`); }}>
+                                  <DropdownMenuItem onClick={() => { durumDegistir(u.id, "pasif"); toast(`${u.ad} ${t("devre dışı bırakıldı")}`); }}>
                                     <Icon icon="solar:user-block-bold-duotone" className="size-4" />
-                                    Devre Dışı Bırak
+                                    {t("Devre Dışı Bırak")}
                                   </DropdownMenuItem>
                                 )}
                               </DropdownMenuContent>
@@ -195,10 +198,10 @@ export function KullaniciListesi() {
 
             <div className="flex flex-wrap items-center justify-between gap-3">
               <p className="text-xs text-muted-foreground tabular-nums">
-                {filtreli.length === 0 ? "0 kayıt" : `${basla + 1} – ${Math.min(basla + SAYFA_BOYUTU, filtreli.length)} / ${filtreli.length} kullanıcı`}
+                {filtreli.length === 0 ? `0 ${t("kayıt")}` : `${basla + 1} – ${Math.min(basla + SAYFA_BOYUTU, filtreli.length)} / ${filtreli.length} ${t("kullanıcı")}`}
               </p>
               <div className="flex items-center gap-1">
-                <Button variant="outline" size="icon-sm" aria-label="Önceki" disabled={gecerliSayfa <= 1} onClick={() => setSayfa((s) => Math.max(1, s - 1))}>
+                <Button variant="outline" size="icon-sm" aria-label={t("Önceki")} disabled={gecerliSayfa <= 1} onClick={() => setSayfa((s) => Math.max(1, s - 1))}>
                   <Icon icon="solar:alt-arrow-left-linear" className="size-4" />
                 </Button>
                 {Array.from({ length: toplamSayfa }).map((_, i) => (
@@ -206,7 +209,7 @@ export function KullaniciListesi() {
                     {i + 1}
                   </Button>
                 ))}
-                <Button variant="outline" size="icon-sm" aria-label="Sonraki" disabled={gecerliSayfa >= toplamSayfa} onClick={() => setSayfa((s) => Math.min(toplamSayfa, s + 1))}>
+                <Button variant="outline" size="icon-sm" aria-label={t("Sonraki")} disabled={gecerliSayfa >= toplamSayfa} onClick={() => setSayfa((s) => Math.min(toplamSayfa, s + 1))}>
                   <Icon icon="solar:alt-arrow-right-linear" className="size-4" />
                 </Button>
               </div>
