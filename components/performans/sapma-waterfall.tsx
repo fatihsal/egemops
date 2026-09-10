@@ -14,6 +14,7 @@ import {
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePerformansAnaliz } from "@/lib/queries/performans";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi } from "@/lib/format";
 import type { PerformansWaterfall } from "@/lib/types";
 
@@ -45,12 +46,13 @@ function adimlariUret(veri: PerformansWaterfall[]): Adim[] {
 
 export function PerformansSapmaWaterfall() {
   const { data, isLoading } = usePerformansAnaliz();
+  const { t } = useDil();
   const adimlar = data ? adimlariUret(data.waterfall) : [];
 
   return (
     <Card className="h-full">
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">Performans Sapması <span className="text-sm font-normal text-muted-foreground">(TEP)</span></h3>
+        <h3 className="font-heading text-base font-medium">{t("Performans Sapması")} <span className="text-sm font-normal text-muted-foreground">(TEP)</span></h3>
       </CardHeader>
       <CardContent className="flex-1">
         {isLoading || !data ? (
@@ -59,12 +61,12 @@ export function PerformansSapmaWaterfall() {
           <div className="h-[260px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={adimlar} margin={{ left: 0, right: 8, top: 28, bottom: 0 }}>
-                <XAxis dataKey="etiket" tickLine={false} axisLine={false} fontSize={11} interval={0} stroke="var(--muted-foreground)" />
+                <XAxis dataKey="etiket" tickLine={false} axisLine={false} fontSize={11} interval={0} stroke="var(--muted-foreground)" tickFormatter={(v: string) => t(v)} />
                 <YAxis hide domain={[0, "dataMax + 60"]} />
                 <Tooltip
                   cursor={{ fill: "var(--muted)", opacity: 0.4 }}
                   contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
-                  formatter={(_v, name, item) => name === "base" ? ["", ""] : [`${item?.payload?.etiketDeger} TEP`, item?.payload?.etiket]}
+                  formatter={(_v, name, item) => name === "base" ? ["", ""] : [`${item?.payload?.etiketDeger} TEP`, t(item?.payload?.etiket)]}
                 />
                 <Bar dataKey="base" stackId="w" fill="transparent" isAnimationActive={false} />
                 <Bar dataKey="gorunen" stackId="w" radius={[3, 3, 0, 0]} maxBarSize={54} isAnimationActive={false}>

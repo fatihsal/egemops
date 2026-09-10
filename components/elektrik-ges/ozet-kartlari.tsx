@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Sparkline } from "@/components/common/sparkline";
 import { RadialOran } from "@/components/kayit-detay/parcalar";
 import { useElektrikGesAnaliz } from "@/lib/queries/elektrik-ges";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayiOndalik } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -38,6 +39,7 @@ function Baslik({ children, ek }: { children: React.ReactNode; ek?: string }) {
 
 export function ElektrikOzetKartlari() {
   const { data, isLoading } = useElektrikGesAnaliz();
+  const { t } = useDil();
 
   if (isLoading || !data) {
     return (
@@ -62,10 +64,10 @@ export function ElektrikOzetKartlari() {
       {/* YTD */}
       <Card className="h-full">
         <CardContent className="flex h-full flex-col gap-3">
-          <Baslik>Yılbaşından Bu Yana (YTD)</Baslik>
+          <Baslik>{t("Yılbaşından Bu Yana (YTD)")}</Baslik>
           <ul className="space-y-2.5">
             <li>
-              <div className="text-[11px] text-muted-foreground">Toplam Elektrik</div>
+              <div className="text-[11px] text-muted-foreground">{t("Toplam Elektrik")}</div>
               <div className="flex items-baseline gap-1.5">
                 <span className="font-heading text-lg font-bold tracking-tight">{o.ytd.toplamElektrik}</span>
                 <span className="text-xs text-muted-foreground">GWh</span>
@@ -73,7 +75,7 @@ export function ElektrikOzetKartlari() {
               </div>
             </li>
             <li>
-              <div className="text-[11px] text-muted-foreground">GES Üretimi</div>
+              <div className="text-[11px] text-muted-foreground">{t("GES Üretimi")}</div>
               <div className="flex items-baseline gap-1.5">
                 <span className="font-heading text-lg font-bold tracking-tight">{o.ytd.gesUretim}</span>
                 <span className="text-xs text-muted-foreground">GWh</span>
@@ -81,7 +83,7 @@ export function ElektrikOzetKartlari() {
               </div>
             </li>
             <li>
-              <div className="text-[11px] text-muted-foreground">GES Karşılama</div>
+              <div className="text-[11px] text-muted-foreground">{t("GES Karşılama")}</div>
               <div className="flex items-baseline gap-1.5">
                 <span className="font-heading text-lg font-bold tracking-tight">%{o.ytd.gesKarsilama}</span>
                 <MiniDegisim yuzde={o.ytd.gesKarsilamaDegisim} puan />
@@ -94,7 +96,7 @@ export function ElektrikOzetKartlari() {
       {/* En Yüksek Tüketim */}
       <Card className="h-full">
         <CardContent className="flex h-full flex-col gap-1.5">
-          <Baslik>En Yüksek Tüketim</Baslik>
+          <Baslik>{t("En Yüksek Tüketim")}</Baslik>
           <div className="text-xs text-muted-foreground">{o.enYuksek.donem}</div>
           <div className="flex items-baseline gap-1">
             <span className="font-heading text-2xl font-bold tracking-tight">{o.enYuksek.gwh}</span>
@@ -111,7 +113,7 @@ export function ElektrikOzetKartlari() {
       {/* En Düşük Tüketim */}
       <Card className="h-full">
         <CardContent className="flex h-full flex-col gap-1.5">
-          <Baslik>En Düşük Tüketim</Baslik>
+          <Baslik>{t("En Düşük Tüketim")}</Baslik>
           <div className="text-xs text-muted-foreground">{o.enDusuk.donem}</div>
           <div className="flex items-baseline gap-1">
             <span className="font-heading text-2xl font-bold tracking-tight">{o.enDusuk.gwh}</span>
@@ -128,19 +130,19 @@ export function ElektrikOzetKartlari() {
       {/* Ortalama Aylık Tüketim */}
       <Card className="h-full">
         <CardContent className="flex h-full flex-col gap-1.5">
-          <Baslik>Ortalama Aylık Tüketim</Baslik>
+          <Baslik>{t("Ortalama Aylık Tüketim")}</Baslik>
           <div className="mt-auto flex items-baseline gap-1">
             <span className="font-heading text-2xl font-bold tracking-tight">{o.ortalama}</span>
             <span className="text-sm text-muted-foreground">GWh</span>
           </div>
-          <p className="text-[11px] text-muted-foreground">Seçili dönem ortalaması</p>
+          <p className="text-[11px] text-muted-foreground">{t("Seçili dönem ortalaması")}</p>
         </CardContent>
       </Card>
 
       {/* Elektrik Yoğunluğu */}
       <Card className="h-full">
         <CardContent className="flex h-full flex-col gap-1.5">
-          <Baslik ek="(kWh/ton)">Elektrik Yoğunluğu</Baslik>
+          <Baslik ek="(kWh/ton)">{t("Elektrik Yoğunluğu")}</Baslik>
           <div className="flex items-baseline gap-1">
             <span className="font-heading text-2xl font-bold tracking-tight">{o.yogunluk.deger}</span>
             <span className="text-sm text-muted-foreground">kWh/ton</span>
@@ -148,7 +150,7 @@ export function ElektrikOzetKartlari() {
           <div className="mt-auto space-y-0.5">
             <MiniDegisim yuzde={o.yogunluk.degisim} />
             <p className="text-[11px] leading-tight text-muted-foreground">
-              Geçen yılın aynı dönemine göre
+              {t("Geçen yılın aynı dönemine göre")}
             </p>
           </div>
         </CardContent>
@@ -157,7 +159,7 @@ export function ElektrikOzetKartlari() {
       {/* Şebekeye Bağımlılık Oranı */}
       <Card className="h-full">
         <CardContent className="flex h-full flex-col items-center gap-2 text-center">
-          <Baslik>Şebekeye Bağımlılık Oranı</Baslik>
+          <Baslik>{t("Şebekeye Bağımlılık Oranı")}</Baslik>
           <RadialOran
             deger={o.sebekeBagimlilik}
             renk="#0d9488"

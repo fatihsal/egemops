@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useElektrikGesAnaliz } from "@/lib/queries/elektrik-ges";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi, sayi2, sayiOndalik } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { ElektrikAylik } from "@/lib/types";
@@ -60,6 +61,7 @@ function ToplamHucre({ deger, max }: { deger: number; max: number }) {
 
 export function ElektrikDetayVeriler() {
   const { data, isLoading } = useElektrikGesAnaliz();
+  const { t } = useDil();
   const [sayfa, setSayfa] = React.useState(1);
   const [boyut, setBoyut] = React.useState(6);
 
@@ -91,17 +93,17 @@ export function ElektrikDetayVeriler() {
       <CardHeader>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="space-y-0.5">
-            <h3 className="font-heading text-base font-medium">Detaylı Veriler</h3>
-            <p className="text-xs text-muted-foreground">Tüm dönemlerin tam kırılımı · 12 dönem</p>
+            <h3 className="font-heading text-base font-medium">{t("Detaylı Veriler")}</h3>
+            <p className="text-xs text-muted-foreground">{t("Tüm dönemlerin tam kırılımı · 12 dönem")}</p>
           </div>
           <Button
             variant="outline"
             size="sm"
             className="gap-1.5 bg-card"
-            onClick={() => toast.success("Detaylı veriler Excel'e aktarıldı")}
+            onClick={() => toast.success(t("Detaylı veriler Excel'e aktarıldı"))}
           >
             <Icon icon="vscode-icons:file-type-excel" className="size-4" />
-            Excel&apos;e Aktar
+            {t("Excel'e Aktar")}
           </Button>
         </div>
       </CardHeader>
@@ -119,31 +121,31 @@ export function ElektrikDetayVeriler() {
                 <TableHeader>
                   {/* Grup başlıkları */}
                   <TableRow className="border-b-0 hover:bg-transparent">
-                    <TableHead rowSpan={2} className="align-bottom whitespace-nowrap">Dönem</TableHead>
+                    <TableHead rowSpan={2} className="align-bottom whitespace-nowrap">{t("Dönem")}</TableHead>
                     <TableHead colSpan={3} className={cn("text-center text-[11px] font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-400", grupBaslangic)}>
-                      Elektrik Tüketimi (kWh)
+                      {t("Elektrik Tüketimi (kWh)")}
                     </TableHead>
                     <TableHead colSpan={2} className={cn("text-center text-[11px] font-semibold uppercase tracking-wide text-emerald-600 dark:text-emerald-400", grupBaslangic)}>
-                      GES Üretimi (kWh)
+                      {t("GES Üretimi (kWh)")}
                     </TableHead>
                     <TableHead colSpan={2} className={cn("text-center text-[11px] font-semibold uppercase tracking-wide text-teal-600 dark:text-teal-400", grupBaslangic)}>
-                      Verimlilik
+                      {t("Verimlilik")}
                     </TableHead>
                     <TableHead colSpan={2} className={cn("text-center text-[11px] font-semibold uppercase tracking-wide text-muted-foreground", grupBaslangic)}>
-                      Enerji
+                      {t("Enerji")}
                     </TableHead>
                   </TableRow>
                   {/* Sütun başlıkları */}
                   <TableRow className="hover:bg-transparent">
-                    <TableHead className={cn("text-right whitespace-nowrap", grupBaslangic)}>Şebeke</TableHead>
-                    <TableHead className="text-right whitespace-nowrap">GES Öz</TableHead>
-                    <TableHead className="text-right whitespace-nowrap">Fabrika Toplam</TableHead>
-                    <TableHead className={cn("text-right whitespace-nowrap", grupBaslangic)}>Üretim</TableHead>
-                    <TableHead className="text-right whitespace-nowrap">Şebekeye Verilen</TableHead>
-                    <TableHead className={cn("text-right whitespace-nowrap", grupBaslangic)}>GES Karşılama</TableHead>
-                    <TableHead className="text-right whitespace-nowrap">Öz Tüketim</TableHead>
-                    <TableHead className={cn("text-right whitespace-nowrap", grupBaslangic)}>Elektrik TEP</TableHead>
-                    <TableHead className="text-right whitespace-nowrap">Yoğunluk <span className="font-normal text-muted-foreground">(kWh/ton)</span></TableHead>
+                    <TableHead className={cn("text-right whitespace-nowrap", grupBaslangic)}>{t("Şebeke")}</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("GES Öz")}</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("Fabrika Toplam")}</TableHead>
+                    <TableHead className={cn("text-right whitespace-nowrap", grupBaslangic)}>{t("Üretim")}</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("Şebekeye Verilen")}</TableHead>
+                    <TableHead className={cn("text-right whitespace-nowrap", grupBaslangic)}>{t("GES Karşılama")}</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("Öz Tüketim")}</TableHead>
+                    <TableHead className={cn("text-right whitespace-nowrap", grupBaslangic)}>{t("Elektrik TEP")}</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("Yoğunluk")} <span className="font-normal text-muted-foreground">(kWh/ton)</span></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -157,7 +159,7 @@ export function ElektrikDetayVeriler() {
                             {zirve ? (
                               <span className="inline-flex items-center gap-0.5 rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:bg-amber-950 dark:text-amber-300">
                                 <Icon icon="solar:arrow-up-bold" className="size-2.5" />
-                                Zirve
+                                {t("Zirve")}
                               </span>
                             ) : null}
                           </div>
@@ -183,7 +185,7 @@ export function ElektrikDetayVeriler() {
                 </TableBody>
                 <tfoot>
                   <TableRow className="border-t-2 bg-muted/40 font-medium hover:bg-muted/40">
-                    <TableCell className="whitespace-nowrap text-xs uppercase tracking-wide text-muted-foreground">Toplam / Ort.</TableCell>
+                    <TableCell className="whitespace-nowrap text-xs uppercase tracking-wide text-muted-foreground">{t("Toplam / Ort.")}</TableCell>
                     <TableCell className={cn("text-right tabular-nums", grupBaslangic)}>{sayi(topla((r) => r.sebeke))}</TableCell>
                     <TableCell className="text-right tabular-nums">{sayi(topla((r) => r.gesOz))}</TableCell>
                     <TableCell className="text-right tabular-nums font-semibold">{sayi(topla((r) => r.fabrikaToplam))}</TableCell>
@@ -204,10 +206,10 @@ export function ElektrikDetayVeriler() {
                 <span className="tabular-nums">
                   {sayi(bas + 1)}–{sayi(Math.min(bas + boyut, satirlar.length))}
                 </span>{" "}
-                / {sayi(satirlar.length)} dönem
+                / {sayi(satirlar.length)} {t("dönem")}
               </span>
               <div className="flex items-center gap-1">
-                <Button variant="outline" size="icon-sm" aria-label="Önceki" disabled={geciliSayfa <= 1} onClick={() => setSayfa((s) => Math.max(1, s - 1))}>
+                <Button variant="outline" size="icon-sm" aria-label={t("Önceki")} disabled={geciliSayfa <= 1} onClick={() => setSayfa((s) => Math.max(1, s - 1))}>
                   <ChevronLeft className="size-4" />
                 </Button>
                 {Array.from({ length: toplamSayfa }, (_, i) => i + 1).map((n) => (
@@ -215,12 +217,12 @@ export function ElektrikDetayVeriler() {
                     {n}
                   </Button>
                 ))}
-                <Button variant="outline" size="icon-sm" aria-label="Sonraki" disabled={geciliSayfa >= toplamSayfa} onClick={() => setSayfa((s) => Math.min(toplamSayfa, s + 1))}>
+                <Button variant="outline" size="icon-sm" aria-label={t("Sonraki")} disabled={geciliSayfa >= toplamSayfa} onClick={() => setSayfa((s) => Math.min(toplamSayfa, s + 1))}>
                   <ChevronRight className="size-4" />
                 </Button>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-muted-foreground">Sayfa başına:</span>
+                <span className="text-muted-foreground">{t("Sayfa başına")}:</span>
                 <Select value={String(boyut)} onValueChange={(v) => { setBoyut(Number(v)); setSayfa(1); }}>
                   <SelectTrigger size="sm" className="w-[68px] bg-card">
                     <SelectValue />

@@ -14,19 +14,21 @@ import {
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePerformansAnaliz } from "@/lib/queries/performans";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi } from "@/lib/format";
 
 export function PerformansUretimEnerji() {
   const { data, isLoading } = usePerformansAnaliz();
+  const { t } = useDil();
 
   return (
     <Card className="h-full">
       <CardHeader>
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h3 className="font-heading text-base font-medium">Üretim – Enerji İlişkisi</h3>
+          <h3 className="font-heading text-base font-medium">{t("Üretim – Enerji İlişkisi")}</h3>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-blue-500" /> Üretim (ton)</span>
-            <span className="inline-flex items-center gap-1.5"><span className="h-[3px] w-3.5 rounded-full bg-teal-600" /> Toplam TEP</span>
+            <span className="inline-flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-blue-500" /> {t("Üretim (ton)")}</span>
+            <span className="inline-flex items-center gap-1.5"><span className="h-[3px] w-3.5 rounded-full bg-teal-600" /> {t("Toplam TEP")}</span>
           </div>
         </div>
       </CardHeader>
@@ -45,7 +47,7 @@ export function PerformansUretimEnerji() {
                   cursor={{ fill: "var(--muted)", opacity: 0.4 }}
                   contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
                   labelFormatter={(_, p) => p?.[0]?.payload?.donem ?? ""}
-                  formatter={(value, name) => name === "toplamTep" ? [`${sayi(Number(value))} TEP`, "Toplam TEP"] : [`${sayi(Number(value))} ton`, "Üretim"]}
+                  formatter={(value, name) => name === "toplamTep" ? [`${sayi(Number(value))} TEP`, t("Toplam TEP")] : [`${sayi(Number(value))} ton`, t("Üretim")]}
                 />
                 <defs>
                   <linearGradient id="uretimDolgu" x1="0" y1="0" x2="0" y2="1">

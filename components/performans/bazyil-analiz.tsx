@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/table";
 import { PerformansBazYil } from "@/components/performans/baz-yil-karti";
 import { usePerformansAnaliz } from "@/lib/queries/performans";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi2, sayiOndalik } from "@/lib/format";
 
 const uc = (n: number) => n.toLocaleString("tr-TR", { minimumFractionDigits: 3, maximumFractionDigits: 3 });
@@ -31,6 +32,7 @@ const num = (s: string) => Number(s.replace(/\./g, "").replace(",", "."));
 
 export function PerformansBazYilAnaliz() {
   const { data, isLoading } = usePerformansAnaliz();
+  const { t } = useDil();
   if (isLoading || !data) return <Skeleton className="h-[520px] w-full rounded-xl" />;
 
   const tasarruf = data.kpiler.find((k) => k.anahtar === "tasarruf");
@@ -43,10 +45,10 @@ export function PerformansBazYilAnaliz() {
         <Card className="h-full xl:col-span-8">
           <CardHeader>
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <h3 className="font-heading text-base font-medium">Baz Yıl vs 2026 Gerçekleşen <span className="text-sm font-normal text-muted-foreground">(TEP/ton)</span></h3>
+              <h3 className="font-heading text-base font-medium">{t("Baz Yıl vs 2026 Gerçekleşen")} <span className="text-sm font-normal text-muted-foreground">(TEP/ton)</span></h3>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
-                <span className="inline-flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-slate-300" /> Baz Yıl (2024)</span>
-                <span className="inline-flex items-center gap-1.5"><span className="h-[3px] w-3.5 rounded-full bg-teal-600" /> 2026 Gerçekleşen</span>
+                <span className="inline-flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-slate-300" /> {t("Baz Yıl (2024)")}</span>
+                <span className="inline-flex items-center gap-1.5"><span className="h-[3px] w-3.5 rounded-full bg-teal-600" /> {t("2026 Gerçekleşen")}</span>
               </div>
             </div>
           </CardHeader>
@@ -67,7 +69,7 @@ export function PerformansBazYilAnaliz() {
                     cursor={{ stroke: "var(--border)" }}
                     contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
                     labelFormatter={(_, p) => p?.[0]?.payload?.donem ?? ""}
-                    formatter={(value, name) => [`${uc(Number(value))} TEP/ton`, name === "bazEnPI" ? "Baz Yıl" : "Gerçekleşen"]}
+                    formatter={(value, name) => [`${uc(Number(value))} TEP/ton`, name === "bazEnPI" ? t("Baz Yıl") : t("Gerçekleşen")]}
                   />
                   <Area type="monotone" dataKey="bazEnPI" stroke="#94a3b8" strokeWidth={1.5} fill="url(#bazDolgu)" />
                   <Line type="monotone" dataKey="gercekEnPI" stroke="#0d9488" strokeWidth={2.5} dot={{ r: 3, fill: "#0d9488" }} activeDot={{ r: 5 }} />
@@ -79,7 +81,7 @@ export function PerformansBazYilAnaliz() {
 
         <Card className="h-full xl:col-span-4">
           <CardHeader>
-            <h3 className="font-heading text-base font-medium">Tasarruf Özeti</h3>
+            <h3 className="font-heading text-base font-medium">{t("Tasarruf Özeti")}</h3>
           </CardHeader>
           <CardContent className="flex-1">
             <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
@@ -91,7 +93,7 @@ export function PerformansBazYilAnaliz() {
                   <span className="font-heading text-4xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400">{tasarruf?.deger}</span>
                   <span className="text-sm text-muted-foreground">TEP</span>
                 </p>
-                <p className="mt-1 text-xs text-muted-foreground">Baz performansa göre toplam tasarruf</p>
+                <p className="mt-1 text-xs text-muted-foreground">{t("Baz performansa göre toplam tasarruf")}</p>
               </div>
             </div>
           </CardContent>
@@ -101,17 +103,17 @@ export function PerformansBazYilAnaliz() {
       {/* İyileşme tablosu */}
       <Card>
         <CardHeader>
-          <h3 className="font-heading text-base font-medium">Baz Yıla Göre İyileşme</h3>
+          <h3 className="font-heading text-base font-medium">{t("Baz Yıla Göre İyileşme")}</h3>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto rounded-xl border">
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/40">
-                  <TableHead className="whitespace-nowrap">Gösterge</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">Baz (2024)</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">Gerçek (2026)</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">İyileşme</TableHead>
+                  <TableHead className="whitespace-nowrap">{t("Gösterge")}</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">{t("Baz (2024)")}</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">{t("Gerçek (2026)")}</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">{t("İyileşme")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -119,7 +121,7 @@ export function PerformansBazYilAnaliz() {
                   const iyilesme = Math.round(((num(h.gercek) - num(h.baz)) / num(h.baz)) * 1000) / 10;
                   return (
                     <TableRow key={h.gosterge} className="odd:bg-muted/20 hover:bg-muted/40">
-                      <TableCell className="font-medium whitespace-nowrap">{h.gosterge}</TableCell>
+                      <TableCell className="font-medium whitespace-nowrap">{t(h.gosterge)}</TableCell>
                       <TableCell className="text-right tabular-nums text-muted-foreground">{h.baz}</TableCell>
                       <TableCell className="text-right font-medium tabular-nums">{h.gercek}</TableCell>
                       <TableCell className="text-right">

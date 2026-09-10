@@ -17,6 +17,7 @@ import { PerformansBazYilAnaliz } from "@/components/performans/bazyil-analiz";
 import { PerformansHedeflerAnaliz } from "@/components/performans/hedefler-analiz";
 import { PerformansSapmaAnaliz } from "@/components/performans/sapma-analiz";
 import { PerformansDetayVeriler } from "@/components/performans/detay-veriler";
+import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
 
 const SEKMELER = [
@@ -31,6 +32,7 @@ const SEKMELER = [
 type Sekme = (typeof SEKMELER)[number]["anahtar"];
 
 export function PerformansIcerik() {
+  const { t } = useDil();
   const [sekme, setSekme] = React.useState<Sekme>("genel");
 
   return (
@@ -46,7 +48,7 @@ export function PerformansIcerik() {
               sekme === s.anahtar ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground",
             )}
           >
-            {s.etiket}
+            {t(s.etiket)}
           </button>
         ))}
       </div>

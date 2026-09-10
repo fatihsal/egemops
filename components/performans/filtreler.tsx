@@ -4,7 +4,7 @@ import * as React from "react";
 import { CalendarDays, ChevronDown } from "lucide-react";
 import type { DateRange } from "react-day-picker";
 import { format } from "date-fns";
-import { tr } from "date-fns/locale";
+import { tr, enUS } from "date-fns/locale";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useDil } from "@/components/providers/dil-provider";
 
 const VARSAYILAN: DateRange = { from: new Date(2026, 0, 1), to: new Date(2026, 7, 26) };
 const YILLAR = ["2024", "2025", "2026"];
@@ -33,7 +34,7 @@ const ENPI = [
   "Doğalgaz TEP/ton",
 ];
 
-function EtiketliSecim({ etiket, deger, secenekler, onChange, w = "w-[130px]" }: { etiket: string; deger: string; secenekler: string[]; onChange: (v: string) => void; w?: string }) {
+function EtiketliSecim({ etiket, deger, secenekler, etiketler, onChange, w = "w-[130px]" }: { etiket: string; deger: string; secenekler: string[]; etiketler?: string[]; onChange: (v: string) => void; w?: string }) {
   return (
     <div className="flex h-9 items-center gap-2 rounded-lg border bg-card px-3">
       <span className="whitespace-nowrap text-sm text-muted-foreground">{etiket}</span>
@@ -42,8 +43,8 @@ function EtiketliSecim({ etiket, deger, secenekler, onChange, w = "w-[130px]" }:
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          {secenekler.map((s) => (
-            <SelectItem key={s} value={s}>{s}</SelectItem>
+          {secenekler.map((s, i) => (
+            <SelectItem key={s} value={s}>{etiketler?.[i] ?? s}</SelectItem>
           ))}
         </SelectContent>
       </Select>
@@ -53,6 +54,7 @@ function EtiketliSecim({ etiket, deger, secenekler, onChange, w = "w-[130px]" }:
 
 /** Enerji Performansı üst filtreleri — tarih aralığı, yıl, baz yıl, EnPI (mock). */
 export function PerformansFiltreler() {
+  const { t, dil } = useDil();
   const [aralik, setAralik] = React.useState<DateRange | undefined>(VARSAYILAN);
   const [acik, setAcik] = React.useState(false);
   const [yil, setYil] = React.useState("2026");
@@ -61,7 +63,7 @@ export function PerformansFiltreler() {
 
   const etiket = aralik?.from && aralik?.to
     ? `${format(aralik.from, "dd.MM.yyyy")} – ${format(aralik.to, "dd.MM.yyyy")}`
-    : "Tarih aralığı";
+    : t("Tarih aralığı");
 
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -72,37 +74,38 @@ export function PerformansFiltreler() {
           <ChevronDown className="size-4 text-muted-foreground" />
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="end">
-          <Calendar mode="range" numberOfMonths={2} selected={aralik} onSelect={setAralik} locale={tr} autoFocus />
+          <Calendar mode="range" numberOfMonths={2} selected={aralik} onSelect={setAralik} locale={dil === "en" ? enUS : tr} autoFocus />
         </PopoverContent>
       </Popover>
 
       <EtiketliSecim
-        etiket="Yıl:"
+        etiket={t("Yıl:")}
         deger={yil}
         secenekler={YILLAR}
         onChange={(v) => {
           setYil(v);
-          toast.success(`${v} yılı verileri yüklendi`);
+          toast.success(`${v} ${t("yılı verileri yüklendi")}`);
         }}
         w="w-[76px]"
       />
       <EtiketliSecim
-        etiket="Baz Yıl:"
+        etiket={t("Baz Yıl:")}
         deger={bazYil}
         secenekler={BAZ_YILLAR}
         onChange={(v) => {
           setBazYil(v);
-          toast(`Baz yıl ${v} olarak ayarlandı`);
+          toast(`${t("Baz yıl")} ${v} ${t("olarak ayarlandı")}`);
         }}
         w="w-[76px]"
       />
       <EtiketliSecim
-        etiket="EnPI:"
+        etiket={t("EnPI:")}
         deger={enpi}
+        etiketler={ENPI.map((e) => t(e))}
         secenekler={ENPI}
         onChange={(v) => {
           setEnpi(v);
-          toast(`Gösterge: ${v}`);
+          toast(`${t("Gösterge")}: ${t(v)}`);
         }}
         w="w-[168px]"
       />

@@ -4,15 +4,17 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sparkline } from "@/components/common/sparkline";
 import { usePerformansAnaliz } from "@/lib/queries/performans";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi } from "@/lib/format";
 
 export function PerformansBeklenenGerceklesen() {
   const { data, isLoading } = usePerformansAnaliz();
+  const { t } = useDil();
 
   return (
     <Card className="h-full">
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">Beklenen ve Gerçekleşen Enerji</h3>
+        <h3 className="font-heading text-base font-medium">{t("Beklenen ve Gerçekleşen Enerji")}</h3>
       </CardHeader>
       <CardContent className="flex-1">
         {isLoading || !data ? (
@@ -25,7 +27,7 @@ export function PerformansBeklenenGerceklesen() {
               { etiket: "Performans Kazancı", deger: data.beklenen.kazanc, renk: "#059669", trend: data.beklenen.kazancTrend, sinif: "text-emerald-600 dark:text-emerald-400" },
             ].map((k) => (
               <div key={k.etiket} className="space-y-2 text-center sm:text-left">
-                <p className="text-xs text-muted-foreground">{k.etiket}</p>
+                <p className="text-xs text-muted-foreground">{t(k.etiket)}</p>
                 <p className="flex items-baseline justify-center gap-1 sm:justify-start">
                   <span className={`font-heading text-3xl font-bold tracking-tight tabular-nums ${k.sinif}`}>{sayi(k.deger)}</span>
                   <span className="text-sm text-muted-foreground">TEP</span>

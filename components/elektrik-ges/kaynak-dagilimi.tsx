@@ -5,6 +5,7 @@ import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useElektrikGesAnaliz } from "@/lib/queries/elektrik-ges";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi, sayi2 } from "@/lib/format";
 import type { ElektrikKaynakDilim } from "@/lib/types";
 
@@ -16,11 +17,12 @@ const RENK: Record<ElektrikKaynakDilim["anahtar"], string> = {
 
 export function ElektrikKaynakDagilimi() {
   const { data, isLoading } = useElektrikGesAnaliz();
+  const { t } = useDil();
 
   return (
     <Card className="h-full">
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">Elektrik Kaynak Dağılımı</h3>
+        <h3 className="font-heading text-base font-medium">{t("Elektrik Kaynak Dağılımı")}</h3>
       </CardHeader>
       <CardContent className="flex-1">
         {isLoading || !data ? (
@@ -62,7 +64,7 @@ export function ElektrikKaynakDagilimi() {
                 <span className="font-heading text-2xl font-bold tracking-tight">
                   {sayi2(data.toplamElektrikGwh)}
                 </span>
-                <span className="text-xs text-muted-foreground">GWh toplam</span>
+                <span className="text-xs text-muted-foreground">{t("GWh toplam")}</span>
               </div>
             </div>
 
@@ -74,7 +76,7 @@ export function ElektrikKaynakDagilimi() {
                     style={{ background: RENK[k.anahtar] }}
                     aria-hidden
                   />
-                  <span className="flex-1 text-muted-foreground">{k.etiket}</span>
+                  <span className="flex-1 text-muted-foreground">{t(k.etiket)}</span>
                   <span className="font-medium tabular-nums">{sayi2(k.gwh)} GWh</span>
                   <span className="w-12 text-right font-semibold tabular-nums">%{k.yuzde}</span>
                 </li>

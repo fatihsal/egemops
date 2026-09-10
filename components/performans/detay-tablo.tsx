@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { usePerformansAnaliz } from "@/lib/queries/performans";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { PerformansAylik } from "@/lib/types";
@@ -25,12 +26,13 @@ const PERF: Record<PerformansAylik["performans"], { etiket: string; sinif: strin
 
 export function PerformansDetayTablo() {
   const { data, isLoading } = usePerformansAnaliz();
+  const { t } = useDil();
   const satirlar = (data?.aylik ?? []).slice(0, 7);
 
   return (
     <Card className="h-full">
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">Aylık Performans Verileri</h3>
+        <h3 className="font-heading text-base font-medium">{t("Aylık Performans Verileri")}</h3>
       </CardHeader>
       <CardContent>
         {isLoading ? (
@@ -40,13 +42,13 @@ export function PerformansDetayTablo() {
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/40">
-                  <TableHead className="whitespace-nowrap">Dönem</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">Üretim <span className="font-normal text-muted-foreground">(ton)</span></TableHead>
-                  <TableHead className="text-right whitespace-nowrap">Baz EnPI</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">Hedef EnPI</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">Gerçek EnPI</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">Sapma</TableHead>
-                  <TableHead className="whitespace-nowrap">Performans</TableHead>
+                  <TableHead className="whitespace-nowrap">{t("Dönem")}</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">{t("Üretim")} <span className="font-normal text-muted-foreground">(ton)</span></TableHead>
+                  <TableHead className="text-right whitespace-nowrap">{t("Baz EnPI")}</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">{t("Hedef EnPI")}</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">{t("Gerçek EnPI")}</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">{t("Sapma")}</TableHead>
+                  <TableHead className="whitespace-nowrap">{t("Performans")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -55,7 +57,7 @@ export function PerformansDetayTablo() {
                   const artiSapma = r.sapma > 0;
                   return (
                     <TableRow key={r.ay} className="odd:bg-muted/20 hover:bg-muted/50">
-                      <TableCell className="font-medium whitespace-nowrap">{r.ay}</TableCell>
+                      <TableCell className="font-medium whitespace-nowrap">{t(r.ay)}</TableCell>
                       <TableCell className="text-right tabular-nums">{sayi(r.uretim)}</TableCell>
                       <TableCell className="text-right tabular-nums text-muted-foreground">{uc(r.bazEnPI)}</TableCell>
                       <TableCell className="text-right tabular-nums text-muted-foreground">{uc(r.hedefEnPI)}</TableCell>
@@ -64,7 +66,7 @@ export function PerformansDetayTablo() {
                         {artiSapma ? "+" : "−"}{uc(Math.abs(r.sapma))}
                       </TableCell>
                       <TableCell>
-                        <span className={cn("inline-block rounded-full px-2.5 py-0.5 text-[11px] font-medium whitespace-nowrap", p.sinif)}>{p.etiket}</span>
+                        <span className={cn("inline-block rounded-full px-2.5 py-0.5 text-[11px] font-medium whitespace-nowrap", p.sinif)}>{t(p.etiket)}</span>
                       </TableCell>
                     </TableRow>
                   );

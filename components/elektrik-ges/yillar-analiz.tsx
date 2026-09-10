@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/table";
 import { Degisim } from "@/components/kayit-detay/parcalar";
 import { useElektrikGesAnaliz } from "@/lib/queries/elektrik-ges";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi2, sayiOndalik } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -55,6 +56,7 @@ const CIZGI = [
 
 export function YillarAnaliz() {
   const { data, isLoading } = useElektrikGesAnaliz();
+  const { t } = useDil();
 
   if (isLoading || !data) {
     return <Skeleton className="h-[520px] w-full rounded-xl" />;
@@ -77,16 +79,16 @@ export function YillarAnaliz() {
           <Card key={y.yil} className="h-full">
             <CardContent className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-sm text-muted-foreground">{y.yil} Yıllık Elektrik</p>
+                <p className="text-sm text-muted-foreground">{y.yil} {t("Yıllık Elektrik")}</p>
                 <p className="mt-1 flex items-baseline gap-1.5">
                   <span className="font-heading text-2xl font-bold tracking-tight">{sayi2(y.toplam)}</span>
                   <span className="text-sm text-muted-foreground">GWh</span>
                 </p>
                 <div className="mt-1.5">
                   {y.yoy === null ? (
-                    <span className="text-xs text-muted-foreground">Baz yıl</span>
+                    <span className="text-xs text-muted-foreground">{t("Baz yıl")}</span>
                   ) : (
-                    <Degisim yuzde={y.yoy} etiket="önceki yıl" />
+                    <Degisim yuzde={y.yoy} etiket={t("önceki yıl")} />
                   )}
                 </div>
               </div>
@@ -107,7 +109,7 @@ export function YillarAnaliz() {
           <CardHeader>
             <div className="flex flex-wrap items-center justify-between gap-3">
               <h3 className="font-heading text-base font-medium">
-                Yıllara Göre Aylık Elektrik{" "}
+                {t("Yıllara Göre Aylık Elektrik")}{" "}
                 <span className="text-sm font-normal text-muted-foreground">(GWh)</span>
               </h3>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
@@ -131,7 +133,7 @@ export function YillarAnaliz() {
                     contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
                     formatter={(value, name) => {
                       const c = CIZGI.find((x) => x.anahtar === name);
-                      return [value === null ? "—" : `${sayi2(Number(value))} GWh`, c?.etiket ?? String(name)];
+                      return [value === null ? "—" : `${sayi2(Number(value))} GWh`, t(c?.etiket ?? String(name))];
                     }}
                   />
                   {CIZGI.map((c) => (
@@ -156,15 +158,15 @@ export function YillarAnaliz() {
           <CardHeader>
             <div className="space-y-2.5">
               <h3 className="font-heading text-base font-medium">
-                Yıllık Kaynak Kırılımı{" "}
+                {t("Yıllık Kaynak Kırılımı")}{" "}
                 <span className="text-sm font-normal text-muted-foreground">(GWh)</span>
               </h3>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="size-2 rounded-full bg-blue-600" /> Şebeke
+                  <span className="size-2 rounded-full bg-blue-600" /> {t("Şebeke")}
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="size-2 rounded-full bg-green-600" /> GES Öz
+                  <span className="size-2 rounded-full bg-green-600" /> {t("GES Öz")}
                 </span>
               </div>
             </div>
@@ -179,7 +181,7 @@ export function YillarAnaliz() {
                   <Tooltip
                     cursor={{ fill: "var(--muted)", opacity: 0.4 }}
                     contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
-                    formatter={(value, name) => [`${sayi2(Number(value))} GWh`, name === "sebeke" ? "Şebeke" : "GES Öz"]}
+                    formatter={(value, name) => [`${sayi2(Number(value))} GWh`, name === "sebeke" ? t("Şebeke") : t("GES Öz")]}
                   />
                   <Bar dataKey="sebeke" stackId="y" fill="#2563eb" maxBarSize={48} />
                   <Bar dataKey="gesOz" stackId="y" fill="#16a34a" radius={[3, 3, 0, 0]} maxBarSize={48} />
@@ -193,18 +195,18 @@ export function YillarAnaliz() {
       {/* Yıllık özet tablosu */}
       <Card>
         <CardHeader>
-          <h3 className="font-heading text-base font-medium">Yıllık Özet</h3>
+          <h3 className="font-heading text-base font-medium">{t("Yıllık Özet")}</h3>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto rounded-xl border">
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/40">
-                  <TableHead className="whitespace-nowrap">Metrik</TableHead>
+                  <TableHead className="whitespace-nowrap">{t("Metrik")}</TableHead>
                   <TableHead className="text-right">2024</TableHead>
                   <TableHead className="text-right">2025</TableHead>
                   <TableHead className="text-right">2026</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">Değişim (25→26)</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">{t("Değişim (25→26)")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -215,7 +217,7 @@ export function YillarAnaliz() {
                   return (
                     <TableRow key={m.metrik} className={cn("hover:bg-muted/40", vurgu && "bg-primary/5 font-medium")}>
                       <TableCell className="whitespace-nowrap">
-                        {m.metrik}
+                        {t(m.metrik)}
                         <span className="ml-1 font-normal text-muted-foreground">({m.birim})</span>
                       </TableCell>
                       <TableCell className="text-right tabular-nums">{bicim(m.y2024)}</TableCell>

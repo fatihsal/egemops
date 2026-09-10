@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { usePerformansAnaliz } from "@/lib/queries/performans";
+import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
 import type { PerformansHedef } from "@/lib/types";
 
@@ -22,11 +23,12 @@ const DURUM: Record<PerformansHedef["durum"], { etiket: string; sinif: string }>
 
 export function PerformansHedeflerTablo() {
   const { data, isLoading } = usePerformansAnaliz();
+  const { t } = useDil();
 
   return (
     <Card className="h-full">
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">Enerji Hedefleri</h3>
+        <h3 className="font-heading text-base font-medium">{t("Enerji Hedefleri")}</h3>
       </CardHeader>
       <CardContent className="flex-1">
         {isLoading || !data ? (
@@ -36,11 +38,11 @@ export function PerformansHedeflerTablo() {
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/40">
-                  <TableHead className="whitespace-nowrap">Gösterge</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">Baz (2024)</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">Hedef (2026)</TableHead>
-                  <TableHead className="text-right whitespace-nowrap">Gerçek (2026)</TableHead>
-                  <TableHead className="whitespace-nowrap">Durum</TableHead>
+                  <TableHead className="whitespace-nowrap">{t("Gösterge")}</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">{t("Baz (2024)")}</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">{t("Hedef (2026)")}</TableHead>
+                  <TableHead className="text-right whitespace-nowrap">{t("Gerçek (2026)")}</TableHead>
+                  <TableHead className="whitespace-nowrap">{t("Durum")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -48,12 +50,12 @@ export function PerformansHedeflerTablo() {
                   const d = DURUM[h.durum];
                   return (
                     <TableRow key={h.gosterge} className="hover:bg-muted/40">
-                      <TableCell className="font-medium whitespace-nowrap">{h.gosterge}</TableCell>
+                      <TableCell className="font-medium whitespace-nowrap">{t(h.gosterge)}</TableCell>
                       <TableCell className="text-right tabular-nums text-muted-foreground">{h.baz}</TableCell>
                       <TableCell className="text-right tabular-nums text-muted-foreground">{h.hedef}</TableCell>
                       <TableCell className="text-right font-medium tabular-nums">{h.gercek}</TableCell>
                       <TableCell>
-                        <span className={cn("inline-block rounded-full px-2.5 py-0.5 text-[11px] font-medium whitespace-nowrap", d.sinif)}>{d.etiket}</span>
+                        <span className={cn("inline-block rounded-full px-2.5 py-0.5 text-[11px] font-medium whitespace-nowrap", d.sinif)}>{t(d.etiket)}</span>
                       </TableCell>
                     </TableRow>
                   );

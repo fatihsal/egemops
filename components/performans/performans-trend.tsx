@@ -13,6 +13,7 @@ import {
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePerformansAnaliz } from "@/lib/queries/performans";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi2 } from "@/lib/format";
 
 const uc = (n: number) => n.toLocaleString("tr-TR", { minimumFractionDigits: 3, maximumFractionDigits: 3 });
@@ -24,19 +25,20 @@ const SERI = [
 
 export function PerformansTrend() {
   const { data, isLoading } = usePerformansAnaliz();
+  const { t } = useDil();
 
   return (
     <Card className="h-full">
       <CardHeader>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h3 className="font-heading text-base font-medium">
-            Enerji Performans Trendi <span className="text-sm font-normal text-muted-foreground">(TEP/ton)</span>
+            {t("Enerji Performans Trendi")} <span className="text-sm font-normal text-muted-foreground">(TEP/ton)</span>
           </h3>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
             {SERI.map((s) => (
               <span key={s.anahtar} className="inline-flex items-center gap-1.5">
                 <span className="h-0 w-4 border-t-2" style={{ borderColor: s.renk, borderStyle: s.kesikli ? "dashed" : "solid" }} />
-                {s.etiket}
+                {t(s.etiket)}
               </span>
             ))}
           </div>
@@ -58,7 +60,7 @@ export function PerformansTrend() {
                   labelFormatter={(_, p) => p?.[0]?.payload?.donem ?? ""}
                   formatter={(value, name) => {
                     const s = SERI.find((x) => x.anahtar === name);
-                    return [`${uc(Number(value))} TEP/ton`, s?.etiket ?? String(name)];
+                    return [`${uc(Number(value))} TEP/ton`, t(s?.etiket ?? String(name))];
                   }}
                 />
                 {SERI.map((s) => (

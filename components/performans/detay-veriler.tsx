@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { usePerformansAnaliz } from "@/lib/queries/performans";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { PerformansAylik } from "@/lib/types";
@@ -40,6 +41,7 @@ const PERF: Record<PerformansAylik["performans"], { etiket: string; sinif: strin
 
 export function PerformansDetayVeriler() {
   const { data, isLoading } = usePerformansAnaliz();
+  const { t } = useDil();
   const [sayfa, setSayfa] = React.useState(1);
   const [boyut, setBoyut] = React.useState(6);
 
@@ -57,12 +59,12 @@ export function PerformansDetayVeriler() {
       <CardHeader>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="space-y-0.5">
-            <h3 className="font-heading text-base font-medium">Detaylı Veriler</h3>
-            <p className="text-xs text-muted-foreground">Tüm dönemlerin tam kırılımı · 12 dönem</p>
+            <h3 className="font-heading text-base font-medium">{t("Detaylı Veriler")}</h3>
+            <p className="text-xs text-muted-foreground">{t("Tüm dönemlerin tam kırılımı · 12 dönem")}</p>
           </div>
-          <Button variant="outline" size="sm" className="gap-1.5 bg-card" onClick={() => toast.success("Detaylı veriler Excel'e aktarıldı")}>
+          <Button variant="outline" size="sm" className="gap-1.5 bg-card" onClick={() => toast.success(t("Detaylı veriler Excel'e aktarıldı"))}>
             <Icon icon="vscode-icons:file-type-excel" className="size-4" />
-            Excel&apos;e Aktar
+            {t("Excel'e Aktar")}
           </Button>
         </div>
       </CardHeader>
@@ -75,19 +77,19 @@ export function PerformansDetayVeriler() {
               <Table>
                 <TableHeader>
                   <TableRow className="border-b-0 hover:bg-transparent">
-                    <TableHead rowSpan={2} className="align-bottom whitespace-nowrap">Dönem</TableHead>
-                    <TableHead colSpan={2} className={cn("text-center text-[11px] font-semibold uppercase tracking-wide text-muted-foreground", grup)}>Üretim & Enerji</TableHead>
+                    <TableHead rowSpan={2} className="align-bottom whitespace-nowrap">{t("Dönem")}</TableHead>
+                    <TableHead colSpan={2} className={cn("text-center text-[11px] font-semibold uppercase tracking-wide text-muted-foreground", grup)}>{t("Üretim & Enerji")}</TableHead>
                     <TableHead colSpan={3} className={cn("text-center text-[11px] font-semibold uppercase tracking-wide text-teal-600 dark:text-teal-400", grup)}>EnPI (TEP/ton)</TableHead>
-                    <TableHead colSpan={2} className={cn("text-center text-[11px] font-semibold uppercase tracking-wide text-muted-foreground", grup)}>Sonuç</TableHead>
+                    <TableHead colSpan={2} className={cn("text-center text-[11px] font-semibold uppercase tracking-wide text-muted-foreground", grup)}>{t("Sonuç")}</TableHead>
                   </TableRow>
                   <TableRow className="hover:bg-transparent">
-                    <TableHead className={cn("text-right whitespace-nowrap", grup)}>Üretim <span className="font-normal text-muted-foreground">(ton)</span></TableHead>
-                    <TableHead className="text-right whitespace-nowrap">Toplam TEP</TableHead>
-                    <TableHead className={cn("text-right", grup)}>Baz</TableHead>
-                    <TableHead className="text-right">Hedef</TableHead>
-                    <TableHead className="text-right">Gerçek</TableHead>
-                    <TableHead className={cn("text-right", grup)}>Sapma</TableHead>
-                    <TableHead className="whitespace-nowrap">Performans</TableHead>
+                    <TableHead className={cn("text-right whitespace-nowrap", grup)}>{t("Üretim")} <span className="font-normal text-muted-foreground">(ton)</span></TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("Toplam TEP")}</TableHead>
+                    <TableHead className={cn("text-right", grup)}>{t("Baz")}</TableHead>
+                    <TableHead className="text-right">{t("Hedef")}</TableHead>
+                    <TableHead className="text-right">{t("Gerçek")}</TableHead>
+                    <TableHead className={cn("text-right", grup)}>{t("Sapma")}</TableHead>
+                    <TableHead className="whitespace-nowrap">{t("Performans")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -96,7 +98,7 @@ export function PerformansDetayVeriler() {
                     const arti = r.sapma > 0;
                     return (
                       <TableRow key={r.ay} className="odd:bg-muted/20 hover:bg-muted/50">
-                        <TableCell className="font-medium whitespace-nowrap">{r.donem}</TableCell>
+                        <TableCell className="font-medium whitespace-nowrap">{t(r.donem)}</TableCell>
                         <TableCell className={cn("text-right tabular-nums", grup)}>{sayi(r.uretim)}</TableCell>
                         <TableCell className="text-right tabular-nums text-muted-foreground">{sayi(r.toplamTep)}</TableCell>
                         <TableCell className={cn("text-right tabular-nums text-muted-foreground", grup)}>{uc(r.bazEnPI)}</TableCell>
@@ -106,7 +108,7 @@ export function PerformansDetayVeriler() {
                           {arti ? "+" : "−"}{uc(Math.abs(r.sapma))}
                         </TableCell>
                         <TableCell>
-                          <span className={cn("inline-block rounded-full px-2.5 py-0.5 text-[11px] font-medium whitespace-nowrap", p.sinif)}>{p.etiket}</span>
+                          <span className={cn("inline-block rounded-full px-2.5 py-0.5 text-[11px] font-medium whitespace-nowrap", p.sinif)}>{t(p.etiket)}</span>
                         </TableCell>
                       </TableRow>
                     );
@@ -114,7 +116,7 @@ export function PerformansDetayVeriler() {
                 </TableBody>
                 <tfoot>
                   <TableRow className="border-t-2 bg-muted/40 font-medium hover:bg-muted/40">
-                    <TableCell className="whitespace-nowrap text-xs uppercase tracking-wide text-muted-foreground">Toplam / Ort.</TableCell>
+                    <TableCell className="whitespace-nowrap text-xs uppercase tracking-wide text-muted-foreground">{t("Toplam / Ort.")}</TableCell>
                     <TableCell className={cn("text-right tabular-nums", grup)}>{sayi(topla((r) => r.uretim))}</TableCell>
                     <TableCell className="text-right tabular-nums">{sayi(topla((r) => r.toplamTep))}</TableCell>
                     <TableCell className={cn("text-right tabular-nums text-muted-foreground", grup)}>{uc(ort((r) => r.bazEnPI))}</TableCell>
@@ -129,21 +131,21 @@ export function PerformansDetayVeriler() {
 
             <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
               <span className="text-muted-foreground">
-                <span className="tabular-nums">{sayi(bas + 1)}–{sayi(Math.min(bas + boyut, satirlar.length))}</span> / {sayi(satirlar.length)} dönem
+                <span className="tabular-nums">{sayi(bas + 1)}–{sayi(Math.min(bas + boyut, satirlar.length))}</span> / {sayi(satirlar.length)} {t("dönem")}
               </span>
               <div className="flex items-center gap-1">
-                <Button variant="outline" size="icon-sm" aria-label="Önceki" disabled={geciliSayfa <= 1} onClick={() => setSayfa((s) => Math.max(1, s - 1))}>
+                <Button variant="outline" size="icon-sm" aria-label={t("Önceki")} disabled={geciliSayfa <= 1} onClick={() => setSayfa((s) => Math.max(1, s - 1))}>
                   <ChevronLeft className="size-4" />
                 </Button>
                 {Array.from({ length: toplamSayfa }, (_, i) => i + 1).map((n) => (
                   <Button key={n} variant={n === geciliSayfa ? "default" : "ghost"} size="icon-sm" className="tabular-nums" onClick={() => setSayfa(n)}>{n}</Button>
                 ))}
-                <Button variant="outline" size="icon-sm" aria-label="Sonraki" disabled={geciliSayfa >= toplamSayfa} onClick={() => setSayfa((s) => Math.min(toplamSayfa, s + 1))}>
+                <Button variant="outline" size="icon-sm" aria-label={t("Sonraki")} disabled={geciliSayfa >= toplamSayfa} onClick={() => setSayfa((s) => Math.min(toplamSayfa, s + 1))}>
                   <ChevronRight className="size-4" />
                 </Button>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-muted-foreground">Sayfa başına:</span>
+                <span className="text-muted-foreground">{t("Sayfa başına")}:</span>
                 <Select value={String(boyut)} onValueChange={(v) => { setBoyut(Number(v)); setSayfa(1); }}>
                   <SelectTrigger size="sm" className="w-[68px] bg-card"><SelectValue /></SelectTrigger>
                   <SelectContent>{BOYUTLAR.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}</SelectContent>

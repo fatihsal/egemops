@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePerformansAnaliz } from "@/lib/queries/performans";
+import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
 import type { PerformansProje } from "@/lib/types";
 
@@ -16,11 +17,12 @@ const DURUM_SINIF: Record<PerformansProje["durum"], string> = {
 
 export function PerformansProjeler() {
   const { data, isLoading } = usePerformansAnaliz();
+  const { t } = useDil();
 
   return (
     <Card className="h-full">
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">Performansı Etkileyen Projeler</h3>
+        <h3 className="font-heading text-base font-medium">{t("Performansı Etkileyen Projeler")}</h3>
       </CardHeader>
       <CardContent className="flex-1">
         {isLoading || !data ? (
@@ -32,9 +34,9 @@ export function PerformansProjeler() {
                 <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-teal-50 text-teal-600 dark:bg-teal-950 dark:text-teal-300">
                   <Icon icon="solar:widget-5-bold-duotone" className="size-5" />
                 </span>
-                <span className="flex-1 truncate text-sm font-medium">{p.baslik}</span>
+                <span className="flex-1 truncate text-sm font-medium">{t(p.baslik)}</span>
                 <span className={cn("shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-medium", DURUM_SINIF[p.durum])}>
-                  {p.durum}
+                  {t(p.durum)}
                 </span>
               </li>
             ))}

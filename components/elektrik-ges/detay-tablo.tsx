@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useElektrikGesAnaliz } from "@/lib/queries/elektrik-ges";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi, sayi2, sayiOndalik } from "@/lib/format";
 import type { ElektrikAylik } from "@/lib/types";
 
@@ -51,6 +52,7 @@ const KOLONLAR: Kolon[] = [
 
 export function ElektrikDetayTablo() {
   const { data, isLoading } = useElektrikGesAnaliz();
+  const { t } = useDil();
   const [sayfa, setSayfa] = React.useState(1);
   const [boyut, setBoyut] = React.useState(4);
 
@@ -68,7 +70,7 @@ export function ElektrikDetayTablo() {
   return (
     <Card>
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">Aylık Detaylı Veriler</h3>
+        <h3 className="font-heading text-base font-medium">{t("Aylık Detaylı Veriler")}</h3>
       </CardHeader>
       <CardContent className="space-y-4">
         {isLoading ? (
@@ -88,13 +90,13 @@ export function ElektrikDetayTablo() {
                         key={k.anahtar}
                         className={k.saga ? "text-right whitespace-nowrap" : "whitespace-nowrap"}
                       >
-                        {k.baslik}
+                        {t(k.baslik)}
                         {k.birim ? (
                           <span className="ml-1 font-normal text-muted-foreground">({k.birim})</span>
                         ) : null}
                       </TableHead>
                     ))}
-                    <TableHead className="text-right">İşlem</TableHead>
+                    <TableHead className="text-right">{t("İşlem")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -113,7 +115,7 @@ export function ElektrikDetayTablo() {
                           <Button
                             variant="ghost"
                             size="icon-sm"
-                            aria-label="Görüntüle"
+                            aria-label={t("Görüntüle")}
                             className="text-muted-foreground hover:text-foreground"
                             onClick={() => toast(`${r.donem} detayı açılıyor`)}
                           >
@@ -122,7 +124,7 @@ export function ElektrikDetayTablo() {
                           <Button
                             variant="ghost"
                             size="icon-sm"
-                            aria-label="Analiz"
+                            aria-label={t("Analiz")}
                             className="text-muted-foreground hover:text-foreground"
                             onClick={() => toast(`${r.donem} grafiği açılıyor`)}
                           >
@@ -142,13 +144,13 @@ export function ElektrikDetayTablo() {
                 <span className="tabular-nums">
                   {sayi(bas + 1)}–{sayi(Math.min(bas + boyut, satirlar.length))}
                 </span>{" "}
-                / {sayi(satirlar.length)} kayıt
+                / {sayi(satirlar.length)} {t("kayıt")}
               </span>
               <div className="flex items-center gap-1">
                 <Button
                   variant="outline"
                   size="icon-sm"
-                  aria-label="Önceki"
+                  aria-label={t("Önceki")}
                   disabled={geciliSayfa <= 1}
                   onClick={() => setSayfa((s) => Math.max(1, s - 1))}
                 >
@@ -168,7 +170,7 @@ export function ElektrikDetayTablo() {
                 <Button
                   variant="outline"
                   size="icon-sm"
-                  aria-label="Sonraki"
+                  aria-label={t("Sonraki")}
                   disabled={geciliSayfa >= toplamSayfa}
                   onClick={() => setSayfa((s) => Math.min(toplamSayfa, s + 1))}
                 >
@@ -176,7 +178,7 @@ export function ElektrikDetayTablo() {
                 </Button>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-muted-foreground">Sayfa başına:</span>
+                <span className="text-muted-foreground">{t("Sayfa başına")}:</span>
                 <Select
                   value={String(boyut)}
                   onValueChange={(v) => {

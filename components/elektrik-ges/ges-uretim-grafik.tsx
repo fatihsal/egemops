@@ -13,6 +13,7 @@ import {
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useElektrikGesAnaliz } from "@/lib/queries/elektrik-ges";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi, sayiKisa } from "@/lib/format";
 
 const RENK = { gesOz: "#16a34a", verilen: "#86efac" };
@@ -23,20 +24,21 @@ const SERI = [
 
 export function GesUretimGrafik() {
   const { data, isLoading } = useElektrikGesAnaliz();
+  const { t } = useDil();
 
   return (
     <Card className="h-full">
       <CardHeader>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <h3 className="font-heading text-base font-medium">
-            GES Üretim Dağılımı{" "}
+            {t("GES Üretim Dağılımı")}{" "}
             <span className="text-sm font-normal text-muted-foreground">(kWh)</span>
           </h3>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs">
             {SERI.map((s) => (
               <span key={s.anahtar} className="inline-flex items-center gap-1.5 text-muted-foreground">
                 <span className="size-2 rounded-full" style={{ background: s.renk }} />
-                {s.etiket}
+                {t(s.etiket)}
               </span>
             ))}
           </div>
@@ -77,7 +79,7 @@ export function GesUretimGrafik() {
                   labelFormatter={(_, p) => p?.[0]?.payload?.donem ?? ""}
                   formatter={(value, name) => {
                     const seri = SERI.find((s) => s.anahtar === name);
-                    return [`${sayi(Number(value))} kWh`, seri?.etiket ?? String(name)];
+                    return [`${sayi(Number(value))} kWh`, t(seri?.etiket ?? String(name))];
                   }}
                 />
                 <Bar dataKey="gesOz" stackId="g" fill={RENK.gesOz} maxBarSize={34} />

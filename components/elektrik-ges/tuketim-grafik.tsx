@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useElektrikGesAnaliz } from "@/lib/queries/elektrik-ges";
+import { useDil } from "@/components/providers/dil-provider";
 import { sayi, sayi2, sayiKisa, sayiOndalik } from "@/lib/format";
 
 const RENK = { sebeke: "#2563eb", gesOz: "#16a34a", toplam: "var(--foreground)" };
@@ -42,6 +43,7 @@ type BirimTuru = keyof typeof BIRIM;
 
 export function ElektrikTuketimGrafik() {
   const { data, isLoading } = useElektrikGesAnaliz();
+  const { t } = useDil();
   const [birim, setBirim] = React.useState<BirimTuru>("kWh");
 
   const b = BIRIM[birim];
@@ -63,7 +65,7 @@ export function ElektrikTuketimGrafik() {
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="space-y-2.5">
             <h3 className="font-heading text-base font-medium">
-              Elektrik Tüketimi{" "}
+              {t("Elektrik Tüketimi")}{" "}
               <span className="text-sm font-normal text-muted-foreground">({birim})</span>
             </h3>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs">
@@ -77,7 +79,7 @@ export function ElektrikTuketimGrafik() {
                       height: s.tip === "line" ? 3 : 8,
                     }}
                   />
-                  {s.etiket}
+                  {t(s.etiket)}
                 </span>
               ))}
             </div>
@@ -96,7 +98,7 @@ export function ElektrikTuketimGrafik() {
               </SelectContent>
             </Select>
             <div className="relative size-8">
-              <KartMenu baslik="Elektrik tüketimi" />
+              <KartMenu baslik={t("Elektrik tüketimi")} />
             </div>
           </div>
         </div>
@@ -136,7 +138,7 @@ export function ElektrikTuketimGrafik() {
                   labelFormatter={(_, p) => p?.[0]?.payload?.donem ?? ""}
                   formatter={(value, name) => {
                     const seri = SERI.find((s) => s.anahtar === name);
-                    return [`${b.bicim(Number(value))} ${birim}`, seri?.etiket ?? String(name)];
+                    return [`${b.bicim(Number(value))} ${birim}`, t(seri?.etiket ?? String(name))];
                   }}
                 />
                 <Bar dataKey="sebeke" stackId="e" fill={RENK.sebeke} maxBarSize={34} />
