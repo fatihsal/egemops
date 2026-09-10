@@ -1,5 +1,4 @@
 
-import { YilAySecim } from "@/components/veri-girisi/yil-ay-secim";
 import { DonemBar } from "@/components/veri-girisi/donem-bar";
 import { ElektrikGesKarti } from "@/components/veri-girisi/elektrik-ges-karti";
 import { UretimKarti } from "@/components/veri-girisi/uretim-karti";
@@ -16,35 +15,28 @@ export default function VeriGirisiPage() {
   return (
     <VeriGirisiProvider>
     <div className="space-y-6">
-      {/* Yıl/ay seçimi */}
-      <div className="flex flex-wrap items-center justify-end gap-4">
-        <YilAySecim />
-      </div>
-
-      {/* Durum çubuğu */}
+      {/* Dönem seçimi + durum çubuğu */}
       <DonemBar />
 
-      {/* Ana grid: sol (elektrik/üretim/not) · orta (doğalgaz/akaryakıt/karşılaştırma) · sağ (özet/belgeler/aksiyon) */}
-      <div className="grid gap-6 xl:grid-cols-[1.5fr_1fr_1fr] [&>*]:min-w-0">
-        {/* Sol sütun */}
-        <div className="space-y-6">
+      {/* Ana düzen: geniş giriş formu (sol) + yapışkan özet/aksiyon rayı (sağ) */}
+      <div className="grid gap-6 xl:grid-cols-3 [&>*]:min-w-0">
+        {/* Giriş formu — genişlik isteyen kartlar tam, tek girdililer ikişerli */}
+        <div className="space-y-6 xl:col-span-2">
           <ElektrikGesKarti />
-          <UretimKarti />
+          <div className="grid gap-6 md:grid-cols-2 [&>*]:min-w-0">
+            <DogalgazKarti />
+            <UretimKarti />
+          </div>
+          <AkaryakitKarti />
+          <OncekiAyKarti />
           <AciklamaNotlarKarti />
         </div>
 
-        {/* Orta sütun */}
-        <div className="space-y-6">
-          <DogalgazKarti />
-          <AkaryakitKarti />
-          <OncekiAyKarti />
-        </div>
-
-        {/* Sağ sütun */}
-        <div className="space-y-6">
+        {/* Özet + aksiyon + belgeler — yapışkan inceleme rayı */}
+        <div className="space-y-6 xl:sticky xl:top-6 xl:self-start">
           <EnerjiOzetiKarti />
-          <KaynakBelgelerKarti />
           <AksiyonAlani />
+          <KaynakBelgelerKarti />
         </div>
       </div>
     </div>

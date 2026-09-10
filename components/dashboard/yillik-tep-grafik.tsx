@@ -119,7 +119,7 @@ export function YillikTepGrafik() {
                 />
                 <Legend
                   verticalAlign="top"
-                  align="left"
+                  align="center"
                   height={28}
                   formatter={(value) => {
                     const s = SERI.find((x) => x.anahtar === value);

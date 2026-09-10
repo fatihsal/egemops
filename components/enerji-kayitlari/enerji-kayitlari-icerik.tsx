@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Icon } from "@iconify/react";
 import { toast } from "sonner";
@@ -162,6 +163,15 @@ export function EnerjiKayitlariIcerik() {
               ))}
             </div>
             <div className="flex items-center gap-2 pb-2">
+              <Button
+                render={<Link href="/veri-girisi" />}
+                nativeButton={false}
+                size="sm"
+                className="gap-1.5 bg-teal-600 text-white shadow-sm hover:bg-teal-700"
+              >
+                <Icon icon="solar:add-circle-bold-duotone" className="size-4" />
+                Yeni Aylık Kayıt
+              </Button>
               <Button
                 variant="outline"
                 size="sm"

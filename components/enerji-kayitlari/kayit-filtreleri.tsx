@@ -48,7 +48,7 @@ function FiltreSecim({
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="space-y-1.5">
+    <div className="flex flex-col gap-1.5">
       <Label className="text-xs font-medium text-muted-foreground">{etiket}</Label>
       <Select value={value} onValueChange={(v) => onChange(v as string)}>
         <SelectTrigger className="w-full bg-card">

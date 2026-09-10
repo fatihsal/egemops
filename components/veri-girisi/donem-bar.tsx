@@ -5,16 +5,13 @@ import { toast } from "sonner";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { YilAySecim } from "@/components/veri-girisi/yil-ay-secim";
 
 export function DonemBar() {
   return (
     <Card>
-      <CardContent className="flex flex-wrap items-center gap-x-8 gap-y-3">
-        <div className="flex items-center gap-2 text-sm">
-          <Icon icon="solar:calendar-bold-duotone" className="size-5 text-primary" />
-          <span className="text-muted-foreground">Dönem:</span>
-          <span className="font-semibold">2026 / Ağustos</span>
-        </div>
+      <CardContent className="flex flex-wrap items-center gap-x-6 gap-y-3">
+        <YilAySecim />
 
         <div className="hidden h-5 w-px bg-border sm:block" />
 
