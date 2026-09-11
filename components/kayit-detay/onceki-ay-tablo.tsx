@@ -46,6 +46,7 @@ export function OncekiAyTablo({ kayit }: { kayit: EnerjiKayit }) {
         </div>
       </CardHeader>
       <CardContent>
+        <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
@@ -81,6 +82,7 @@ export function OncekiAyTablo({ kayit }: { kayit: EnerjiKayit }) {
             ))}
           </TableBody>
         </Table>
+        </div>
       </CardContent>
     </Card>
   );
