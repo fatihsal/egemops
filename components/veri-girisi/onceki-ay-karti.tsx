@@ -1,8 +1,8 @@
+"use client";
+
 import { Icon } from "@iconify/react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-"use client";
-
 import { Sparkline } from "@/components/common/sparkline";
 import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
