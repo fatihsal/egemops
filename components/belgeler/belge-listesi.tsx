@@ -152,8 +152,11 @@ export function BelgeListesi() {
                 <TableBody>
                   {sayfaVerisi.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={8} className="py-10 text-center text-sm text-muted-foreground">
-                        {t("Seçili filtrelere uygun belge bulunamadı.")}
+                      <TableCell colSpan={8} className="py-12 text-center">
+                        <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                          <Icon icon="solar:folder-open-bold-duotone" className="size-9 opacity-60" />
+                          <span className="text-sm">{t("Seçili filtrelere uygun belge bulunamadı.")}</span>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ) : null}

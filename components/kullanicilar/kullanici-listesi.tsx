@@ -123,7 +123,12 @@ export function KullaniciListesi() {
                 </TableHeader>
                 <TableBody>
                   {sayfaVerisi.length === 0 ? (
-                    <TableRow><TableCell colSpan={6} className="py-10 text-center text-sm text-muted-foreground">{t("Kullanıcı bulunamadı.")}</TableCell></TableRow>
+                    <TableRow><TableCell colSpan={6} className="py-12 text-center">
+                      <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                        <Icon icon="solar:users-group-rounded-bold-duotone" className="size-9 opacity-60" />
+                        <span className="text-sm">{t("Kullanıcı bulunamadı.")}</span>
+                      </div>
+                    </TableCell></TableRow>
                   ) : null}
                   {sayfaVerisi.map((u) => {
                     const rm = ROL_META[u.rol];
