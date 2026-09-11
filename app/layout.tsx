@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { cookies } from "next/headers";
 import "./globals.css";
 
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { DilProvider } from "@/components/providers/dil-provider";
+import type { Dil } from "@/lib/i18n/sozluk";
 import { AppShell } from "@/components/layout/app-shell";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -23,10 +25,12 @@ export const metadata: Metadata = {
   description: "Operasyon yönetim paneli",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const dil: Dil = (await cookies()).get("egemops-dil")?.value === "en" ? "en" : "tr";
+
   return (
     <html
-      lang="tr"
+      lang={dil}
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
@@ -38,7 +42,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           disableTransitionOnChange
         >
           <QueryProvider>
-            <DilProvider>
+            <DilProvider baslangic={dil}>
               <AppShell>{children}</AppShell>
               <Toaster position="bottom-right" />
             </DilProvider>

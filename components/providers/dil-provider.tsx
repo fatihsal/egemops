@@ -14,18 +14,31 @@ interface DilCtx {
 const Context = React.createContext<DilCtx | null>(null);
 const DEPO_ANAHTAR = "egemops-dil";
 
-export function DilProvider({ children }: { children: React.ReactNode }) {
-  const [dil, setDilState] = React.useState<Dil>("tr");
+export function DilProvider({
+  children,
+  baslangic,
+}: {
+  children: React.ReactNode;
+  /** Sunucudan (cookie) gelen başlangıç dili — ilk render'da flash'ı önler. */
+  baslangic?: Dil;
+}) {
+  const [dil, setDilState] = React.useState<Dil>(baslangic ?? "tr");
 
-  // İlk yüklemede kayıtlı tercihi oku.
+  // Cookie yoksa (ör. eski kullanıcı) localStorage tercihini benimse ve
+  // sonraki SSR için cookie'ye yaz — böylece bir daha flash olmaz.
   React.useEffect(() => {
+    if (baslangic) return;
     try {
       const s = localStorage.getItem(DEPO_ANAHTAR);
-      if (s === "tr" || s === "en") setDilState(s);
+      if (s === "tr" || s === "en") {
+        setDilState(s);
+        document.documentElement.lang = s;
+        document.cookie = `${DEPO_ANAHTAR}=${s}; path=/; max-age=31536000; samesite=lax`;
+      }
     } catch {
       /* yoksay */
     }
-  }, []);
+  }, [baslangic]);
 
   const setDil = React.useCallback((d: Dil) => {
     setDilState(d);
@@ -34,7 +47,10 @@ export function DilProvider({ children }: { children: React.ReactNode }) {
     } catch {
       /* yoksay */
     }
-    if (typeof document !== "undefined") document.documentElement.lang = d;
+    if (typeof document !== "undefined") {
+      document.documentElement.lang = d;
+      document.cookie = `${DEPO_ANAHTAR}=${d}; path=/; max-age=31536000; samesite=lax`;
+    }
   }, []);
 
   const t = React.useCallback(
