@@ -82,12 +82,12 @@ export function TepYogunlukAnaliz() {
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={aylar} margin={{ left: 8, right: 8, top: 12, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                  <XAxis dataKey="kisa" tickLine={false} axisLine={false} fontSize={12} stroke="var(--muted-foreground)" />
+                  <XAxis dataKey="kisa" tickLine={false} axisLine={false} fontSize={12} stroke="var(--muted-foreground)" tickFormatter={(v: string) => t(v)} />
                   <YAxis tickLine={false} axisLine={false} fontSize={12} width={44} domain={["dataMin - 0.02", "dataMax + 0.02"]} stroke="var(--muted-foreground)" tickFormatter={(v: number) => sayi2(v)} />
                   <Tooltip
                     cursor={{ stroke: "var(--border)" }}
                     contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
-                    labelFormatter={(_, p) => p?.[0]?.payload?.donem ?? ""}
+                    labelFormatter={(_, p) => t(p?.[0]?.payload?.donem ?? "")}
                     formatter={(value) => [`${uc(Number(value))} TEP/ton`, t("Yoğunluk")]}
                   />
                   <Line type="monotone" dataKey="yogunluk" stroke={RENK} strokeWidth={2.5} dot={{ r: 3.5, fill: RENK }} activeDot={{ r: 6 }} />
@@ -141,13 +141,13 @@ export function TepYogunlukAnaliz() {
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={aylar} margin={{ left: 4, right: 8, top: 8, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                <XAxis dataKey="kisa" tickLine={false} axisLine={false} fontSize={12} stroke="var(--muted-foreground)" />
+                <XAxis dataKey="kisa" tickLine={false} axisLine={false} fontSize={12} stroke="var(--muted-foreground)" tickFormatter={(v: string) => t(v)} />
                 <YAxis yAxisId="sol" tickLine={false} axisLine={false} fontSize={12} width={44} stroke="var(--muted-foreground)" tickFormatter={(v: number) => sayi(v)} />
                 <YAxis yAxisId="sag" orientation="right" tickLine={false} axisLine={false} fontSize={12} width={44} domain={["dataMin - 0.02", "dataMax + 0.02"]} stroke="var(--muted-foreground)" tickFormatter={(v: number) => sayi2(v)} />
                 <Tooltip
                   cursor={{ fill: "var(--muted)", opacity: 0.4 }}
                   contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
-                  labelFormatter={(_, p) => p?.[0]?.payload?.donem ?? ""}
+                  labelFormatter={(_, p) => t(p?.[0]?.payload?.donem ?? "")}
                   formatter={(value, name) => name === "yogunluk" ? [`${uc(Number(value))} TEP/ton`, t("Yoğunluk")] : [`${sayi(Number(value))} ton`, t("Üretim")]}
                 />
                 <Bar yAxisId="sol" dataKey="uretim" fill="#cbd5e1" radius={[3, 3, 0, 0]} maxBarSize={40} />

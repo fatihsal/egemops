@@ -135,7 +135,7 @@ export function ElektrikTuketimGrafik() {
                     fontSize: "12px",
                     color: "var(--popover-foreground)",
                   }}
-                  labelFormatter={(_, p) => p?.[0]?.payload?.donem ?? ""}
+                  labelFormatter={(_, p) => t(p?.[0]?.payload?.donem ?? "")}
                   formatter={(value, name) => {
                     const seri = SERI.find((s) => s.anahtar === name);
                     return [`${b.bicim(Number(value))} ${birim}`, t(seri?.etiket ?? String(name))];

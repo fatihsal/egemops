@@ -43,11 +43,12 @@ export function DogalgazYogunlukGrafik() {
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data?.yogunlukSeri} margin={{ left: 4, right: 8, top: 8, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                <XAxis dataKey="kisa" tickLine={false} axisLine={false} fontSize={12} stroke="var(--muted-foreground)" />
+                <XAxis dataKey="kisa" tickLine={false} axisLine={false} fontSize={12} stroke="var(--muted-foreground)" tickFormatter={(v: string) => t(v)} />
                 <YAxis tickLine={false} axisLine={false} fontSize={12} width={32} domain={[0, "dataMax + 6"]} stroke="var(--muted-foreground)" tickFormatter={(v: number) => sayiOndalik(v)} />
                 <Tooltip
                   cursor={{ stroke: "var(--border)" }}
                   contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
+                  labelFormatter={(l) => t(String(l))}
                   formatter={(value) => [value === null ? "—" : `${sayiOndalik(Number(value))} Sm³/ton`, t("Yoğunluk")]}
                 />
                 <Line type="monotone" dataKey="gercek" stroke={RENK} strokeWidth={2.5} dot={{ r: 3, fill: RENK }} activeDot={{ r: 5 }} connectNulls={false} />

@@ -63,12 +63,12 @@ export function PerformansBazYilAnaliz() {
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                  <XAxis dataKey="kisa" tickLine={false} axisLine={false} fontSize={12} stroke="var(--muted-foreground)" />
+                  <XAxis dataKey="kisa" tickLine={false} axisLine={false} fontSize={12} stroke="var(--muted-foreground)" tickFormatter={(v: string) => t(v)} />
                   <YAxis tickLine={false} axisLine={false} fontSize={12} width={44} domain={["dataMin - 0.02", "dataMax + 0.02"]} stroke="var(--muted-foreground)" tickFormatter={(v: number) => sayi2(v)} />
                   <Tooltip
                     cursor={{ stroke: "var(--border)" }}
                     contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
-                    labelFormatter={(_, p) => p?.[0]?.payload?.donem ?? ""}
+                    labelFormatter={(_, p) => t(p?.[0]?.payload?.donem ?? "")}
                     formatter={(value, name) => [`${uc(Number(value))} TEP/ton`, name === "bazEnPI" ? t("Baz Yıl") : t("Gerçekleşen")]}
                   />
                   <Area type="monotone" dataKey="bazEnPI" stroke="#94a3b8" strokeWidth={1.5} fill="url(#bazDolgu)" />

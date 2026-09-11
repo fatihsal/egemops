@@ -1358,4 +1358,8 @@ export const EN: Record<string, string> = {
   "Menüyü aç": "Open menu",
   "EGEM Ambalaj menüsü": "EGEM Ambalaj menu",
   "Temayı değiştir": "Toggle theme",
+  "Eyl": "Sep",
+  "Eki": "Oct",
+  "Kas": "Nov",
+  "Ara": "Dec",
 };

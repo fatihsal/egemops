@@ -37,7 +37,7 @@ export function TepYogunlukGrafik() {
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data?.yogunlukSeri} margin={{ left: 4, right: 8, top: 12, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                <XAxis dataKey="kisa" tickLine={false} axisLine={false} fontSize={12} stroke="var(--muted-foreground)" />
+                <XAxis dataKey="kisa" tickLine={false} axisLine={false} fontSize={12} stroke="var(--muted-foreground)" tickFormatter={(v: string) => t(v)} />
                 <YAxis
                   tickLine={false}
                   axisLine={false}
@@ -50,6 +50,7 @@ export function TepYogunlukGrafik() {
                 <Tooltip
                   cursor={{ stroke: "var(--border)" }}
                   contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
+                  labelFormatter={(l) => t(String(l))}
                   formatter={(value) => [`${sayi2(Number(value))} TEP/ton`, t("Yoğunluk")]}
                 />
                 <Line type="monotone" dataKey="deger" stroke={RENK} strokeWidth={2.5} dot={{ r: 3, fill: RENK }} activeDot={{ r: 5 }} />

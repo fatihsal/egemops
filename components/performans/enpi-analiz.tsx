@@ -80,12 +80,12 @@ export function PerformansEnpiAnaliz() {
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={data.aylik} margin={{ left: 4, right: 8, top: 8, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                  <XAxis dataKey="kisa" tickLine={false} axisLine={false} fontSize={12} stroke="var(--muted-foreground)" />
+                  <XAxis dataKey="kisa" tickLine={false} axisLine={false} fontSize={12} stroke="var(--muted-foreground)" tickFormatter={(v: string) => t(v)} />
                   <YAxis tickLine={false} axisLine={false} fontSize={12} width={44} domain={["dataMin - 0.02", "dataMax + 0.02"]} stroke="var(--muted-foreground)" tickFormatter={(v: number) => sayi2(v)} />
                   <Tooltip
                     cursor={{ stroke: "var(--border)" }}
                     contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
-                    labelFormatter={(_, p) => p?.[0]?.payload?.donem ?? ""}
+                    labelFormatter={(_, p) => t(p?.[0]?.payload?.donem ?? "")}
                     formatter={(value, name) => [`${uc(Number(value))} TEP/ton`, name === "hedefEnPI" ? t("Hedef") : t("Gerçekleşen")]}
                   />
                   <Line type="monotone" dataKey="hedefEnPI" stroke="#22c55e" strokeWidth={2} strokeDasharray="6 4" dot={false} activeDot={{ r: 5 }} />
@@ -119,12 +119,12 @@ export function PerformansEnpiAnaliz() {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.aylik} margin={{ left: 4, right: 8, top: 8, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                <XAxis dataKey="kisa" tickLine={false} axisLine={false} fontSize={12} stroke="var(--muted-foreground)" />
+                <XAxis dataKey="kisa" tickLine={false} axisLine={false} fontSize={12} stroke="var(--muted-foreground)" tickFormatter={(v: string) => t(v)} />
                 <YAxis tickLine={false} axisLine={false} fontSize={12} width={52} stroke="var(--muted-foreground)" tickFormatter={(v: number) => uc(v)} />
                 <Tooltip
                   cursor={{ fill: "var(--muted)", opacity: 0.4 }}
                   contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
-                  labelFormatter={(_, p) => p?.[0]?.payload?.donem ?? ""}
+                  labelFormatter={(_, p) => t(p?.[0]?.payload?.donem ?? "")}
                   formatter={(value) => [`${Number(value) >= 0 ? "+" : "−"}${uc(Math.abs(Number(value)))} TEP/ton`, t("Sapma")]}
                 />
                 <Bar dataKey="sapma" radius={[2, 2, 0, 0]} maxBarSize={34}>

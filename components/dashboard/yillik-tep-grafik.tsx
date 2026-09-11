@@ -93,6 +93,7 @@ export function YillikTepGrafik() {
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
                 <XAxis
                   dataKey="ay"
+                  tickFormatter={(v: string) => t(v)}
                   tickLine={false}
                   axisLine={false}
                   fontSize={12}
@@ -114,6 +115,7 @@ export function YillikTepGrafik() {
                     fontSize: "12px",
                     color: "var(--popover-foreground)",
                   }}
+                  labelFormatter={(l) => t(String(l))}
                   formatter={(value, name) => {
                     const s = SERI.find((x) => x.anahtar === name);
                     return [`${sayi(Number(value))} TEP`, String(s?.yil ?? name)];

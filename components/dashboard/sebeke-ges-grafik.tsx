@@ -69,7 +69,7 @@ export function SebekeGesGrafik() {
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
                 <XAxis
                   dataKey="ay"
-                  tickFormatter={(v: string) => v.charAt(0)}
+                  tickFormatter={(v: string) => t(v).charAt(0)}
                   tickLine={false}
                   axisLine={false}
                   fontSize={12}
@@ -92,6 +92,7 @@ export function SebekeGesGrafik() {
                     fontSize: "12px",
                     color: "var(--popover-foreground)",
                   }}
+                  labelFormatter={(l) => t(String(l))}
                   formatter={(value, name) => [
                     `${sayi(Number(value))} kWh`,
                     t(ETIKET[String(name)] ?? String(name)),
