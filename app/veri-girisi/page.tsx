@@ -20,15 +20,15 @@ export default function VeriGirisiPage() {
 
       {/* Ana düzen: geniş giriş formu (sol) + yapışkan özet/aksiyon rayı (sağ) */}
       <div className="grid gap-6 xl:grid-cols-3 [&>*]:min-w-0">
-        {/* Giriş formu — genişlik isteyen kartlar tam, tek girdililer ikişerli */}
+        {/* Giriş formu — Elektrik&GES tam; diğer kartlar ikişerli ızgara */}
         <div className="space-y-6 xl:col-span-2">
           <ElektrikGesKarti />
-          <div className="grid gap-6 md:grid-cols-2 [&>*]:min-w-0">
+          <div className="grid gap-6 md:grid-cols-2 md:items-start [&>*]:min-w-0">
             <DogalgazKarti />
+            <AkaryakitKarti />
             <UretimKarti />
+            <OncekiAyKarti />
           </div>
-          <AkaryakitKarti />
-          <OncekiAyKarti />
           <AciklamaNotlarKarti />
         </div>
 
