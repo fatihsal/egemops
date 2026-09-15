@@ -24,7 +24,7 @@ export function KullaniciMenu() {
           <button
             type="button"
             aria-label={t("Kullanıcı menüsü")}
-            className="ml-0.5 flex items-center gap-2 rounded-lg border-l pl-2 transition-colors hover:bg-muted sm:pl-2.5"
+            className="ml-0.5 flex items-center gap-2 rounded-lg pl-2 transition-colors hover:bg-muted sm:pl-2.5"
           />
         }
       >
