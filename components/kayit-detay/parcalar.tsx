@@ -50,11 +50,14 @@ export function RadialOran({
   renk = "#22c55e",
   className,
   yaziSinif = "text-base",
+  ondalik = true,
 }: {
   deger: number;
   renk?: string;
   className?: string;
   yaziSinif?: string;
+  /** Ortadaki yüzdede ondalık gösterilsin mi? Küçük göstergelerde kapatılır. */
+  ondalik?: boolean;
 }) {
   return (
     <div className={cn("relative", className)}>
@@ -76,7 +79,9 @@ export function RadialOran({
         </RadialBarChart>
       </ResponsiveContainer>
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className={cn("font-bold", yaziSinif)}>%{sayiOndalik(deger)}</span>
+        <span className={cn("font-bold leading-none", yaziSinif)}>
+          %{ondalik ? sayiOndalik(deger) : Math.round(deger)}
+        </span>
       </div>
     </div>
   );

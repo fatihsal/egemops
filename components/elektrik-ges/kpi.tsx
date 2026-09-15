@@ -60,7 +60,7 @@ function KpiKart({ kpi }: { kpi: ElektrikKpi }) {
   const olcek = kpi.birim === "%" || kpi.radyal !== undefined ? 1 : yilOlcek(yil);
   const ik = IKON[kpi.anahtar];
   const gorsel = kpi.radyal !== undefined
-    ? <RadialOran deger={kpi.radyal} renk="#0d9488" className="size-10 shrink-0" yaziSinif="text-[10px]" />
+    ? <RadialOran deger={kpi.radyal} renk="#0d9488" className="size-11 shrink-0" yaziSinif="text-[9px]" ondalik={false} />
     : ik
       ? (
         <span className={cn("flex size-10 shrink-0 items-center justify-center rounded-xl", ik.sinif)}>
