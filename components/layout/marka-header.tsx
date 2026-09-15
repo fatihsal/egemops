@@ -57,7 +57,7 @@ export function MarkaHeader() {
         </svg>
       </div>
       {/* Sağ filigran */}
-      <div className="pointer-events-none absolute top-1/2 right-[520px] hidden -translate-y-1/2 flex-col items-center gap-0.5 text-center xl:flex">
+      <div className="pointer-events-none absolute top-1/2 right-[444px] hidden -translate-y-1/2 flex-col items-center gap-0.5 text-center xl:flex">
         <Icon icon="solar:leaf-bold-duotone" className="size-4 text-emerald-400/70" />
         <span className="text-[8px] font-semibold tracking-[0.18em] text-muted-foreground/50 uppercase leading-tight">
           {t("Bugünün Enerjisi")}<br />{t("Yarının Geleceği")}
