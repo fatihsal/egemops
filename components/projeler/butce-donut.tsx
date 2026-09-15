@@ -30,7 +30,7 @@ export function ProjeButceDonut() {
                   <Pie data={data.butce.dilimler} dataKey="deger" nameKey="etiket" innerRadius={54} outerRadius={78} paddingAngle={2} stroke="var(--card)" strokeWidth={2} startAngle={90} endAngle={-270}>
                     {data.butce.dilimler.map((d) => <Cell key={d.etiket} fill={d.renk} />)}
                   </Pie>
-                  <Tooltip
+                  <Tooltip wrapperStyle={{ zIndex: 50 }}
                     contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
                     formatter={(value, name) => [mTL(Number(value)), t(String(name))]}
                   />

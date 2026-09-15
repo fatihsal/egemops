@@ -48,7 +48,7 @@ export function ElektrikKaynakDagilimi() {
                       <Cell key={k.anahtar} fill={RENK[k.anahtar]} />
                     ))}
                   </Pie>
-                  <Tooltip
+                  <Tooltip wrapperStyle={{ zIndex: 50 }}
                     contentStyle={{
                       background: "var(--popover)",
                       border: "1px solid var(--border)",

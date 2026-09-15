@@ -36,7 +36,7 @@ export function FirsatDurumDonut() {
                   <Pie data={data.durumDagilimi} dataKey="adet" nameKey="etiket" innerRadius={58} outerRadius={84} paddingAngle={2} stroke="var(--card)" strokeWidth={2} startAngle={90} endAngle={-270}>
                     {data.durumDagilimi.map((d) => <Cell key={d.anahtar} fill={DURUM_RENK[d.anahtar]} />)}
                   </Pie>
-                  <Tooltip
+                  <Tooltip wrapperStyle={{ zIndex: 50 }}
                     contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
                     formatter={(value, name) => [`${value} ${t("fırsat")}`, t(String(name))]}
                   />

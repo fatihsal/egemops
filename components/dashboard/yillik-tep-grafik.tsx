@@ -37,7 +37,7 @@ const YILLAR = {
 const SERI = [
   { anahtar: "onceki2", yil: YILLAR.onceki2, renk: "#94a3b8", kalinlik: 2 },
   { anahtar: "onceki1", yil: YILLAR.onceki1, renk: "#3b82f6", kalinlik: 2 },
-  { anahtar: "buYil", yil: YILLAR.buYil, renk: "#22c55e", kalinlik: 3 },
+  { anahtar: "buYil", yil: YILLAR.buYil, renk: "#22c55e", kalinlik: 2 },
 ] as const;
 
 export function YillikTepGrafik() {

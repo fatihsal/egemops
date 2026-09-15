@@ -29,7 +29,7 @@ export function FirsatKaynakDonut() {
                   <Pie data={data.kaynakTasarruf} dataKey="tep" nameKey="etiket" innerRadius={58} outerRadius={84} paddingAngle={2} stroke="var(--card)" strokeWidth={2} startAngle={90} endAngle={-270}>
                     {data.kaynakTasarruf.map((k) => <Cell key={k.anahtar} fill={KAYNAK_RENK[k.anahtar]} />)}
                   </Pie>
-                  <Tooltip
+                  <Tooltip wrapperStyle={{ zIndex: 50 }}
                     contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
                     formatter={(value, name) => [`${sayiOndalik(Number(value))} TEP`, t(String(name))]}
                   />

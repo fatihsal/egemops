@@ -31,7 +31,7 @@ export function OzetKaynakDonut({ baslik, tur }: { baslik: string; tur: "tep" | 
                   <Pie data={veri.dilimler} dataKey="deger" nameKey="etiket" innerRadius={48} outerRadius={70} paddingAngle={2} stroke="var(--card)" strokeWidth={2} startAngle={90} endAngle={-270}>
                     {veri.dilimler.map((d) => <Cell key={d.anahtar} fill={d.renk} />)}
                   </Pie>
-                  <Tooltip
+                  <Tooltip wrapperStyle={{ zIndex: 50 }}
                     contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
                     formatter={(v, n) => [`${bicim(Number(v))} ${t(veri.birim)}`, t(String(n))]}
                   />

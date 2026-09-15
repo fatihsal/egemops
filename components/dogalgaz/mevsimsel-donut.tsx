@@ -49,7 +49,7 @@ export function DogalgazMevsimselDonut() {
                       <Cell key={m.anahtar} fill={RENK[m.anahtar]} />
                     ))}
                   </Pie>
-                  <Tooltip
+                  <Tooltip wrapperStyle={{ zIndex: 50 }}
                     contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
                     formatter={(value, name) => [`%${sayi(Number(value))}`, String(name)]}
                   />

@@ -96,7 +96,7 @@ export function RaporOnizlemeIcerik({ kategori }: { kategori: RaporKategoriAnaht
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
                   <XAxis dataKey="etiket" tickLine={false} axisLine={false} fontSize={12} stroke="var(--muted-foreground)" tickFormatter={(v: string) => t(v)} />
                   <YAxis tickLine={false} axisLine={false} fontSize={12} width={40} stroke="var(--muted-foreground)" />
-                  <Tooltip
+                  <Tooltip wrapperStyle={{ zIndex: 50 }}
                     contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
                     formatter={(v, n) => [`${Number(v).toLocaleString("tr-TR")} ${t(d.birim)}`, n === "buDonem" ? t("Bu Dönem") : t("Önceki Dönem")]}
                   />
@@ -119,7 +119,7 @@ export function RaporOnizlemeIcerik({ kategori }: { kategori: RaporKategoriAnaht
                   <Pie data={d.dagilim} dataKey="deger" nameKey="etiket" innerRadius={54} outerRadius={78} paddingAngle={2} stroke="var(--card)" strokeWidth={2} startAngle={90} endAngle={-270}>
                     {d.dagilim.map((x) => <Cell key={x.etiket} fill={x.renk} />)}
                   </Pie>
-                  <Tooltip
+                  <Tooltip wrapperStyle={{ zIndex: 50 }}
                     contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}
                     formatter={(v, n) => [`${Number(v).toLocaleString("tr-TR")} ${t(d.birim)}`, t(String(n))]}
                   />
