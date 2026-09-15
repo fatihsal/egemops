@@ -92,8 +92,8 @@ export function MarkaHeader() {
           </p>
         </div>
 
-        {/* Aksiyonlar + kullanıcı */}
-        <div className="flex shrink-0 items-center gap-0.5 border-l px-2 sm:gap-1.5 sm:px-3">
+        {/* Aksiyonlar + kullanıcı — filigranın üstünde opak alan */}
+        <div className="relative z-10 flex shrink-0 items-center gap-0.5 border-l bg-card px-2 sm:gap-1.5 sm:px-3">
           <GlobalArama />
           <DilSecici className="hidden sm:inline-flex" />
           <ThemeToggle />
