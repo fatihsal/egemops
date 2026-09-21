@@ -14,10 +14,36 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useDil } from "@/components/providers/dil-provider";
 import { supabaseTarayici } from "@/lib/supabase/client";
+import { useProfil } from "@/lib/hooks/use-profil";
+
+const ROL_ETIKET: Record<string, string> = {
+  admin: "Yönetici",
+  enerji_yoneticisi: "Enerji Yöneticisi",
+  izleyici: "İzleyici",
+};
+
+/** "Fatih Sal" -> "FS", boşsa e-postanın ilk harfi. */
+function bashHarfler(ad: string | null, eposta: string | null) {
+  const kaynak = (ad ?? "").trim();
+  if (kaynak) {
+    return kaynak
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((p) => p[0]?.toUpperCase() ?? "")
+      .join("");
+  }
+  return (eposta?.[0] ?? "?").toUpperCase();
+}
 
 export function KullaniciMenu() {
   const router = useRouter();
   const { t } = useDil();
+  const { profil } = useProfil();
+
+  const adSoyad = profil?.ad_soyad ?? profil?.eposta ?? "—";
+  const eposta = profil?.eposta ?? "";
+  const rolEtiket = profil ? ROL_ETIKET[profil.rol] ?? profil.rol : "";
+  const harfler = bashHarfler(profil?.ad_soyad ?? null, profil?.eposta ?? null);
 
   async function cikisYap() {
     await supabaseTarayici().auth.signOut();
@@ -37,11 +63,11 @@ export function KullaniciMenu() {
         }
       >
         <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-slate-600 to-slate-800 text-[11px] font-bold text-white">
-          UM
+          {harfler}
         </span>
         <span className="hidden text-left leading-tight lg:block">
-          <span className="block text-[13px] font-semibold">Uğur Melih</span>
-          <span className="block text-[11px] text-muted-foreground">{t("Enerji Yöneticisi")}</span>
+          <span className="block text-[13px] font-semibold">{adSoyad}</span>
+          <span className="block text-[11px] text-muted-foreground">{rolEtiket && t(rolEtiket)}</span>
         </span>
         <Icon icon="solar:alt-arrow-down-linear" className="mr-1 hidden size-3.5 text-muted-foreground lg:block" />
       </DropdownMenuTrigger>
@@ -49,12 +75,12 @@ export function KullaniciMenu() {
       <DropdownMenuContent align="end" sideOffset={8} className="w-60">
         <div className="flex items-center gap-2.5 px-2 py-2">
           <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-slate-600 to-slate-800 text-xs font-bold text-white">
-            UM
+            {harfler}
           </span>
           <span className="min-w-0 leading-tight">
-            <span className="block truncate text-sm font-semibold">Uğur Melih</span>
+            <span className="block truncate text-sm font-semibold">{adSoyad}</span>
             <span className="block truncate text-xs font-normal text-muted-foreground">
-              ugur.melih@egemambalaj.com
+              {eposta}
             </span>
           </span>
         </div>
