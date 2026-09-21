@@ -14,7 +14,7 @@ export function DogalgazKarti() {
       ikon="solar:fire-bold-duotone"
       ikonSinif="bg-violet-50 text-violet-600 dark:bg-violet-950 dark:text-violet-300"
     >
-      <VeriInput etiket={t("Doğalgaz Tüketimi (Sm³)")} birim="Sm³" deger="43.921,18" />
+      <VeriInput alan="dogalgaz" etiket={t("Doğalgaz Tüketimi (Sm³)")} birim="Sm³" deger="43.921,18" />
 
       <div className="flex items-center gap-3 border-t pt-4">
         <span className="flex size-11 items-center justify-center rounded-xl bg-violet-50 text-violet-600 dark:bg-violet-950 dark:text-violet-300">

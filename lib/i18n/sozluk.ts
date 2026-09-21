@@ -1342,6 +1342,8 @@ export const EN: Record<string, string> = {
   "Kırmızı işaretli alanları düzeltip tekrar deneyin.": "Fix the fields marked in red and try again.",
   "Veriler onaylandı": "Data approved",
   "Ağustos 2026 dönemi onaya gönderildi.": "The August 2026 period was submitted for approval.",
+  "dönemi kaydedildi.": "period saved.",
+  "Kayıt başarısız": "Save failed",
   "alan eksik veya hatalı. Lütfen düzeltin.": "fields are missing or invalid. Please correct them.",
   "Veriler doğrulandı. Kritik hata bulunmadı.": "Data validated. No critical errors found.",
   "Taslak Kaydet": "Save Draft",

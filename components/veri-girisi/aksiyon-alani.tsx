@@ -7,24 +7,53 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useVeriGirisi } from "@/components/veri-girisi/form-store";
 import { useDil } from "@/components/providers/dil-provider";
+import { enerjiKaydiKaydet } from "@/lib/data/veri-girisi";
+
+const AY_ADLARI = [
+  "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
+  "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık",
+];
 
 export function AksiyonAlani() {
-  const { denemeVeDogrula } = useVeriGirisi();
+  const { denemeVeDogrula, degerleriAl, yil, ay } = useVeriGirisi();
   const { t } = useDil();
   const [hataSayisi, setHataSayisi] = React.useState(0);
+  const [kaydediliyor, setKaydediliyor] = React.useState(false);
 
-  function onayla() {
-    const hatalar = denemeVeDogrula();
-    setHataSayisi(hatalar.length);
-    if (hatalar.length > 0) {
-      toast.error(`${hatalar.length} ${t("alan eksik veya hatalı")}`, {
-        description: t("Kırmızı işaretli alanları düzeltip tekrar deneyin."),
-      });
-      return;
+  const donemMetni = `${t(AY_ADLARI[ay - 1])} ${yil}`;
+
+  async function kaydet(durum: "taslak" | "onayli") {
+    if (kaydediliyor) return;
+
+    if (durum === "onayli") {
+      const hatalar = denemeVeDogrula();
+      setHataSayisi(hatalar.length);
+      if (hatalar.length > 0) {
+        toast.error(`${hatalar.length} ${t("alan eksik veya hatalı")}`, {
+          description: t("Kırmızı işaretli alanları düzeltip tekrar deneyin."),
+        });
+        return;
+      }
     }
-    toast.success(t("Veriler onaylandı"), {
-      description: t("Ağustos 2026 dönemi onaya gönderildi."),
-    });
+
+    setKaydediliyor(true);
+    try {
+      await enerjiKaydiKaydet({ yil, ay, durum, degerler: degerleriAl() });
+      if (durum === "onayli") {
+        setHataSayisi(0);
+        toast.success(t("Veriler onaylandı"), {
+          description: `${donemMetni} ${t("dönemi kaydedildi.")}`,
+        });
+      } else {
+        toast.success(t("Taslak kaydedildi"), { description: donemMetni });
+      }
+    } catch (e) {
+      toast.error(t("Kayıt başarısız"), {
+        description: e instanceof Error ? e.message : undefined,
+      });
+    } finally {
+      setKaydediliyor(false);
+    }
   }
 
   return (
@@ -57,14 +86,16 @@ export function AksiyonAlani() {
         <Button
           variant="outline"
           className="w-full justify-center gap-1.5"
-          onClick={() => toast.success(t("Taslak kaydedildi"))}
+          disabled={kaydediliyor}
+          onClick={() => kaydet("taslak")}
         >
           <Icon icon="solar:diskette-bold-duotone" className="size-4" />
           {t("Taslak Kaydet")}
         </Button>
         <Button
           className="w-full justify-center gap-1.5 bg-amber-500 text-white shadow-sm hover:bg-amber-600"
-          onClick={onayla}
+          disabled={kaydediliyor}
+          onClick={() => kaydet("onayli")}
         >
           <Icon icon="solar:shield-check-bold-duotone" className="size-4" />
           {t("Onayla")}

@@ -14,10 +14,10 @@ export function ElektrikGesKarti() {
     >
       {/* Girdiler */}
       <div className="grid gap-4 @min-[26rem]:grid-cols-2">
-        <VeriInput etiket={t("Şebeke Elektrik Tüketimi (kWh)")} birim="kWh" deger="598.217,40" />
-        <VeriInput etiket={t("GES Toplam Üretimi (kWh)")} birim="kWh" deger="295.000,00" />
-        <VeriInput etiket={t("GES Öz Tüketimi (kWh)")} birim="kWh" deger="240.000,00" />
-        <VeriInput etiket={t("Şebekeye Verilen Enerji (kWh)")} birim="kWh" deger="55.000,00" />
+        <VeriInput alan="sebeke_elektrik" etiket={t("Şebeke Elektrik Tüketimi (kWh)")} birim="kWh" deger="598.217,40" />
+        <VeriInput alan="ges_toplam_uretim" etiket={t("GES Toplam Üretimi (kWh)")} birim="kWh" deger="295.000,00" />
+        <VeriInput alan="ges_oz_tuketim" etiket={t("GES Öz Tüketimi (kWh)")} birim="kWh" deger="240.000,00" />
+        <VeriInput alan="sebekeye_verilen" etiket={t("Şebekeye Verilen Enerji (kWh)")} birim="kWh" deger="55.000,00" />
       </div>
 
       {/* KPI'lar */}

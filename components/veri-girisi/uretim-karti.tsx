@@ -18,7 +18,7 @@ export function UretimKarti() {
           <h3 className="font-heading text-base font-semibold">{t("Üretim Verisi")}</h3>
         </div>
 
-        <VeriInput etiket={t("Üretim Miktarı (ton)")} birim="ton" deger="2.850,00" />
+        <VeriInput alan="uretim_ton" etiket={t("Üretim Miktarı (ton)")} birim="ton" deger="2.850,00" />
 
         <div className="flex items-center gap-3 border-t pt-4">
           <span className="flex size-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-300">

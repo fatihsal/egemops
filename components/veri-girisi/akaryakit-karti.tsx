@@ -13,9 +13,9 @@ export function AkaryakitKarti() {
       ikonSinif="bg-orange-50 text-orange-600 dark:bg-orange-950 dark:text-orange-300"
     >
       <div className="grid gap-4 sm:grid-cols-3">
-        <VeriInput etiket={t("Motorin (L)")} birim="L" deger="1.450,00" />
-        <VeriInput etiket={t("Benzin (L)")} birim="L" deger="180,00" />
-        <VeriInput etiket={t("Diğer (L)")} birim="L" deger="0,00" />
+        <VeriInput alan="motorin" etiket={t("Motorin (L)")} birim="L" deger="1.450,00" />
+        <VeriInput alan="benzin" etiket={t("Benzin (L)")} birim="L" deger="180,00" />
+        <VeriInput alan="diger_akaryakit" etiket={t("Diğer (L)")} birim="L" deger="0,00" zorunlu={false} />
       </div>
 
       <div className="grid gap-4 border-t pt-4 sm:grid-cols-2">

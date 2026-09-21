@@ -8,8 +8,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useDil } from "@/components/providers/dil-provider";
+import { useVeriGirisi } from "@/components/veri-girisi/form-store";
 
-const YILLAR = ["2024", "2025", "2026"];
+const YILLAR = [2024, 2025, 2026];
 const AYLAR = [
   "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
   "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık",
@@ -17,17 +18,19 @@ const AYLAR = [
 
 export function YilAySecim() {
   const { t } = useDil();
+  const { yil, ay, setDonem } = useVeriGirisi();
+
   return (
     <div className="flex items-center gap-4">
       <div className="flex items-center gap-2">
         <span className="text-sm font-medium text-muted-foreground">{t("Yıl")}</span>
-        <Select defaultValue="2026">
+        <Select value={String(yil)} onValueChange={(v) => setDonem(Number(v), ay)}>
           <SelectTrigger className="w-28 bg-card">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {YILLAR.map((y) => (
-              <SelectItem key={y} value={y}>
+              <SelectItem key={y} value={String(y)}>
                 {y}
               </SelectItem>
             ))}
@@ -37,13 +40,13 @@ export function YilAySecim() {
 
       <div className="flex items-center gap-2">
         <span className="text-sm font-medium text-muted-foreground">{t("Ay")}</span>
-        <Select defaultValue="Ağustos">
+        <Select value={String(ay)} onValueChange={(v) => setDonem(yil, Number(v))}>
           <SelectTrigger className="w-32 bg-card">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {AYLAR.map((a) => (
-              <SelectItem key={a} value={a}>
+            {AYLAR.map((a, i) => (
+              <SelectItem key={a} value={String(i + 1)}>
                 {t(a)}
               </SelectItem>
             ))}

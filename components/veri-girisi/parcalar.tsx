@@ -14,17 +14,20 @@ export function VeriInput({
   etiket,
   birim,
   deger,
+  alan,
   className,
   zorunlu = true,
 }: {
   etiket: string;
   birim: string;
   deger: string;
+  /** DB alan adı (enerji_kayitlari sütunu). Verilirse değer store'a yazılır. */
+  alan?: string;
   className?: string;
   /** Boş bırakılabilir mi? Varsayılan: hayır (zorunlu). */
   zorunlu?: boolean;
 }) {
-  const { kaydet, sil, denendi } = useVeriGirisi();
+  const { kaydet, sil, denendi, degerKaydet } = useVeriGirisi();
   const { t } = useDil();
   const id = React.useId();
   const [val, setVal] = React.useState(deger);
@@ -48,6 +51,12 @@ export function VeriInput({
     kaydet(id, { etiket, gecerli });
     return () => sil(id);
   }, [id, etiket, gecerli, kaydet, sil]);
+
+  // Değeri store'a yaz (geçersiz/boş ise null).
+  React.useEffect(() => {
+    if (!alan) return;
+    degerKaydet(alan, sayiMi && !negatif ? sayi : null);
+  }, [alan, sayi, sayiMi, negatif, degerKaydet]);
 
   return (
     <div className={cn("min-w-0 space-y-1.5", className)}>
