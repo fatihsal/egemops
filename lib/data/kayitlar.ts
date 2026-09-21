@@ -40,6 +40,7 @@ type Satir = {
   diger_akaryakit: number | null;
   uretim_ton: number | null;
   durum: "taslak" | "onayli";
+  giren: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -50,7 +51,7 @@ function tarihBicim(iso: string) {
   return `${p(d.getDate())}.${p(d.getMonth() + 1)}.${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}`;
 }
 
-function satirdanKayit(s: Satir, onceki: Satir | null): EnerjiKayit {
+function satirdanKayit(s: Satir, onceki: Satir | null, isimAl: (id: string | null) => string): EnerjiKayit {
   const n = (v: number | null) => v ?? 0;
   const gesOzTuketim = n(s.ges_oz_tuketim);
   const sebekeElektrik = n(s.sebeke_elektrik);
@@ -82,14 +83,15 @@ function satirdanKayit(s: Satir, onceki: Satir | null): EnerjiKayit {
     oncekiTep && oncekiTep > 0 ? Math.round(((toplamTep - oncekiTep) / oncekiTep) * 1000) / 10 : null;
   const oncekiYogunluk = oncekiKayit?.enerjiYogunluk ?? 0;
 
+  const girenAd = isimAl(s.giren);
   const gecmis: KayitGecmis[] = [
     {
       tarih: tarihBicim(s.updated_at),
       baslik: durum === "onaylandi" ? "Kayıt onaylandı" : "Taslak kaydedildi",
-      kullanici: "—",
+      kullanici: girenAd,
       tur: "onay",
     },
-    { tarih: tarihBicim(s.created_at), baslik: "Kayıt oluşturuldu", kullanici: "—", tur: "ekleme" },
+    { tarih: tarihBicim(s.created_at), baslik: "Kayıt oluşturuldu", kullanici: girenAd, tur: "ekleme" },
   ];
 
   return {
@@ -112,9 +114,9 @@ function satirdanKayit(s: Satir, onceki: Satir | null): EnerjiKayit {
     oncekiTep,
     degisimYuzde: degisim,
     sonGuncelleme: tarihBicim(s.updated_at),
-    guncelleyen: "—",
-    olusturan: "—",
-    onaylayan: durum === "onaylandi" ? "—" : "—",
+    guncelleyen: girenAd,
+    olusturan: girenAd,
+    onaylayan: durum === "onaylandi" ? girenAd : "—",
     belgeSayisi: 0,
     gecmis,
     sebekeElektrik,
@@ -152,34 +154,47 @@ function satirdanKayitHam(s: Satir) {
   return { toplamTep, enerjiYogunluk, elektrikTep, dogalgazTep, akaryakitTep };
 }
 
-async function satirlariGetir(): Promise<Satir[]> {
+async function verileriGetir(): Promise<{ satirlar: Satir[]; isimAl: (id: string | null) => string }> {
   const supabase = supabaseTarayici();
-  const { data, error } = await supabase
-    .from("enerji_kayitlari")
-    .select(
-      "id, yil, ay, sebeke_elektrik, ges_toplam_uretim, ges_oz_tuketim, sebekeye_verilen, dogalgaz, motorin, benzin, diger_akaryakit, uretim_ton, durum, created_at, updated_at",
-    )
-    .is("deleted_at", null)
-    .order("yil", { ascending: false })
-    .order("ay", { ascending: false });
+  const [{ data, error }, { data: profiller }] = await Promise.all([
+    supabase
+      .from("enerji_kayitlari")
+      .select(
+        "id, yil, ay, sebeke_elektrik, ges_toplam_uretim, ges_oz_tuketim, sebekeye_verilen, dogalgaz, motorin, benzin, diger_akaryakit, uretim_ton, durum, giren, created_at, updated_at",
+      )
+      .is("deleted_at", null)
+      .order("yil", { ascending: false })
+      .order("ay", { ascending: false }),
+    supabase.from("profiles").select("id, ad_soyad, eposta").is("deleted_at", null),
+  ]);
   if (error) throw new Error(error.message);
-  return (data ?? []) as Satir[];
+
+  const isimHarita = new Map<string, string>();
+  for (const p of (profiller ?? []) as { id: string; ad_soyad: string | null; eposta: string | null }[]) {
+    isimHarita.set(p.id, p.ad_soyad ?? p.eposta ?? "—");
+  }
+  const isimAl = (id: string | null) => (id ? isimHarita.get(id) ?? "—" : "—");
+
+  return { satirlar: (data ?? []) as Satir[], isimAl };
 }
 
-function kayitlariUret(satirlar: Satir[]): EnerjiKayit[] {
-  return satirlar.map((s, i) => satirdanKayit(s, satirlar[i + 1] ?? null));
+function kayitlariUret(satirlar: Satir[], isimAl: (id: string | null) => string): EnerjiKayit[] {
+  return satirlar.map((s, i) => satirdanKayit(s, satirlar[i + 1] ?? null, isimAl));
 }
 
 export async function enerjiKayitlariGetir(): Promise<EnerjiKayit[]> {
-  return kayitlariUret(await satirlariGetir());
+  const { satirlar, isimAl } = await verileriGetir();
+  return kayitlariUret(satirlar, isimAl);
 }
 
 export async function kayitGetir(id: string): Promise<EnerjiKayit | undefined> {
-  return kayitlariUret(await satirlariGetir()).find((k) => k.id === id);
+  const { satirlar, isimAl } = await verileriGetir();
+  return kayitlariUret(satirlar, isimAl).find((k) => k.id === id);
 }
 
 export async function kayitOzetiGetir(): Promise<KayitOzet> {
-  const kayitlar = kayitlariUret(await satirlariGetir());
+  const { satirlar, isimAl } = await verileriGetir();
+  const kayitlar = kayitlariUret(satirlar, isimAl);
   const toplam = kayitlar.length;
   const say = (f: (k: EnerjiKayit) => boolean) => kayitlar.filter(f).length;
   const oran = (nn: number) => (toplam > 0 ? Math.round((nn / toplam) * 1000) / 10 : 0);
@@ -203,7 +218,8 @@ export async function kayitOzetiGetir(): Promise<KayitOzet> {
 }
 
 export async function yillikOzetGetir(): Promise<YillikOzetSatir[]> {
-  const kayitlar = kayitlariUret(await satirlariGetir());
+  const { satirlar, isimAl } = await verileriGetir();
+  const kayitlar = kayitlariUret(satirlar, isimAl);
   const yillar = [...new Set(kayitlar.map((k) => String(k.yil)))].sort();
   const bosDeger = () => Object.fromEntries(yillar.map((y) => [y, 0])) as Record<string, number>;
 
