@@ -1,38 +1,96 @@
 // -----------------------------------------------------------------------------
-// VERİ KATMANI — Kullanıcılar (mock)
+// VERİ KATMANI — Kullanıcılar (Supabase: public.profiles)
 // -----------------------------------------------------------------------------
 
-import type { Kullanici, KullaniciAnaliz, KullaniciKpi, RolDagilim } from "@/lib/types";
-import { gecikmeIle } from "@/lib/data/mock-utils";
+import type {
+  Kullanici,
+  KullaniciAnaliz,
+  KullaniciKpi,
+  KullaniciRol,
+  RolDagilim,
+} from "@/lib/types";
+import { supabaseTarayici } from "@/lib/supabase/client";
 
-const KPILER: KullaniciKpi[] = [
-  { anahtar: "toplam", baslik: "Toplam Kullanıcı", deger: "12", altMetin: "Tüm departmanlar" },
-  { anahtar: "aktif", baslik: "Aktif Kullanıcı", deger: "9", altMetin: "Son 30 günde giriş yaptı" },
-  { anahtar: "davet", baslik: "Bekleyen Davet", deger: "2", altMetin: "Yanıt bekliyor" },
-  { anahtar: "yonetici", baslik: "Yönetici", deger: "2", altMetin: "Tam yetkili" },
+// profiles.rol -> UI rolü
+const ROL_ESLEME: Record<string, KullaniciRol> = {
+  admin: "yonetici",
+  enerji_yoneticisi: "editor",
+  izleyici: "goruntuleyici",
+};
+
+const RENKLER = [
+  "#0d9488", "#2563eb", "#f59e0b", "#8b5cf6", "#0891b2",
+  "#ec4899", "#16a34a", "#dc2626", "#7c3aed", "#0284c7",
 ];
 
-const ROLLER: RolDagilim[] = [
-  { rol: "yonetici", adet: 2 },
-  { rol: "editor", adet: 6 },
-  { rol: "goruntuleyici", adet: 4 },
-];
+function renkSec(id: string) {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  return RENKLER[h % RENKLER.length];
+}
 
-const KULLANICILAR: Kullanici[] = [
-  { id: "u1", ad: "Uğur Melih", email: "ugur.melih@egemops.com", bas: "UM", renk: "#0d9488", rol: "yonetici", departman: "Enerji Yönetimi", durum: "aktif", sonGiris: "Bugün 09:12" },
-  { id: "u2", ad: "Ayşe Demir", email: "ayse.demir@egemops.com", bas: "AD", renk: "#2563eb", rol: "editor", departman: "Enerji Yönetimi", durum: "aktif", sonGiris: "Bugün 08:40" },
-  { id: "u3", ad: "Mehmet Kaya", email: "mehmet.kaya@egemops.com", bas: "MK", renk: "#f59e0b", rol: "editor", departman: "Bakım Onarım", durum: "aktif", sonGiris: "Dün 17:25" },
-  { id: "u4", ad: "Fatma Şahin", email: "fatma.sahin@egemops.com", bas: "FŞ", renk: "#8b5cf6", rol: "editor", departman: "Satın Alma", durum: "aktif", sonGiris: "Dün 14:03" },
-  { id: "u5", ad: "Ali Yıldız", email: "ali.yildiz@egemops.com", bas: "AY", renk: "#0891b2", rol: "goruntuleyici", departman: "Finans", durum: "pasif", sonGiris: "12.07.2026" },
-  { id: "u6", ad: "Zeynep Arslan", email: "zeynep.arslan@egemops.com", bas: "ZA", renk: "#ec4899", rol: "editor", departman: "Bakım Onarım", durum: "davet", sonGiris: "—" },
-  { id: "u7", ad: "Can Öztürk", email: "can.ozturk@egemops.com", bas: "CÖ", renk: "#16a34a", rol: "goruntuleyici", departman: "Üretim", durum: "aktif", sonGiris: "Bugün 07:55" },
-  { id: "u8", ad: "Elif Aydın", email: "elif.aydin@egemops.com", bas: "EA", renk: "#dc2626", rol: "editor", departman: "Kalite", durum: "aktif", sonGiris: "Dün 11:18" },
-  { id: "u9", ad: "Burak Çelik", email: "burak.celik@egemops.com", bas: "BÇ", renk: "#7c3aed", rol: "yonetici", departman: "Yönetim", durum: "aktif", sonGiris: "Bugün 08:02" },
-  { id: "u10", ad: "Selin Koç", email: "selin.koc@egemops.com", bas: "SK", renk: "#0284c7", rol: "goruntuleyici", departman: "Üretim", durum: "aktif", sonGiris: "3 gün önce" },
-  { id: "u11", ad: "Emre Doğan", email: "emre.dogan@egemops.com", bas: "ED", renk: "#d97706", rol: "editor", departman: "Bakım Onarım", durum: "aktif", sonGiris: "Dün 16:47" },
-  { id: "u12", ad: "Deniz Yılmaz", email: "deniz.yilmaz@egemops.com", bas: "DY", renk: "#059669", rol: "goruntuleyici", departman: "Finans", durum: "davet", sonGiris: "—" },
-];
+function basHarfler(ad: string, eposta: string) {
+  const k = (ad ?? "").trim();
+  if (k) {
+    return k
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((p) => p[0]?.toLocaleUpperCase("tr") ?? "")
+      .join("");
+  }
+  return (eposta?.[0] ?? "?").toLocaleUpperCase("tr");
+}
 
-export function kullaniciAnaliziGetir(): Promise<KullaniciAnaliz> {
-  return gecikmeIle({ kpiler: KPILER, roller: ROLLER, kullanicilar: KULLANICILAR });
+type ProfilSatir = {
+  id: string;
+  ad_soyad: string | null;
+  eposta: string | null;
+  rol: string;
+  created_at: string;
+};
+
+export async function kullaniciAnaliziGetir(): Promise<KullaniciAnaliz> {
+  const supabase = supabaseTarayici();
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("id, ad_soyad, eposta, rol, created_at")
+    .is("deleted_at", null)
+    .order("created_at", { ascending: true });
+
+  if (error) throw new Error(error.message);
+
+  const satirlar = (data ?? []) as ProfilSatir[];
+
+  const kullanicilar: Kullanici[] = satirlar.map((s) => {
+    const ad = s.ad_soyad ?? s.eposta ?? "—";
+    const email = s.eposta ?? "";
+    return {
+      id: s.id,
+      ad,
+      email,
+      bas: basHarfler(s.ad_soyad ?? "", email),
+      renk: renkSec(s.id),
+      rol: ROL_ESLEME[s.rol] ?? "goruntuleyici",
+      departman: "—",
+      durum: "aktif",
+      sonGiris: "—",
+    };
+  });
+
+  const say = (r: KullaniciRol) => kullanicilar.filter((u) => u.rol === r).length;
+
+  const roller: RolDagilim[] = [
+    { rol: "yonetici", adet: say("yonetici") },
+    { rol: "editor", adet: say("editor") },
+    { rol: "goruntuleyici", adet: say("goruntuleyici") },
+  ];
+
+  const kpiler: KullaniciKpi[] = [
+    { anahtar: "toplam", baslik: "Toplam Kullanıcı", deger: String(kullanicilar.length), altMetin: "Tüm departmanlar" },
+    { anahtar: "aktif", baslik: "Aktif Kullanıcı", deger: String(kullanicilar.length), altMetin: "Son 30 günde giriş yaptı" },
+    { anahtar: "davet", baslik: "Bekleyen Davet", deger: "0", altMetin: "Yanıt bekliyor" },
+    { anahtar: "yonetici", baslik: "Yönetici", deger: String(say("yonetici")), altMetin: "Tam yetkili" },
+  ];
+
+  return { kpiler, roller, kullanicilar };
 }
