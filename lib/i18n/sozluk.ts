@@ -1355,6 +1355,7 @@ export const EN: Record<string, string> = {
   "Beklenmeyen bir hata oluştu. Tekrar deneyebilir veya panele dönebilirsiniz.": "An unexpected error occurred. You can try again or return to the dashboard.",
   "Hata kodu": "Error code",
   "Tekrar dene": "Try again",
+  "Giriş başarısız — e-posta veya şifre hatalı.": "Sign-in failed — incorrect email or password.",
   "Menüyü aç": "Open menu",
   "EGEM Ambalaj menüsü": "EGEM Ambalaj menu",
   "Temayı değiştir": "Toggle theme",

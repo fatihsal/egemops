@@ -13,10 +13,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useDil } from "@/components/providers/dil-provider";
+import { supabaseTarayici } from "@/lib/supabase/client";
 
 export function KullaniciMenu() {
   const router = useRouter();
   const { t } = useDil();
+
+  async function cikisYap() {
+    await supabaseTarayici().auth.signOut();
+    toast.success(t("Çıkış yapıldı"));
+    router.replace("/login");
+    router.refresh();
+  }
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -73,10 +81,7 @@ export function KullaniciMenu() {
           {t("Yardım & Destek")}
         </DropdownMenuItem>
         <DropdownMenuItem
-          onClick={() => {
-            toast.success(t("Çıkış yapıldı"));
-            router.push("/login");
-          }}
+          onClick={cikisYap}
           className="text-red-600 focus:bg-red-50 focus:text-red-700 dark:text-red-400 dark:focus:bg-red-950/50 dark:focus:text-red-300"
         >
           <Icon icon="solar:logout-2-bold-duotone" className="size-4.5" />

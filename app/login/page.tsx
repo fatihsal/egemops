@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DilSecici } from "@/components/layout/dil-secici";
 import { useDil } from "@/components/providers/dil-provider";
+import { supabaseTarayici } from "@/lib/supabase/client";
 
 const MODULLER: { ad: string; ikon: LucideIcon }[] = [
   { ad: "Enerji Analizi", ikon: Zap },
@@ -65,14 +66,30 @@ export default function LoginPage() {
   const { t } = useDil();
   const [sifreGoster, setSifreGoster] = React.useState(false);
   const [yukleniyor, setYukleniyor] = React.useState(false);
+  const [eposta, setEposta] = React.useState("");
+  const [sifre, setSifre] = React.useState("");
 
-  function girisYap(e: React.FormEvent) {
+  async function girisYap(e: React.FormEvent) {
     e.preventDefault();
     if (yukleniyor) return;
     setYukleniyor(true);
-    // Mock giriş: kısa gecikme sonrası panele yönlendir (gerçek auth yok).
+
+    const supabase = supabaseTarayici();
+    const { error } = await supabase.auth.signInWithPassword({
+      email: eposta.trim(),
+      password: sifre,
+    });
+
+    if (error) {
+      setYukleniyor(false);
+      toast.error(t("Giriş başarısız — e-posta veya şifre hatalı."));
+      return;
+    }
+
     toast.success(t("Giriş başarılı, yönlendiriliyorsunuz…"));
-    setTimeout(() => router.push("/"), 900);
+    // Sunucu bileşenlerinin yeni oturumu görmesi için refresh + yönlendirme.
+    router.replace("/");
+    router.refresh();
   }
 
   return (
@@ -175,10 +192,12 @@ export default function LoginPage() {
             <div className="relative">
               <User className="pointer-events-none absolute top-1/2 left-3.5 size-5 -translate-y-1/2 text-slate-400" />
               <Input
-                type="text"
+                type="email"
                 required
                 autoComplete="username"
-                placeholder={t("Kullanıcı adı veya e-posta")}
+                value={eposta}
+                onChange={(e) => setEposta(e.target.value)}
+                placeholder={t("E-posta")}
                 className="h-12 rounded-xl border-slate-200 bg-slate-50/70 pl-11 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:border-teal-500 focus-visible:ring-teal-500/20"
               />
             </div>
@@ -190,6 +209,8 @@ export default function LoginPage() {
                 type={sifreGoster ? "text" : "password"}
                 required
                 autoComplete="current-password"
+                value={sifre}
+                onChange={(e) => setSifre(e.target.value)}
                 placeholder={t("Şifre")}
                 className="h-12 rounded-xl border-slate-200 bg-slate-50/70 px-11 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:border-teal-500 focus-visible:ring-teal-500/20"
               />
