@@ -1341,6 +1341,8 @@ export const EN: Record<string, string> = {
   "35 gün içinde": "Within 35 days",
   "Dosya": "File",
   "Güncelleme başarısız": "Update failed",
+  "Kullanıcı Adı": "Username",
+  "Giriş başarısız — kullanıcı adı veya şifre hatalı.": "Sign-in failed — incorrect username or password.",
   "silinsin mi?": "— delete?",
   "Silmek istediğinize emin misiniz?": "Are you sure you want to delete?",
   "Bu kayıt listeden kaldırılacak.": "This record will be removed from the list.",

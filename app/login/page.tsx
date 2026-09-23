@@ -66,7 +66,7 @@ export default function LoginPage() {
   const { t } = useDil();
   const [sifreGoster, setSifreGoster] = React.useState(false);
   const [yukleniyor, setYukleniyor] = React.useState(false);
-  const [eposta, setEposta] = React.useState("");
+  const [kullaniciAdi, setKullaniciAdi] = React.useState("");
   const [sifre, setSifre] = React.useState("");
 
   async function girisYap(e: React.FormEvent) {
@@ -75,14 +75,26 @@ export default function LoginPage() {
     setYukleniyor(true);
 
     const supabase = supabaseTarayici();
+
+    // Kullanıcı adından e-postayı bul, sonra giriş yap.
+    const { data: eposta, error: bulHata } = await supabase.rpc("eposta_bul", {
+      p_kullanici_adi: kullaniciAdi.trim(),
+    });
+
+    if (bulHata || !eposta) {
+      setYukleniyor(false);
+      toast.error(t("Giriş başarısız — kullanıcı adı veya şifre hatalı."));
+      return;
+    }
+
     const { error } = await supabase.auth.signInWithPassword({
-      email: eposta.trim(),
+      email: eposta as string,
       password: sifre,
     });
 
     if (error) {
       setYukleniyor(false);
-      toast.error(t("Giriş başarısız — e-posta veya şifre hatalı."));
+      toast.error(t("Giriş başarısız — kullanıcı adı veya şifre hatalı."));
       return;
     }
 
@@ -192,12 +204,12 @@ export default function LoginPage() {
             <div className="relative">
               <User className="pointer-events-none absolute top-1/2 left-3.5 size-5 -translate-y-1/2 text-slate-400" />
               <Input
-                type="email"
+                type="text"
                 required
                 autoComplete="username"
-                value={eposta}
-                onChange={(e) => setEposta(e.target.value)}
-                placeholder={t("E-posta")}
+                value={kullaniciAdi}
+                onChange={(e) => setKullaniciAdi(e.target.value)}
+                placeholder={t("Kullanıcı Adı")}
                 className="h-12 rounded-xl border-slate-200 bg-slate-50/70 pl-11 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:border-teal-500 focus-visible:ring-teal-500/20"
               />
             </div>
