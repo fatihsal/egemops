@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/sheet";
 import { useDil } from "@/components/providers/dil-provider";
 import { useVeriGirisi } from "@/components/veri-girisi/form-store";
+import { SilmeOnay } from "@/components/ui/silme-onay";
 import {
   belgeleriGetir,
   belgeYukle,
@@ -185,14 +186,15 @@ export function KaynakBelgelerKarti() {
                   </a>
                 }
               />
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                aria-label={t("Sil")}
-                onClick={() => sil(b)}
-              >
-                <Icon icon="solar:trash-bin-trash-bold-duotone" className="size-4 text-red-500" />
-              </Button>
+              <SilmeOnay
+                baslik={`${t(b.ad)} ${t("silinsin mi?")}`}
+                onConfirm={() => sil(b)}
+                trigger={
+                  <Button variant="ghost" size="icon-sm" aria-label={t("Sil")}>
+                    <Icon icon="solar:trash-bin-trash-bold-duotone" className="size-4 text-red-500" />
+                  </Button>
+                }
+              />
             </div>
           ))
         )}

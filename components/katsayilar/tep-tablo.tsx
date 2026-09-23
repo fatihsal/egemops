@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
+import { SilmeOnay } from "@/components/ui/silme-onay";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -103,11 +104,9 @@ export function TepKatsayiTablo() {
                           </Button>
                         }
                       />
-                      <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        aria-label={t("Sil")}
-                        onClick={async () => {
+                      <SilmeOnay
+                        baslik={`${t(r.ad)} ${t("silinsin mi?")}`}
+                        onConfirm={async () => {
                           try {
                             await katsayiSil(r.id);
                             toast.success(`${t(r.ad)} ${t("silindi")}`);
@@ -116,9 +115,12 @@ export function TepKatsayiTablo() {
                             toast.error(t("Silme başarısız"), { description: e instanceof Error ? e.message : undefined });
                           }
                         }}
-                      >
-                        <Icon icon="solar:trash-bin-trash-bold-duotone" className="size-4 text-red-500" />
-                      </Button>
+                        trigger={
+                          <Button variant="ghost" size="icon-sm" aria-label={t("Sil")}>
+                            <Icon icon="solar:trash-bin-trash-bold-duotone" className="size-4 text-red-500" />
+                          </Button>
+                        }
+                      />
                     </TableCell>
                   </TableRow>
                 ))}

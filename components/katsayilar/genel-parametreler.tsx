@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
+import { SilmeOnay } from "@/components/ui/silme-onay";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { KatsayiDuzenleDrawer } from "@/components/katsayilar/duzenle-drawer";
@@ -81,12 +82,9 @@ export function GenelParametreler() {
                     </Button>
                   }
                 />
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
-                  aria-label={t("Sil")}
-                  className="shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
-                  onClick={async () => {
+                <SilmeOnay
+                  baslik={`${t(p.ad)} ${t("silinsin mi?")}`}
+                  onConfirm={async () => {
                     try {
                       await katsayiSil(p.id);
                       toast.success(`${t(p.ad)} ${t("silindi")}`);
@@ -95,9 +93,17 @@ export function GenelParametreler() {
                       toast.error(t("Silme başarısız"), { description: e instanceof Error ? e.message : undefined });
                     }
                   }}
-                >
-                  <Icon icon="solar:trash-bin-trash-bold-duotone" className="size-4 text-red-500" />
-                </Button>
+                  trigger={
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      aria-label={t("Sil")}
+                      className="shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
+                    >
+                      <Icon icon="solar:trash-bin-trash-bold-duotone" className="size-4 text-red-500" />
+                    </Button>
+                  }
+                />
               </div>
             ))}
           </div>

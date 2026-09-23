@@ -41,6 +41,7 @@ import { queryKeys } from "@/lib/queries/keys";
 import { csvIndir } from "@/lib/disa-aktar";
 import { cn } from "@/lib/utils";
 import { belgeSilGenel } from "@/lib/data/belgeler";
+import { SilmeOnay } from "@/components/ui/silme-onay";
 import type { Belge } from "@/lib/types";
 
 const KATEGORILER = ["Tümü", "Yasal & Mevzuat", "Sertifikalar", "Sözleşmeler", "Etüt & Raporlar", "Teknik Dökümanlar", "Faturalar"];
@@ -68,6 +69,7 @@ export function BelgeListesi() {
   const { arama, kategori, durum, set, aktifMi, sifirla } = useBelgeFiltre();
   const qc = useQueryClient();
   const [sayfa, setSayfa] = React.useState(1);
+  const [silinecek, setSilinecek] = React.useState<Belge | null>(null);
 
   async function sil(b: Belge) {
     try {
@@ -236,7 +238,7 @@ export function BelgeListesi() {
                                   {t("Yeniden Adlandır")}
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={() => sil(b)}>
+                                <DropdownMenuItem onClick={() => setSilinecek(b)}>
                                   <Icon icon="solar:trash-bin-trash-bold-duotone" className="size-4" />
                                   {t("Sil")}
                                 </DropdownMenuItem>
@@ -284,6 +286,13 @@ export function BelgeListesi() {
           </>
         )}
       </CardContent>
+
+      <SilmeOnay
+        open={silinecek !== null}
+        onOpenChange={(o) => { if (!o) setSilinecek(null); }}
+        baslik={silinecek ? `${t(silinecek.ad)} ${t("silinsin mi?")}` : undefined}
+        onConfirm={() => { if (silinecek) sil(silinecek); }}
+      />
     </Card>
   );
 }
