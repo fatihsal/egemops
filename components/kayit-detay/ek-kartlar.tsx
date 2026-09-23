@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import { Icon } from "@iconify/react";
 import { toast } from "sonner";
 
@@ -8,6 +9,22 @@ import { Button } from "@/components/ui/button";
 import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
 import type { EnerjiKayit, KayitGecmis } from "@/lib/types";
+import { belgeleriGetir, type KaynakBelge } from "@/lib/data/kaynak-belgeler";
+
+function belgeIkon(tur: string | null): string {
+  switch (tur) {
+    case "PDF":
+      return "vscode-icons:file-type-pdf2";
+    case "Excel":
+      return "vscode-icons:file-type-excel";
+    case "Word":
+      return "vscode-icons:file-type-word";
+    case "Görsel":
+      return "solar:gallery-bold-duotone";
+    default:
+      return "solar:file-bold-duotone";
+  }
+}
 
 const GECMIS_IKON: Record<KayitGecmis["tur"], { ikon: string; renk: string }> = {
   onay: { ikon: "solar:check-circle-bold-duotone", renk: "text-emerald-500" },
@@ -72,6 +89,14 @@ export function GecmisKarti({ kayit }: { kayit: EnerjiKayit }) {
 
 export function BelgelerKarti({ kayit }: { kayit: EnerjiKayit }) {
   const { t } = useDil();
+  const [belgeler, setBelgeler] = React.useState<KaynakBelge[]>([]);
+
+  React.useEffect(() => {
+    belgeleriGetir(kayit.yil, kayit.ay)
+      .then(setBelgeler)
+      .catch(() => setBelgeler([]));
+  }, [kayit.yil, kayit.ay]);
+
   return (
     <Card>
       <CardHeader>
@@ -81,38 +106,37 @@ export function BelgelerKarti({ kayit }: { kayit: EnerjiKayit }) {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-2 md:grid-cols-2">
-          {kayit.belgeler.map((b) => (
-            <div
-              key={b.ad}
-              className="flex items-center gap-3 rounded-lg border bg-card px-3 py-2"
-            >
-              <Icon icon={b.ikon} className="size-7 shrink-0" />
-              <div className="min-w-0 flex-1">
-                <div className="truncate text-sm font-medium">{b.ad}</div>
-                <div className="text-xs text-muted-foreground">{b.tur}</div>
-              </div>
-              <div className="flex shrink-0 items-center gap-0.5">
+        {belgeler.length === 0 ? (
+          <div className="flex flex-col items-center gap-2 py-6 text-center text-muted-foreground">
+            <Icon icon="solar:folder-open-bold-duotone" className="size-8 opacity-60" />
+            <span className="text-sm">{t("Bu dönem için belge yok.")}</span>
+          </div>
+        ) : (
+          <div className="grid gap-2 md:grid-cols-2">
+            {belgeler.map((b) => (
+              <div
+                key={b.id}
+                className="flex items-center gap-3 rounded-lg border bg-card px-3 py-2"
+              >
+                <Icon icon={belgeIkon(b.tur)} className="size-7 shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-sm font-medium">{b.ad}</div>
+                  <div className="text-xs text-muted-foreground">{b.tur}</div>
+                </div>
                 <Button
                   variant="ghost"
                   size="icon-sm"
                   aria-label={t("Görüntüle")}
-                  onClick={() => toast(`${b.ad} ${t("açılıyor")}`)}
-                >
-                  <Icon icon="solar:eye-bold-duotone" className="size-4 text-muted-foreground" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
-                  aria-label={t("İndir")}
-                  onClick={() => toast.success(`${b.ad} ${t("indiriliyor")}`)}
-                >
-                  <Icon icon="solar:download-minimalistic-bold-duotone" className="size-4 text-muted-foreground" />
-                </Button>
+                  render={
+                    <a href={b.url} target="_blank" rel="noopener noreferrer">
+                      <Icon icon="solar:eye-bold-duotone" className="size-4 text-muted-foreground" />
+                    </a>
+                  }
+                />
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

@@ -85,10 +85,15 @@ export function BelgeDetayDrawer({ belge, trigger }: { belge: Belge; trigger: Re
             <Icon icon="solar:printer-bold-duotone" className="size-4" />
             {t("Yazdır")}
           </Button>
-          <Button className="gap-1.5 bg-teal-600 text-white hover:bg-teal-700" onClick={() => toast.success(`${t(belge.ad)} ${t("indiriliyor")}`)}>
-            <Icon icon="solar:download-minimalistic-bold-duotone" className="size-4" />
-            {t("İndir")}
-          </Button>
+          <Button
+            className="gap-1.5 bg-teal-600 text-white hover:bg-teal-700"
+            render={
+              <a href={belge.url ?? "#"} target="_blank" rel="noopener noreferrer">
+                <Icon icon="solar:download-minimalistic-bold-duotone" className="size-4" />
+                {t("İndir")}
+              </a>
+            }
+          />
         </SheetFooter>
       </SheetContent>
     </Sheet>

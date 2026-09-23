@@ -1,5 +1,6 @@
 
 import { BelgeFiltreler } from "@/components/belgeler/filtreler";
+import { BelgeYukleButonu } from "@/components/belgeler/belge-yukle";
 import { BelgeKpiKartlari } from "@/components/belgeler/kpi";
 import { BelgeKategorileri } from "@/components/belgeler/kategoriler";
 import { BelgeDepolama } from "@/components/belgeler/depolama";
@@ -11,9 +12,10 @@ export default function BelgelerPage() {
   return (
     <BelgeFiltreProvider>
       <div className="space-y-6">
-        {/* Filtreler */}
+        {/* Filtreler + yükleme */}
         <div className="flex flex-wrap items-center justify-end gap-3">
           <BelgeFiltreler />
+          <BelgeYukleButonu />
         </div>
 
         <BelgeKpiKartlari />

@@ -40,7 +40,8 @@ import { useDil } from "@/components/providers/dil-provider";
 import { queryKeys } from "@/lib/queries/keys";
 import { csvIndir } from "@/lib/disa-aktar";
 import { cn } from "@/lib/utils";
-import type { BelgeAnaliz } from "@/lib/types";
+import { belgeSilGenel } from "@/lib/data/belgeler";
+import type { Belge } from "@/lib/types";
 
 const KATEGORILER = ["Tümü", "Yasal & Mevzuat", "Sertifikalar", "Sözleşmeler", "Etüt & Raporlar", "Teknik Dökümanlar", "Faturalar"];
 const DURUMLAR = ["Tümü", "Geçerli", "Süresi Yaklaşıyor", "Süresi Doldu", "Taslak"];
@@ -68,7 +69,15 @@ export function BelgeListesi() {
   const qc = useQueryClient();
   const [sayfa, setSayfa] = React.useState(1);
 
-  const sil = (id: string) => qc.setQueryData(queryKeys.belgeler.analiz, (old?: BelgeAnaliz) => old ? { ...old, belgeler: old.belgeler.filter((b) => b.id !== id) } : old);
+  async function sil(b: Belge) {
+    try {
+      await belgeSilGenel(b.id, b.depolamaYolu ?? "");
+      toast.success(`${t(b.ad)} ${t("silindi")}`);
+      qc.invalidateQueries({ queryKey: queryKeys.belgeler.analiz });
+    } catch (e) {
+      toast.error(t("Silme başarısız"), { description: e instanceof Error ? e.message : undefined });
+    }
+  }
 
   const tumu = data?.belgeler ?? [];
   const filtreli = tumu.filter((b) => {
@@ -203,9 +212,16 @@ export function BelgeListesi() {
                                 </Button>
                               }
                             />
-                            <Button variant="ghost" size="icon-sm" aria-label={t("İndir")} onClick={() => toast.success(`${t(b.ad)} ${t("indiriliyor")}`)}>
-                              <Icon icon="solar:download-minimalistic-bold-duotone" className="size-4 text-muted-foreground" />
-                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon-sm"
+                              aria-label={t("İndir")}
+                              render={
+                                <a href={b.url ?? "#"} target="_blank" rel="noopener noreferrer">
+                                  <Icon icon="solar:download-minimalistic-bold-duotone" className="size-4 text-muted-foreground" />
+                                </a>
+                              }
+                            />
                             <DropdownMenu>
                               <DropdownMenuTrigger render={<Button variant="ghost" size="icon-sm" aria-label={t("Daha fazla")} />}>
                                 <MoreVertical className="size-4 text-muted-foreground" />
@@ -220,7 +236,7 @@ export function BelgeListesi() {
                                   {t("Yeniden Adlandır")}
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={() => { sil(b.id); toast.success(`${t(b.ad)} ${t("silindi")}`); }}>
+                                <DropdownMenuItem onClick={() => sil(b)}>
                                   <Icon icon="solar:trash-bin-trash-bold-duotone" className="size-4" />
                                   {t("Sil")}
                                 </DropdownMenuItem>

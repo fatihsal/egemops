@@ -1110,6 +1110,8 @@ export interface Belge {
   durum: BelgeDurum;
   gecerlilik: string | null; // son geçerlilik tarihi (yoksa null)
   aciklama: string;
+  url?: string; // Firebase indirme URL'si
+  depolamaYolu?: string; // Firebase Storage path (silme için)
 }
 
 export interface DepolamaKalem {
