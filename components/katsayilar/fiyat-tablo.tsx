@@ -17,9 +17,9 @@ import {
 } from "@/components/ui/table";
 import { KatsayiDuzenleDrawer } from "@/components/katsayilar/duzenle-drawer";
 import { useKatsayiAnaliz } from "@/lib/queries/katsayilar";
+import { katsayiEkle, katsayiGuncelle, katsayiSil } from "@/lib/data/katsayilar";
 import { useDil } from "@/components/providers/dil-provider";
 import { queryKeys } from "@/lib/queries/keys";
-import type { KatsayiAnaliz } from "@/lib/types";
 
 export function FiyatTablo() {
   const { data, isLoading } = useKatsayiAnaliz();
@@ -33,10 +33,26 @@ export function FiyatTablo() {
           <h3 className="font-heading text-base font-medium">{t("Birim Fiyatlar / Tarifeler")}</h3>
           <p className="mt-0.5 text-xs text-muted-foreground">{t("Maliyet hesaplarında kullanılan güncel birim fiyatlar")}</p>
         </div>
-        <Button variant="outline" size="sm" className="h-8 gap-1.5 bg-card" onClick={() => toast(t("Yeni birim fiyat ekleniyor"))}>
-          <Icon icon="solar:add-circle-linear" className="size-4" />
-          {t("Fiyat Ekle")}
-        </Button>
+        <KatsayiDuzenleDrawer
+          baslik={t("Yeni Birim Fiyat")}
+          aciklama={t("Yeni bir kaynak için birim fiyat ekleyin.")}
+          alanlar={[
+            { anahtar: "ad", label: t("Kaynak"), deger: "" },
+            { anahtar: "birim", label: t("Birim"), deger: "" },
+            { anahtar: "fiyat", label: t("Birim Fiyat"), deger: "" },
+            { anahtar: "guncelleme", label: t("Geçerlilik Tarihi"), deger: "" },
+          ]}
+          onKaydet={async (d) => {
+            await katsayiEkle("fiyat", d);
+            qc.invalidateQueries({ queryKey: queryKeys.katsayilar.analiz });
+          }}
+          trigger={
+            <Button variant="outline" size="sm" className="h-8 gap-1.5 bg-card">
+              <Icon icon="solar:add-circle-linear" className="size-4" />
+              {t("Fiyat Ekle")}
+            </Button>
+          }
+        />
       </CardHeader>
       <CardContent>
         {isLoading || !data ? (
@@ -73,13 +89,32 @@ export function FiyatTablo() {
                           { anahtar: "fiyat", label: `${t("Birim Fiyat")} (${r.birim})`, deger: r.fiyat },
                           { anahtar: "guncelleme", label: t("Geçerlilik Tarihi"), deger: r.guncelleme },
                         ]}
-                        onKaydet={(d) => qc.setQueryData(queryKeys.katsayilar.analiz, (old?: KatsayiAnaliz) => old ? { ...old, fiyat: old.fiyat.map((x) => x.id === r.id ? { ...x, ...d } : x) } : old)}
+                        onKaydet={async (d) => {
+                          await katsayiGuncelle(r.id, d);
+                          qc.invalidateQueries({ queryKey: queryKeys.katsayilar.analiz });
+                        }}
                         trigger={
                           <Button variant="ghost" size="icon-sm" aria-label={t("Düzenle")}>
                             <Icon icon="solar:pen-2-bold-duotone" className="size-4 text-muted-foreground" />
                           </Button>
                         }
                       />
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        aria-label={t("Sil")}
+                        onClick={async () => {
+                          try {
+                            await katsayiSil(r.id);
+                            toast.success(`${t(r.ad)} ${t("silindi")}`);
+                            qc.invalidateQueries({ queryKey: queryKeys.katsayilar.analiz });
+                          } catch (e) {
+                            toast.error(t("Silme başarısız"), { description: e instanceof Error ? e.message : undefined });
+                          }
+                        }}
+                      >
+                        <Icon icon="solar:trash-bin-trash-bold-duotone" className="size-4 text-red-500" />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}

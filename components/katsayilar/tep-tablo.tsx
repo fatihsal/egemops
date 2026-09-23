@@ -19,7 +19,7 @@ import { KatsayiDuzenleDrawer } from "@/components/katsayilar/duzenle-drawer";
 import { useKatsayiAnaliz } from "@/lib/queries/katsayilar";
 import { useDil } from "@/components/providers/dil-provider";
 import { queryKeys } from "@/lib/queries/keys";
-import type { KatsayiAnaliz } from "@/lib/types";
+import { katsayiEkle, katsayiGuncelle, katsayiSil } from "@/lib/data/katsayilar";
 
 export function TepKatsayiTablo() {
   const { data, isLoading } = useKatsayiAnaliz();
@@ -33,10 +33,27 @@ export function TepKatsayiTablo() {
           <h3 className="font-heading text-base font-medium">{t("TEP Dönüşüm Katsayıları")}</h3>
           <p className="mt-0.5 text-xs text-muted-foreground">{t("Enerji tüketimini eşdeğer petrole (TEP) çeviren katsayılar")}</p>
         </div>
-        <Button variant="outline" size="sm" className="h-8 gap-1.5 bg-card" onClick={() => toast(t("Yeni katsayı satırı ekleniyor"))}>
-          <Icon icon="solar:add-circle-linear" className="size-4" />
-          {t("Katsayı Ekle")}
-        </Button>
+        <KatsayiDuzenleDrawer
+          baslik={t("Yeni TEP Katsayısı")}
+          aciklama={t("Yeni bir enerji kaynağı için TEP dönüşüm katsayısı ekleyin.")}
+          alanlar={[
+            { anahtar: "ad", label: t("Enerji Kaynağı"), deger: "" },
+            { anahtar: "birim", label: t("Birim"), deger: "" },
+            { anahtar: "altIsil", label: t("Alt Isıl Değer"), deger: "" },
+            { anahtar: "tep", label: t("TEP Katsayısı"), deger: "" },
+            { anahtar: "referans", label: t("Referans"), deger: "" },
+          ]}
+          onKaydet={async (d) => {
+            await katsayiEkle("tep", d);
+            qc.invalidateQueries({ queryKey: queryKeys.katsayilar.analiz });
+          }}
+          trigger={
+            <Button variant="outline" size="sm" className="h-8 gap-1.5 bg-card">
+              <Icon icon="solar:add-circle-linear" className="size-4" />
+              {t("Katsayı Ekle")}
+            </Button>
+          }
+        />
       </CardHeader>
       <CardContent>
         {isLoading || !data ? (
@@ -76,13 +93,32 @@ export function TepKatsayiTablo() {
                           { anahtar: "tep", label: `${t("TEP Katsayısı")} (${r.birim})`, deger: r.tep },
                           { anahtar: "referans", label: t("Referans"), deger: r.referans },
                         ]}
-                        onKaydet={(d) => qc.setQueryData(queryKeys.katsayilar.analiz, (old?: KatsayiAnaliz) => old ? { ...old, tep: old.tep.map((x) => x.id === r.id ? { ...x, ...d } : x) } : old)}
+                        onKaydet={async (d) => {
+                          await katsayiGuncelle(r.id, d);
+                          qc.invalidateQueries({ queryKey: queryKeys.katsayilar.analiz });
+                        }}
                         trigger={
                           <Button variant="ghost" size="icon-sm" aria-label={t("Düzenle")}>
                             <Icon icon="solar:pen-2-bold-duotone" className="size-4 text-muted-foreground" />
                           </Button>
                         }
                       />
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        aria-label={t("Sil")}
+                        onClick={async () => {
+                          try {
+                            await katsayiSil(r.id);
+                            toast.success(`${t(r.ad)} ${t("silindi")}`);
+                            qc.invalidateQueries({ queryKey: queryKeys.katsayilar.analiz });
+                          } catch (e) {
+                            toast.error(t("Silme başarısız"), { description: e instanceof Error ? e.message : undefined });
+                          }
+                        }}
+                      >
+                        <Icon icon="solar:trash-bin-trash-bold-duotone" className="size-4 text-red-500" />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}

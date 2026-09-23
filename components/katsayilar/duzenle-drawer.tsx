@@ -31,18 +31,29 @@ export function KatsayiDuzenleDrawer({ baslik, aciklama, alanlar, trigger, onKay
   aciklama: string;
   alanlar: DuzenleAlan[];
   trigger: React.ReactElement;
-  onKaydet?: (degerler: Record<string, string>) => void;
+  onKaydet?: (degerler: Record<string, string>) => void | Promise<void>;
 }) {
   const { t } = useDil();
   const [acik, setAcik] = React.useState(false);
   const [degerler, setDegerler] = React.useState<Record<string, string>>({});
+  const [kaydediliyor, setKaydediliyor] = React.useState(false);
 
   const sifirla = () => setDegerler(Object.fromEntries(alanlar.map((a) => [a.anahtar, a.deger])));
 
-  const kaydet = () => {
-    onKaydet?.(degerler);
-    toast.success(`${baslik} ${t("güncellendi")}`);
-    setAcik(false);
+  const kaydet = async () => {
+    if (kaydediliyor) return;
+    setKaydediliyor(true);
+    try {
+      await onKaydet?.(degerler);
+      toast.success(`${baslik} ${t("güncellendi")}`);
+      setAcik(false);
+    } catch (e) {
+      toast.error(t("Güncelleme başarısız"), {
+        description: e instanceof Error ? e.message : undefined,
+      });
+    } finally {
+      setKaydediliyor(false);
+    }
   };
 
   return (
@@ -75,7 +86,7 @@ export function KatsayiDuzenleDrawer({ baslik, aciklama, alanlar, trigger, onKay
 
         <SheetFooter className="flex-row justify-end gap-2 border-t">
           <SheetClose render={<Button variant="outline" />}>{t("İptal")}</SheetClose>
-          <Button className="gap-1.5 bg-teal-600 text-white hover:bg-teal-700" onClick={kaydet}>
+          <Button className="gap-1.5 bg-teal-600 text-white hover:bg-teal-700" disabled={kaydediliyor} onClick={kaydet}>
             <Icon icon="solar:diskette-bold-duotone" className="size-4" />
             {t("Kaydet")}
           </Button>
