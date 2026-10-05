@@ -23,7 +23,9 @@ import {
 } from "@/components/ui/select";
 import { queryKeys } from "@/lib/queries/keys";
 import { useDil } from "@/components/providers/dil-provider";
-import type { Rapor, RaporAnaliz, RaporFormat, RaporKategoriAnahtar } from "@/lib/types";
+import { raporEkle, raporVerisiGetir } from "@/lib/data/raporlar";
+import { csvIndir } from "@/lib/disa-aktar";
+import type { RaporFormat, RaporKategoriAnahtar } from "@/lib/types";
 
 const TURLER = ["Tüketim Raporu", "Performans Raporu", "Maliyet Raporu", "TEP Raporu", "Karşılaştırma Raporu", "Özel Rapor"];
 const FORMATLAR = ["PDF", "Excel"];
@@ -41,29 +43,42 @@ export function RaporOlusturForm({ onSubmitted }: { onSubmitted?: () => void }) 
   const [format2, setFormat2] = React.useState("PDF");
   const [aralik, setAralik] = React.useState<DateRange | undefined>(VARSAYILAN);
   const [acik, setAcik] = React.useState(false);
+  const [yukleniyor, setYukleniyor] = React.useState(false);
 
   const donemEtiket = aralik?.from && aralik?.to
     ? `${format(aralik.from, "dd.MM.yyyy")} – ${format(aralik.to, "dd.MM.yyyy")}`
     : t("Dönem seçiniz");
 
-  const olustur = () => {
+  async function olustur() {
     if (!tur) {
       toast.error(t("Rapor türü seçiniz"));
       return;
     }
+    if (yukleniyor) return;
+    setYukleniyor(true);
     const raporAdi = ad.trim() || tur;
-    qc.setQueryData(queryKeys.raporlar.analiz, (old?: RaporAnaliz) => {
-      if (!old) return old;
-      const yeni: Rapor = {
-        id: `r-${Date.now()}`, ad: raporAdi, kategori: TUR_KATEGORI[tur] ?? "ozel",
-        aciklama: `${donemEtiket} dönemi için oluşturulan ${tur.toLocaleLowerCase("tr")}.`,
-        format: format2 as RaporFormat, siklik: "Talebe göre", sonOlusturma: "07.09.2026", durum: "aktif",
-      };
-      return { ...old, raporlar: [yeni, ...old.raporlar] };
-    });
-    toast.success(`${raporAdi} ${t("oluşturuldu")} (${format2})`);
-    onSubmitted?.();
-  };
+    try {
+      // Kayıt oluştur
+      await raporEkle({
+        ad: raporAdi,
+        kategori: TUR_KATEGORI[tur] ?? "ozel",
+        tur,
+        format: format2 as RaporFormat,
+        donem: donemEtiket,
+      });
+      // Gerçek veriyi Excel/CSV olarak indir
+      const { basliklar, satirlar } = await raporVerisiGetir(aralik?.from, aralik?.to);
+      csvIndir(raporAdi, basliklar, satirlar);
+
+      qc.invalidateQueries({ queryKey: queryKeys.raporlar.analiz });
+      toast.success(`${raporAdi} ${t("oluşturuldu ve indirildi")}`);
+      onSubmitted?.();
+    } catch (e) {
+      toast.error(t("Rapor oluşturulamadı"), { description: e instanceof Error ? e.message : undefined });
+    } finally {
+      setYukleniyor(false);
+    }
+  }
 
   return (
     <div className="space-y-4">
@@ -102,8 +117,8 @@ export function RaporOlusturForm({ onSubmitted }: { onSubmitted?: () => void }) 
         </Select>
       </div>
 
-      <Button className="w-full gap-1.5 bg-teal-600 text-white shadow-sm hover:bg-teal-700" onClick={olustur}>
-        <Icon icon="solar:document-add-bold-duotone" className="size-4.5" />
+      <Button className="w-full gap-1.5 bg-teal-600 text-white shadow-sm hover:bg-teal-700" disabled={yukleniyor} onClick={olustur}>
+        <Icon icon={yukleniyor ? "svg-spinners:180-ring" : "solar:document-add-bold-duotone"} className="size-4.5" />
         {t("Rapor Oluştur")}
       </Button>
     </div>

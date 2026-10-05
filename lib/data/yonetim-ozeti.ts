@@ -140,8 +140,6 @@ function yilTopla(aylar: AyMetrik[]): YilToplam {
   };
 }
 
-// Raporlar henüz ayrı domen (yer tutucu); Projeler gerçek tablodan gelir.
-const RAPORLAR: OzetRapor[] = [];
 const SISTEM: OzetSistemDurum[] = [
   { alan: "Veri Girişi", durum: "Güncel", iyi: true },
   { alan: "Enerji Kayıtları", durum: "Sorun Yok", iyi: true },
@@ -152,7 +150,7 @@ const SISTEM: OzetSistemDurum[] = [
 
 export async function yonetimOzetiGetir(): Promise<YonetimOzetiAnaliz> {
   const supabase = supabaseTarayici();
-  const [{ data: kayitData, error }, { data: katsayiData }, { data: projeData }] = await Promise.all([
+  const [{ data: kayitData, error }, { data: katsayiData }, { data: projeData }, { data: raporData }] = await Promise.all([
     supabase
       .from("enerji_kayitlari")
       .select(
@@ -167,8 +165,23 @@ export async function yonetimOzetiGetir(): Promise<YonetimOzetiAnaliz> {
       .neq("durum", "tamamlandi")
       .order("ilerleme", { ascending: false })
       .limit(5),
+    supabase
+      .from("raporlar")
+      .select("id, ad, format, created_at")
+      .is("deleted_at", null)
+      .order("created_at", { ascending: false })
+      .limit(5),
   ]);
   if (error) throw new Error(error.message);
+
+  const rpTrTarih = (iso: string) => {
+    const d = new Date(iso);
+    const p = (n: number) => String(n).padStart(2, "0");
+    return `${p(d.getDate())}.${p(d.getMonth() + 1)}.${d.getFullYear()}`;
+  };
+  const RAPORLAR: OzetRapor[] = (
+    (raporData ?? []) as { id: string; ad: string; format: OzetRapor["format"]; created_at: string }[]
+  ).map((r) => ({ id: r.id, ad: r.ad, tarih: rpTrTarih(r.created_at), format: r.format }));
 
   const projeTrTarih = (iso: string | null) => {
     if (!iso) return "—";
