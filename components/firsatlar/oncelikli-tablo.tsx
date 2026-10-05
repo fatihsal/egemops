@@ -1,5 +1,10 @@
 "use client";
 
+import { Icon } from "@iconify/react";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
+
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -10,10 +15,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { SilmeOnay } from "@/components/ui/silme-onay";
 import { DURUM_META, KAYNAK_ETIKET, KAYNAK_RENK, ONCELIK } from "@/components/firsatlar/stiller";
 import { TumFirsatlarDrawer } from "@/components/firsatlar/tum-firsatlar-drawer";
+import { FirsatFormDrawer } from "@/components/firsatlar/firsat-form-drawer";
 import { useFirsatAnaliz } from "@/lib/queries/firsatlar";
 import { useDil } from "@/components/providers/dil-provider";
+import { queryKeys } from "@/lib/queries/keys";
+import { firsatSil } from "@/lib/data/firsatlar";
 import { sayi, sayiOndalik } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { Firsat } from "@/lib/types";
@@ -21,6 +30,17 @@ import type { Firsat } from "@/lib/types";
 export function FirsatOnceilkliTablo() {
   const { data, isLoading } = useFirsatAnaliz();
   const { t } = useDil();
+  const qc = useQueryClient();
+
+  async function sil(f: Firsat) {
+    try {
+      await firsatSil(f.id);
+      toast.success(`${f.ad} ${t("silindi")}`);
+      qc.invalidateQueries({ queryKey: queryKeys.firsatlar.analiz });
+    } catch (e) {
+      toast.error(t("Silme başarısız"), { description: e instanceof Error ? e.message : undefined });
+    }
+  }
 
   return (
     <Card className="h-full">
@@ -44,6 +64,7 @@ export function FirsatOnceilkliTablo() {
                     <TableHead className="text-right whitespace-nowrap">{t("Geri Dönüş")} <span className="font-normal text-muted-foreground">({t("yıl")})</span></TableHead>
                     <TableHead className="whitespace-nowrap">{t("Durum")}</TableHead>
                     <TableHead className="whitespace-nowrap">{t("İlerleme")}</TableHead>
+                    <TableHead className="text-right whitespace-nowrap">{t("İşlem")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -74,6 +95,27 @@ export function FirsatOnceilkliTablo() {
                               <span className="block h-full rounded-full bg-teal-500" style={{ width: `${f.ilerleme}%` }} />
                             </span>
                             <span className="w-8 text-right text-xs font-medium tabular-nums text-muted-foreground">%{f.ilerleme}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex items-center justify-end gap-0.5">
+                            <FirsatFormDrawer
+                              firsat={f}
+                              trigger={
+                                <Button variant="ghost" size="icon-sm" aria-label={t("Düzenle")}>
+                                  <Icon icon="solar:pen-2-bold-duotone" className="size-4 text-muted-foreground" />
+                                </Button>
+                              }
+                            />
+                            <SilmeOnay
+                              baslik={`${f.ad} ${t("silinsin mi?")}`}
+                              onConfirm={() => sil(f)}
+                              trigger={
+                                <Button variant="ghost" size="icon-sm" aria-label={t("Sil")}>
+                                  <Icon icon="solar:trash-bin-trash-bold-duotone" className="size-4 text-red-500" />
+                                </Button>
+                              }
+                            />
                           </div>
                         </TableCell>
                       </TableRow>

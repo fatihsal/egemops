@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useDil } from "@/components/providers/dil-provider";
+import { FirsatFormDrawer } from "@/components/firsatlar/firsat-form-drawer";
 
 const VARSAYILAN: DateRange = { from: new Date(2026, 0, 1), to: new Date(2026, 7, 26) };
 const KAYNAKLAR = ["Tümü", "Elektrik", "Doğalgaz", "Akaryakıt"];
@@ -62,10 +63,14 @@ export function FirsatFiltreler() {
         <SelectContent>{DURUMLAR.map((d) => <SelectItem key={d} value={d}>{t(d)}</SelectItem>)}</SelectContent>
       </Select>
 
-      <Button className="h-9 gap-1.5 bg-teal-600 text-white shadow-sm hover:bg-teal-700" onClick={() => toast.success(t("Yeni fırsat formu açılıyor"))}>
-        <Icon icon="solar:add-circle-bold-duotone" className="size-4.5" />
-        {t("Yeni Fırsat Ekle")}
-      </Button>
+      <FirsatFormDrawer
+        trigger={
+          <Button className="h-9 gap-1.5 bg-teal-600 text-white shadow-sm hover:bg-teal-700">
+            <Icon icon="solar:add-circle-bold-duotone" className="size-4.5" />
+            {t("Yeni Fırsat Ekle")}
+          </Button>
+        }
+      />
     </div>
   );
 }
