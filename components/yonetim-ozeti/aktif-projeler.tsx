@@ -47,6 +47,13 @@ export function OzetAktifProjeler() {
                 </TableRow>
               </TableHeader>
               <TableBody>
+                {data.projeler.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={5} className="py-8 text-center text-sm text-muted-foreground">
+                      {t("Henüz proje eklenmedi.")}
+                    </TableCell>
+                  </TableRow>
+                ) : null}
                 {data.projeler.map((p) => {
                   const d = DURUM_META[p.durum];
                   return (

@@ -42,8 +42,8 @@ export function OzetTuketimUretim() {
               <ComposedChart data={data.tuketimUretim} margin={{ left: 4, right: 4, top: 12, bottom: 4 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
                 <XAxis dataKey="ay" tickLine={false} axisLine={false} fontSize={12} stroke="var(--muted-foreground)" tickFormatter={(v: string) => t(v)} />
-                <YAxis yAxisId="sol" domain={[0, 2500]} tickLine={false} axisLine={false} fontSize={11} width={44} stroke="var(--muted-foreground)" tickFormatter={(v: number) => sayi(v)} label={{ value: "TEP", position: "top", offset: 8, fontSize: 11, fill: "var(--muted-foreground)" }} />
-                <YAxis yAxisId="sag" orientation="right" domain={[0, 10000]} tickLine={false} axisLine={false} fontSize={11} width={48} stroke="var(--muted-foreground)" tickFormatter={(v: number) => sayi(v)} label={{ value: t("Üretim (ton)"), position: "top", offset: 8, fontSize: 11, fill: "var(--muted-foreground)" }} />
+                <YAxis yAxisId="sol" domain={[0, "auto"]} tickLine={false} axisLine={false} fontSize={11} width={48} stroke="var(--muted-foreground)" tickFormatter={(v: number) => sayi(v)} />
+                <YAxis yAxisId="sag" orientation="right" domain={[0, "auto"]} tickLine={false} axisLine={false} fontSize={11} width={52} stroke="var(--muted-foreground)" tickFormatter={(v: number) => sayi(v)} />
                 <Tooltip
                   cursor={{ fill: "var(--muted)", opacity: 0.4 }}
                   contentStyle={{ background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" }}

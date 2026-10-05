@@ -1342,6 +1342,8 @@ export const EN: Record<string, string> = {
   "Dosya": "File",
   "Güncelleme başarısız": "Update failed",
   "Kullanıcı Adı": "Username",
+  "Henüz proje eklenmedi.": "No projects added yet.",
+  "Henüz rapor yok.": "No reports yet.",
   "Ad soyad, kullanıcı adı ve rolü güncelleyin.": "Update the full name, username and role.",
   "Kullanıcı giriş yapamaz ve listeden kaldırılır.": "The user can no longer sign in and is removed from the list.",
   "Yeni Kullanıcı": "New User",

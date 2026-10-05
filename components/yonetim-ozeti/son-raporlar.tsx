@@ -26,6 +26,9 @@ export function OzetSonRaporlar() {
           <div className="space-y-3">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}</div>
         ) : (
           <ul className="divide-y">
+            {data.raporlar.length === 0 ? (
+              <li className="py-6 text-center text-sm text-muted-foreground">{t("Henüz rapor yok.")}</li>
+            ) : null}
             {data.raporlar.map((r) => {
               const pdf = r.format.includes("PDF");
               return (
