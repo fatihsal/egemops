@@ -29,8 +29,17 @@ import {
 import { DURUM_META, KAYNAK_ETIKET } from "@/components/projeler/stiller";
 import { useDil } from "@/components/providers/dil-provider";
 import { queryKeys } from "@/lib/queries/keys";
+import { projeEkle, projeGuncelle } from "@/lib/data/projeler";
 import { sayi } from "@/lib/format";
-import type { Proje, ProjeAnaliz, ProjeDurum, ProjeKaynak } from "@/lib/types";
+import type { Proje, ProjeDurum, ProjeKaynak } from "@/lib/types";
+
+/** "15.09.2026" -> "2026-09-15" (boş/geçersizse null). */
+function tarihIso(s: string): string | null {
+  const m = s.trim().match(/^(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{4})$/);
+  if (!m) return null;
+  const [, g, a, y] = m;
+  return `${y}-${a.padStart(2, "0")}-${g.padStart(2, "0")}`;
+}
 
 const TURLER = ["Elektrik", "Doğalgaz", "Akaryakıt"];
 const DURUMLAR = Object.values(DURUM_META).map((d) => d.etiket);
@@ -88,31 +97,43 @@ export function ProjeFormDrawer({ proje, trigger }: { proje?: Proje; trigger: Re
     setAcik(o);
   };
 
-  const kaydet = () => {
+  const [yukleniyor, setYukleniyor] = React.useState(false);
+
+  async function kaydet() {
     if (!ad.trim()) {
       toast.error(t("Proje adı zorunludur"));
       return;
     }
-    const kaynak = kaynakAnahtar(tur);
-    const durumK = durumAnahtar(durum);
-    const butceN = sayiCoz(butce);
-    const tasarrufN = sayiCoz(tasarruf);
-    qc.setQueryData(queryKeys.projeler.analiz, (old?: ProjeAnaliz) => {
-      if (!old) return old;
-      if (duzenle && proje) {
-        return { ...old, projeler: old.projeler.map((p) => p.id === proje.id ? { ...p, ad, aciklama, kaynak, durum: durumK, sorumlu, baslangic, hedefBitis, butce: butceN, beklenenTasarruf: tasarrufN } : p) };
-      }
-      const yeni: Proje = {
-        id: `p-${Date.now()}`, ad, aciklama, kaynak, durum: durumK, ilerleme: 0,
-        baslangic, hedefBitis, sorumlu, butce: butceN, harcanan: 0,
-        beklenenTasarruf: tasarrufN, dogrulananTasarruf: null, geriDonus: 0,
-        saglik: { zaman: "yok", butce: "yok", tasarruf: "yok" },
-      };
-      return { ...old, projeler: [yeni, ...old.projeler] };
-    });
-    toast.success(duzenle ? `${ad} ${t("güncellendi")}` : `${ad} ${t("oluşturuldu")}`);
-    setAcik(false);
-  };
+    setYukleniyor(true);
+    const girdi = {
+      ad,
+      aciklama,
+      kaynak: kaynakAnahtar(tur),
+      durum: durumAnahtar(durum),
+      ilerleme: proje?.ilerleme ?? 0,
+      baslangic: tarihIso(baslangic),
+      hedefBitis: tarihIso(hedefBitis),
+      sorumlu,
+      butce: sayiCoz(butce),
+      harcanan: proje?.harcanan ?? 0,
+      beklenenTasarruf: sayiCoz(tasarruf),
+      dogrulananTasarruf: proje?.dogrulananTasarruf ?? null,
+      geriDonus: proje?.geriDonus ?? 0,
+    };
+    try {
+      if (duzenle && proje) await projeGuncelle(proje.id, girdi);
+      else await projeEkle(girdi);
+      toast.success(duzenle ? `${ad} ${t("güncellendi")}` : `${ad} ${t("oluşturuldu")}`);
+      qc.invalidateQueries({ queryKey: queryKeys.projeler.analiz });
+      setAcik(false);
+    } catch (e) {
+      toast.error(duzenle ? t("Güncelleme başarısız") : t("Ekleme başarısız"), {
+        description: e instanceof Error ? e.message : undefined,
+      });
+    } finally {
+      setYukleniyor(false);
+    }
+  }
 
   return (
     <Sheet open={acik} onOpenChange={acKapat}>
@@ -172,8 +193,8 @@ export function ProjeFormDrawer({ proje, trigger }: { proje?: Proje; trigger: Re
 
         <SheetFooter className="flex-row justify-end gap-2 border-t">
           <SheetClose render={<Button variant="outline" />}>{t("İptal")}</SheetClose>
-          <Button className="gap-1.5 bg-teal-600 text-white hover:bg-teal-700" onClick={kaydet}>
-            <Icon icon="solar:diskette-bold-duotone" className="size-4" />
+          <Button className="gap-1.5 bg-teal-600 text-white hover:bg-teal-700" disabled={yukleniyor} onClick={kaydet}>
+            <Icon icon={yukleniyor ? "svg-spinners:180-ring" : "solar:diskette-bold-duotone"} className="size-4" />
             {duzenle ? t("Değişiklikleri Kaydet") : t("Projeyi Oluştur")}
           </Button>
         </SheetFooter>

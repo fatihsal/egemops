@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import { Icon } from "@iconify/react";
 import { MoreVertical } from "lucide-react";
 import { toast } from "sonner";
@@ -32,9 +33,13 @@ import {
 import { DURUM_META, KAYNAK_ETIKET, KAYNAK_RENK, RAG_META } from "@/components/projeler/stiller";
 import { ProjeDetayDrawer } from "@/components/projeler/proje-detay-drawer";
 import { ProjeFormDrawer } from "@/components/projeler/proje-form-drawer";
+import { SilmeOnay } from "@/components/ui/silme-onay";
 import { useProjeFiltre } from "@/components/projeler/filtre-store";
 import { useProjeAnaliz } from "@/lib/queries/projeler";
 import { useDil } from "@/components/providers/dil-provider";
+import { queryKeys } from "@/lib/queries/keys";
+import { projeSil } from "@/lib/data/projeler";
+import { useQueryClient } from "@tanstack/react-query";
 import { sayi, sayiOndalik } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { Proje, ProjeRag } from "@/lib/types";
@@ -50,7 +55,19 @@ function genelSaglik(s: Proje["saglik"]): ProjeRag {
 export function TumProjelerTablo() {
   const { data, isLoading } = useProjeAnaliz();
   const { t } = useDil();
+  const qc = useQueryClient();
   const { yil, durum, tur, sorumlu } = useProjeFiltre();
+  const [silinecek, setSilinecek] = React.useState<Proje | null>(null);
+
+  async function sil(p: Proje) {
+    try {
+      await projeSil(p.id);
+      toast.success(`${p.ad} ${t("silindi")}`);
+      qc.invalidateQueries({ queryKey: queryKeys.projeler.analiz });
+    } catch (e) {
+      toast.error(t("Silme başarısız"), { description: e instanceof Error ? e.message : undefined });
+    }
+  }
 
   const tumu = data?.projeler ?? [];
   const filtreli = tumu.filter((p) => {
@@ -164,9 +181,12 @@ export function TumProjelerTablo() {
                                   {t("Dışa aktar")}
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={() => toast(`${t(p.ad)} ${t("arşivlendi")}`)}>
-                                  <Icon icon="solar:archive-bold-duotone" className="size-4" />
-                                  {t("Arşivle")}
+                                <DropdownMenuItem
+                                  onClick={() => setTimeout(() => setSilinecek(p), 10)}
+                                  className="text-red-600 focus:bg-red-50 focus:text-red-700 dark:text-red-400 dark:focus:bg-red-950/50"
+                                >
+                                  <Icon icon="solar:trash-bin-trash-bold-duotone" className="size-4" />
+                                  {t("Sil")}
                                 </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
@@ -208,6 +228,13 @@ export function TumProjelerTablo() {
           </>
         )}
       </CardContent>
+
+      <SilmeOnay
+        open={silinecek !== null}
+        onOpenChange={(o) => { if (!o) setSilinecek(null); }}
+        baslik={silinecek ? `${silinecek.ad} ${t("silinsin mi?")}` : undefined}
+        onConfirm={() => { if (silinecek) sil(silinecek); }}
+      />
     </Card>
   );
 }

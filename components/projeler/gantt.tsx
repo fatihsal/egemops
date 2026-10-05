@@ -17,7 +17,7 @@ export function ProjeGantt() {
   return (
     <Card className="flex h-full flex-col">
       <CardHeader>
-        <h3 className="font-heading text-base font-medium">{t("Proje Takvimi (Gantt)")}</h3>
+        <h3 className="font-heading text-base font-medium">{t("Proje Takvimi")}</h3>
       </CardHeader>
       <CardContent className="flex flex-1 flex-col">
         {isLoading || !data ? (

@@ -1342,6 +1342,7 @@ export const EN: Record<string, string> = {
   "Dosya": "File",
   "Güncelleme başarısız": "Update failed",
   "Kullanıcı Adı": "Username",
+  "Proje Takvimi": "Project Timeline",
   "Fırsat adı zorunludur": "Opportunity name is required",
   "eklendi": "added",
   "Ekleme başarısız": "Add failed",
