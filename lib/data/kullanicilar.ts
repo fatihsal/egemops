@@ -46,6 +46,7 @@ type ProfilSatir = {
   ad_soyad: string | null;
   eposta: string | null;
   rol: string;
+  kullanici_adi: string | null;
   created_at: string;
 };
 
@@ -53,7 +54,7 @@ export async function kullaniciAnaliziGetir(): Promise<KullaniciAnaliz> {
   const supabase = supabaseTarayici();
   const { data, error } = await supabase
     .from("profiles")
-    .select("id, ad_soyad, eposta, rol, created_at")
+    .select("id, ad_soyad, eposta, rol, kullanici_adi, created_at")
     .is("deleted_at", null)
     .order("created_at", { ascending: true });
 
@@ -68,6 +69,7 @@ export async function kullaniciAnaliziGetir(): Promise<KullaniciAnaliz> {
       id: s.id,
       ad,
       email,
+      kullaniciAdi: s.kullanici_adi ?? undefined,
       bas: basHarfler(s.ad_soyad ?? "", email),
       renk: renkSec(s.id),
       rol: ROL_ESLEME[s.rol] ?? "goruntuleyici",

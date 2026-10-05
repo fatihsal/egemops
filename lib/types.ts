@@ -1219,6 +1219,7 @@ export interface Kullanici {
   id: string;
   ad: string;
   email: string;
+  kullaniciAdi?: string;
   bas: string; // avatar baş harfleri
   renk: string; // avatar arka plan
   rol: KullaniciRol;

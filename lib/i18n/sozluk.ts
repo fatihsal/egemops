@@ -1342,6 +1342,8 @@ export const EN: Record<string, string> = {
   "Dosya": "File",
   "Güncelleme başarısız": "Update failed",
   "Kullanıcı Adı": "Username",
+  "Ad soyad, kullanıcı adı ve rolü güncelleyin.": "Update the full name, username and role.",
+  "Kullanıcı giriş yapamaz ve listeden kaldırılır.": "The user can no longer sign in and is removed from the list.",
   "Yeni Kullanıcı": "New User",
   "Kullanıcı adı ve şifre ile yeni hesap oluşturun.": "Create a new account with a username and password.",
   "En az 3 karakter; harf, rakam, . _ -": "At least 3 characters; letters, digits, . _ -",

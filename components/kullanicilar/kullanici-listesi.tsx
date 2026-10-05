@@ -39,7 +39,8 @@ import { useKullaniciAnaliz } from "@/lib/queries/kullanicilar";
 import { useDil } from "@/components/providers/dil-provider";
 import { queryKeys } from "@/lib/queries/keys";
 import { cn } from "@/lib/utils";
-import type { KullaniciAnaliz } from "@/lib/types";
+import { SilmeOnay } from "@/components/ui/silme-onay";
+import type { Kullanici, KullaniciAnaliz } from "@/lib/types";
 
 const ROLLER = ["Tümü", "Yönetici", "Editör", "Görüntüleyici"];
 const DURUMLAR = ["Tümü", "Aktif", "Pasif", "Davet Bekliyor"];
@@ -66,6 +67,27 @@ export function KullaniciListesi() {
   const { arama, rol, durum, set, aktifMi, sifirla } = useKullaniciFiltre();
   const qc = useQueryClient();
   const [sayfa, setSayfa] = React.useState(1);
+  const [silinecek, setSilinecek] = React.useState<Kullanici | null>(null);
+
+  async function kullaniciSil(u: Kullanici) {
+    try {
+      const yanit = await fetch("/api/kullanici", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: u.id }),
+      });
+      const metin = await yanit.text();
+      const sonuc = metin ? JSON.parse(metin) : {};
+      if (!yanit.ok) {
+        toast.error(t("Silme başarısız"), { description: sonuc?.hata ?? `HTTP ${yanit.status}` });
+        return;
+      }
+      toast.success(`${u.ad} ${t("silindi")}`);
+      qc.invalidateQueries({ queryKey: queryKeys.kullanicilar.analiz });
+    } catch (e) {
+      toast.error(t("Silme başarısız"), { description: e instanceof Error ? e.message : undefined });
+    }
+  }
 
   const durumDegistir = (id: string, yeni: "aktif" | "pasif") =>
     qc.setQueryData(queryKeys.kullanicilar.analiz, (old?: KullaniciAnaliz) => old ? { ...old, kullanicilar: old.kullanicilar.map((u) => u.id === id ? { ...u, durum: yeni } : u) } : old);
@@ -190,6 +212,14 @@ export function KullaniciListesi() {
                                     {t("Devre Dışı Bırak")}
                                   </DropdownMenuItem>
                                 )}
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem
+                                  onClick={() => setTimeout(() => setSilinecek(u), 10)}
+                                  className="text-red-600 focus:bg-red-50 focus:text-red-700 dark:text-red-400 dark:focus:bg-red-950/50"
+                                >
+                                  <Icon icon="solar:trash-bin-trash-bold-duotone" className="size-4" />
+                                  {t("Sil")}
+                                </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </div>
@@ -222,6 +252,14 @@ export function KullaniciListesi() {
           </>
         )}
       </CardContent>
+
+      <SilmeOnay
+        open={silinecek !== null}
+        onOpenChange={(o) => { if (!o) setSilinecek(null); }}
+        baslik={silinecek ? `${silinecek.ad} ${t("silinsin mi?")}` : undefined}
+        aciklama={t("Kullanıcı giriş yapamaz ve listeden kaldırılır.")}
+        onConfirm={() => { if (silinecek) kullaniciSil(silinecek); }}
+      />
     </Card>
   );
 }

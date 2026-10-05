@@ -238,7 +238,7 @@ export function BelgeListesi() {
                                   {t("Yeniden Adlandır")}
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={() => setSilinecek(b)}>
+                                <DropdownMenuItem onClick={() => setTimeout(() => setSilinecek(b), 10)}>
                                   <Icon icon="solar:trash-bin-trash-bold-duotone" className="size-4" />
                                   {t("Sil")}
                                 </DropdownMenuItem>
