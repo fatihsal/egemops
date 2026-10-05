@@ -188,8 +188,47 @@ export async function enerjiKayitlariGetir(): Promise<EnerjiKayit[]> {
 }
 
 export async function kayitGetir(id: string): Promise<EnerjiKayit | undefined> {
-  const { satirlar, isimAl } = await verileriGetir();
-  return kayitlariUret(satirlar, isimAl).find((k) => k.id === id);
+  const supabase = supabaseTarayici();
+  const SUTUNLAR =
+    "id, yil, ay, sebeke_elektrik, ges_toplam_uretim, ges_oz_tuketim, sebekeye_verilen, dogalgaz, motorin, benzin, diger_akaryakit, uretim_ton, durum, giren, created_at, updated_at";
+
+  // Sadece ilgili kaydı çek.
+  const { data: satir, error } = await supabase
+    .from("enerji_kayitlari")
+    .select(SUTUNLAR)
+    .eq("id", id)
+    .is("deleted_at", null)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  if (!satir) return undefined;
+  const s = satir as Satir;
+
+  // Önceki dönemi (tek satır) çek.
+  const { data: oncekiler } = await supabase
+    .from("enerji_kayitlari")
+    .select(SUTUNLAR)
+    .is("deleted_at", null)
+    .or(`yil.lt.${s.yil},and(yil.eq.${s.yil},ay.lt.${s.ay})`)
+    .order("yil", { ascending: false })
+    .order("ay", { ascending: false })
+    .limit(1);
+  const onceki = (oncekiler?.[0] as Satir | undefined) ?? null;
+
+  // Sadece ilgili kullanıcı adlarını çek.
+  const girenIds = [s.giren, onceki?.giren].filter(Boolean) as string[];
+  const isimHarita = new Map<string, string>();
+  if (girenIds.length) {
+    const { data: profiller } = await supabase
+      .from("profiles")
+      .select("id, ad_soyad, eposta")
+      .in("id", girenIds);
+    for (const p of (profiller ?? []) as { id: string; ad_soyad: string | null; eposta: string | null }[]) {
+      isimHarita.set(p.id, p.ad_soyad ?? p.eposta ?? "—");
+    }
+  }
+  const isimAl = (gid: string | null) => (gid ? isimHarita.get(gid) ?? "—" : "—");
+
+  return satirdanKayit(s, onceki, isimAl);
 }
 
 export async function kayitOzetiGetir(): Promise<KayitOzet> {
