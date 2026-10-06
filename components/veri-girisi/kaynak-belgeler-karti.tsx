@@ -179,6 +179,7 @@ export function KaynakBelgelerKarti() {
                 variant="outline"
                 size="sm"
                 className="gap-1.5"
+                nativeButton={false}
                 render={
                   <a href={b.url} target="_blank" rel="noopener noreferrer">
                     <Icon icon="solar:eye-bold-duotone" className="size-4" />

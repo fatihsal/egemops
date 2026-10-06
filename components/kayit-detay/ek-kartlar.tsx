@@ -127,6 +127,7 @@ export function BelgelerKarti({ kayit }: { kayit: EnerjiKayit }) {
                   variant="ghost"
                   size="icon-sm"
                   aria-label={t("Görüntüle")}
+                  nativeButton={false}
                   render={
                     <a href={b.url} target="_blank" rel="noopener noreferrer">
                       <Icon icon="solar:eye-bold-duotone" className="size-4 text-muted-foreground" />

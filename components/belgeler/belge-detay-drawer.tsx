@@ -87,6 +87,7 @@ export function BelgeDetayDrawer({ belge, trigger }: { belge: Belge; trigger: Re
           </Button>
           <Button
             className="gap-1.5 bg-teal-600 text-white hover:bg-teal-700"
+            nativeButton={false}
             render={
               <a href={belge.url ?? "#"} target="_blank" rel="noopener noreferrer">
                 <Icon icon="solar:download-minimalistic-bold-duotone" className="size-4" />

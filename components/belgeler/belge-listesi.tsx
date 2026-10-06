@@ -218,6 +218,7 @@ export function BelgeListesi() {
                               variant="ghost"
                               size="icon-sm"
                               aria-label={t("İndir")}
+                              nativeButton={false}
                               render={
                                 <a href={b.url ?? "#"} target="_blank" rel="noopener noreferrer">
                                   <Icon icon="solar:download-minimalistic-bold-duotone" className="size-4 text-muted-foreground" />
