@@ -1,3 +1,5 @@
+import { Code2 } from "lucide-react";
+
 import { NavList } from "@/components/layout/nav-list";
 import { EnerjiIllustrasyon } from "@/components/layout/enerji-illustrasyon";
 import { MarkaLogo } from "@/components/layout/marka-logo";
@@ -16,8 +18,22 @@ export function AppSidebar() {
 
       <EnerjiIllustrasyon className="w-full shrink-0 px-3" />
 
-      <div className="border-t p-3 text-xs text-muted-foreground">
-        Sürüm 0.1.0
+      <div className="border-t px-3 py-4">
+        <div className="flex items-center gap-2">
+          <span className="h-px flex-1 bg-gradient-to-r from-transparent to-border" />
+          <span className="group inline-flex items-center gap-1.5 rounded-full border border-teal-500/25 bg-gradient-to-r from-teal-50 to-cyan-50/50 py-1 pr-3 pl-1 shadow-sm transition-colors hover:border-teal-500/40 dark:border-teal-400/20 dark:from-teal-950/40 dark:to-cyan-950/20">
+            <span className="flex size-5 items-center justify-center rounded-full bg-gradient-to-br from-teal-500 to-teal-700 text-white shadow-sm">
+              <Code2 className="size-3" />
+            </span>
+            <span className="text-[11px] font-semibold tracking-tight text-teal-700 dark:text-teal-300">
+              Fatih Sal
+            </span>
+          </span>
+          <span className="h-px flex-1 bg-gradient-to-l from-transparent to-border" />
+        </div>
+        <p className="mt-2 text-center text-[8.5px] font-semibold tracking-[0.2em] text-muted-foreground/55 uppercase">
+          Design &amp; Development
+        </p>
       </div>
     </aside>
   );

@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import {
   ArrowRight,
   BarChart3,
+  Code2,
   Eye,
   EyeOff,
   FileText,
@@ -290,8 +291,19 @@ export default function LoginPage() {
           </div>
         </div>
 
+        {/* geliştirici kredisi */}
+        <div className="mt-6 flex w-full max-w-md items-center gap-3">
+          <span className="h-px flex-1 bg-slate-200" />
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-teal-100 bg-teal-50/70 px-3.5 py-1.5 text-[13px] text-slate-500 shadow-sm">
+            <Code2 className="size-4 text-teal-600" />
+            Design &amp; Development by{" "}
+            <span className="font-semibold text-teal-700">Fatih Sal</span>
+          </span>
+          <span className="h-px flex-1 bg-slate-200" />
+        </div>
+
         {/* footer */}
-        <div className="mt-8 flex w-full max-w-md flex-col items-center gap-1.5 text-center text-xs text-slate-400 sm:flex-row sm:justify-between sm:text-left">
+        <div className="mt-6 flex w-full max-w-md flex-col items-center gap-1.5 text-center text-xs text-slate-400 sm:flex-row sm:justify-between sm:text-left">
           <span>{t("© 2026 Egem Ambalaj A.Ş. | Enerji Yönetimi Platformu")}</span>
           <span className="inline-flex items-center gap-1.5">
             <Leaf className="size-3.5 text-teal-500" />
