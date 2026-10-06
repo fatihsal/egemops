@@ -23,6 +23,20 @@ const META: Record<string, SayfaMeta> = {
   "/katsayilar": { baslik: "Katsayılar", altBaslik: "Enerji hesaplamalarında kullanılan dönüşüm, emisyon ve fiyat katsayıları." },
   "/kullanicilar": { baslik: "Kullanıcılar", altBaslik: "Ekip üyelerini, rollerini ve erişim izinlerini yönetin." },
   "/ayarlar": { baslik: "Ayarlar", altBaslik: "Profil, kurum bilgileri, bildirimler ve entegrasyon tercihleri." },
+
+  // --------------------------- BAKIM ---------------------------
+  "/bakim": { baslik: "Bakım Dashboard", altBaslik: "Planlı bakımların genel durumu, yaklaşan ve geciken bakımlar." },
+  "/bakim/makineler": { baslik: "Makine & Ekipmanlar", altBaslik: "Fabrikadaki tüm makine ve ekipmanların envanteri ve bakım durumu." },
+  "/bakim/planlar": { baslik: "Bakım Planları", altBaslik: "Hangi makinede hangi bakımın ne sıklıkta yapılacağını tanımlayın." },
+  "/bakim/takvim": { baslik: "Bakım Takvimi", altBaslik: "Planlı bakımların haftalık ve aylık takvim görünümü." },
+  "/bakim/is-emirleri": { baslik: "Planlı İş Emirleri", altBaslik: "Planlanmış bakımların uygulama kayıtlarını yönetin." },
+  "/bakim/kayitlar": { baslik: "Bakım Kayıtları", altBaslik: "Tamamlanmış geçmiş bakım kayıtlarının arşivi." },
+  "/bakim/sop": { baslik: "SOP & Checklistler", altBaslik: "Tekrar kullanılan bakım şablonları ve versiyon yönetimi." },
+  "/bakim/bulgular": { baslik: "Bakım Bulguları", altBaslik: "Bakım sırasında tespit edilen takip noktalarını yönetin." },
+  "/bakim/operator-kontrolleri": { baslik: "Operatör Kontrolleri", altBaslik: "Operatörlerin haftalık temizlik ve görsel kontrol formları." },
+  "/bakim/dokumanlar": { baslik: "Dokümanlar", altBaslik: "Makine ve bakım planlarına bağlı teknik dokümanlar." },
+  "/bakim/raporlar": { baslik: "KPI & Raporlar", altBaslik: "Planlı bakım performans göstergeleri ve raporları." },
+  "/bakim/ayarlar": { baslik: "Bakım Ayarları", altBaslik: "Bölüm, makine grubu, periyot ve kritiklik tanımları." },
 };
 
 const VARSAYILAN: SayfaMeta = META["/"];
@@ -34,6 +48,18 @@ export function sayfaMeta(pathname: string): SayfaMeta {
   }
   if (pathname.startsWith("/enerji-kayitlari/")) {
     return { baslik: "Kayıt Detayı", altBaslik: "Dönemin enerji tüketim, üretim ve fatura verilerini görüntüleyin." };
+  }
+  if (pathname.startsWith("/bakim/makineler/")) {
+    return { baslik: "Makine Detay", altBaslik: "Makinenin dijital bakım dosyası: plan, geçmiş, SOP, doküman ve bulgular." };
+  }
+  if (pathname.startsWith("/bakim/is-emirleri/")) {
+    return { baslik: "İş Emri Detay", altBaslik: "SOP uygulama, fotoğraf, bulgu, bakım sonrası gözlem ve onay." };
+  }
+  if (pathname.startsWith("/bakim/sop/")) {
+    return { baslik: "SOP Detay", altBaslik: "SOP maddeleri ve versiyon yönetimi." };
+  }
+  if (pathname.startsWith("/bakim/operator-kontrolleri/")) {
+    return { baslik: "Operatör Kontrolü", altBaslik: "Haftalık kontrol uygulama ekranı." };
   }
   return VARSAYILAN;
 }

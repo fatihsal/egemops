@@ -12,6 +12,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { NavList } from "@/components/layout/nav-list";
+import { ModulGecis } from "@/components/layout/modul-gecis";
 import { MarkaLogo } from "@/components/layout/marka-logo";
 import { useDil } from "@/components/providers/dil-provider";
 
@@ -38,6 +39,9 @@ export function MobileNav() {
           <SheetTitle className="sr-only">{t("EGEM Ambalaj menüsü")}</SheetTitle>
           <MarkaLogo />
         </SheetHeader>
+        <div className="px-3 pt-3">
+          <ModulGecis onNavigate={() => setAcik(false)} />
+        </div>
         <div className="flex-1 overflow-y-auto p-3">
           <NavList onNavigate={() => setAcik(false)} />
         </div>

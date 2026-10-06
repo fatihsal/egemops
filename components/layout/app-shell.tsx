@@ -8,7 +8,7 @@ import { MarkaHeader } from "@/components/layout/marka-header";
 import { SayfaGecis } from "@/components/layout/sayfa-gecis";
 
 // Uygulama kabuğu (sidebar + üst bar) olmadan tam ekran açılan rotalar.
-const CERCEVESIZ_ROTALAR = ["/login"];
+const CERCEVESIZ_ROTALAR = ["/login", "/uygulamalar"];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

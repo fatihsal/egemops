@@ -44,10 +44,10 @@ export async function oturumuGuncelle(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Girişli + login sayfası → panele gönder.
+  // Girişli + login sayfası → modül seçim hub'ına gönder.
   if (user && acikRota) {
     const url = request.nextUrl.clone();
-    url.pathname = "/";
+    url.pathname = "/uygulamalar";
     return NextResponse.redirect(url);
   }
 

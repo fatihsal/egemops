@@ -1,6 +1,7 @@
 import { Code2 } from "lucide-react";
 
 import { NavList } from "@/components/layout/nav-list";
+import { ModulGecis } from "@/components/layout/modul-gecis";
 import { EnerjiIllustrasyon } from "@/components/layout/enerji-illustrasyon";
 import { MarkaLogo } from "@/components/layout/marka-logo";
 
@@ -10,6 +11,10 @@ export function AppSidebar() {
       {/* Logo / marka */}
       <div className="flex h-20 items-center justify-center border-b px-4">
         <MarkaLogo />
+      </div>
+
+      <div className="px-3 pt-3">
+        <ModulGecis />
       </div>
 
       <div className="flex-1 overflow-y-auto p-3 [scrollbar-color:rgb(148_163_184_/_0.4)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/30 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-1.5 hover:[&::-webkit-scrollbar-thumb]:bg-muted-foreground/50">

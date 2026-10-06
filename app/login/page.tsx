@@ -101,7 +101,7 @@ export default function LoginPage() {
 
     toast.success(t("Giriş başarılı, yönlendiriliyorsunuz…"));
     // Sunucu bileşenlerinin yeni oturumu görmesi için refresh + yönlendirme.
-    router.replace("/");
+    router.replace("/uygulamalar");
     router.refresh();
   }
 

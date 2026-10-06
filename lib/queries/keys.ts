@@ -67,4 +67,20 @@ export const queryKeys = {
   kullanicilar: {
     analiz: ["kullanicilar", "analiz"] as const,
   },
+  bakim: {
+    dashboard: ["bakim", "dashboard"] as const,
+    makineler: ["bakim", "makineler"] as const,
+    makine: (id: string) => ["bakim", "makine", id] as const,
+    planlar: ["bakim", "planlar"] as const,
+    takvim: ["bakim", "takvim"] as const,
+    isEmirleri: ["bakim", "is-emirleri"] as const,
+    isEmri: (id: string) => ["bakim", "is-emri", id] as const,
+    kayitlar: ["bakim", "kayitlar"] as const,
+    sopListe: ["bakim", "sop"] as const,
+    sop: (id: string) => ["bakim", "sop-detay", id] as const,
+    bulgular: ["bakim", "bulgular"] as const,
+    operatorKontroller: ["bakim", "operator-kontroller"] as const,
+    dokumanlar: ["bakim", "dokumanlar"] as const,
+    raporlar: ["bakim", "raporlar"] as const,
+  },
 } as const;

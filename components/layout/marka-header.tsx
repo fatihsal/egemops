@@ -11,6 +11,7 @@ import { BildirimMenu } from "@/components/layout/bildirim-menu";
 import { KullaniciMenu } from "@/components/layout/kullanici-menu";
 import { useDil } from "@/components/providers/dil-provider";
 import { sayfaMeta } from "@/lib/sayfa-meta";
+import { aktifModul } from "@/lib/nav";
 
 /**
  * Markalı üst bar (Ana Sayfa / hero header).
@@ -18,8 +19,10 @@ import { sayfaMeta } from "@/lib/sayfa-meta";
  * tema/bildirim/kullanıcı.
  */
 export function MarkaHeader() {
-  const { baslik, altBaslik } = sayfaMeta(usePathname());
+  const pathname = usePathname();
+  const { baslik, altBaslik } = sayfaMeta(pathname);
   const { t } = useDil();
+  const bakimMi = aktifModul(pathname) === "bakim";
   return (
     <header className="relative overflow-hidden border-b bg-card">
       {/* Dekoratif akışkan dalga (yalnızca geniş ekran) */}
@@ -58,18 +61,18 @@ export function MarkaHeader() {
       </div>
       {/* Sağ filigran */}
       <div className="pointer-events-none absolute top-1/2 right-[444px] hidden -translate-y-1/2 flex-col items-center gap-0.5 text-center xl:flex">
-        <Icon icon="solar:leaf-bold-duotone" className="size-4 text-emerald-400/70" />
+        <Icon icon={bakimMi ? "solar:shield-check-bold-duotone" : "solar:leaf-bold-duotone"} className={bakimMi ? "size-4 text-blue-400/70" : "size-4 text-emerald-400/70"} />
         <span className="text-[8px] font-semibold tracking-[0.18em] text-muted-foreground/50 uppercase leading-tight">
-          {t("Bugünün Enerjisi")}<br />{t("Yarının Geleceği")}
+          {bakimMi ? <>{t("Planlı Bakım")}<br />{t("Güçlü Üretim")}</> : <>{t("Bugünün Enerjisi")}<br />{t("Yarının Geleceği")}</>}
         </span>
       </div>
 
       <div className="relative flex h-20 items-stretch">
-        {/* Sürdürülebilirlik sloganı (masaüstü) */}
+        {/* Modül sloganı (masaüstü) */}
         <div className="hidden items-center gap-1.5 border-r px-4 md:flex">
-          <Icon icon="solar:leaf-bold-duotone" className="size-5 text-emerald-500" />
-          <span className="text-[9px] font-semibold tracking-[0.12em] text-emerald-700 uppercase leading-tight dark:text-emerald-400">
-            {t("Daha Temiz")}<br />{t("Yarınlar İçin")}
+          <Icon icon={bakimMi ? "solar:wrench-bold-duotone" : "solar:leaf-bold-duotone"} className={bakimMi ? "size-5 text-blue-500" : "size-5 text-emerald-500"} />
+          <span className={bakimMi ? "text-[9px] font-semibold tracking-[0.12em] text-blue-700 uppercase leading-tight dark:text-blue-400" : "text-[9px] font-semibold tracking-[0.12em] text-emerald-700 uppercase leading-tight dark:text-emerald-400"}>
+            {bakimMi ? <>{t("Güvenli")}<br />{t("Üretim İçin")}</> : <>{t("Daha Temiz")}<br />{t("Yarınlar İçin")}</>}
           </span>
         </div>
 
@@ -82,10 +85,17 @@ export function MarkaHeader() {
         <div className="flex min-w-0 flex-1 flex-col justify-center px-4">
           <div className="flex min-w-0 flex-wrap items-center gap-x-2.5 gap-y-1">
             <h1 className="truncate font-heading text-lg font-bold tracking-tight">{t(baslik)}</h1>
-            <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-medium text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
-              <Icon icon="solar:leaf-bold-duotone" className="size-3" />
-              {t("Sürdürülebilirlik Modülü")}
-            </span>
+            {bakimMi ? (
+              <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-blue-100 px-2 py-0.5 text-[11px] font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-300">
+                <Icon icon="solar:wrench-bold-duotone" className="size-3" />
+                {t("Bakım Modülü")}
+              </span>
+            ) : (
+              <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-medium text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
+                <Icon icon="solar:leaf-bold-duotone" className="size-3" />
+                {t("Sürdürülebilirlik Modülü")}
+              </span>
+            )}
           </div>
           <p className="mt-0.5 hidden text-[11px] leading-tight text-muted-foreground sm:line-clamp-2">
             {t(altBaslik)}
