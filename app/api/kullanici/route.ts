@@ -71,10 +71,11 @@ export async function DELETE(req: Request) {
     }
 
     const admin = supabaseAdmin();
-    const { error } = await admin
-      .from("profiles")
-      .update({ deleted_at: new Date().toISOString() })
-      .eq("id", id);
+    // Önce profili soft-delete (kayıt/denetim için), sonra Auth kullanıcısını sil.
+    // Auth kullanıcısı silinmezse aynı kullanıcı adı (sentetik e-posta) tekrar
+    // kullanılamaz. Auth silme profiles satırını cascade ile kaldırır.
+    await admin.from("profiles").update({ deleted_at: new Date().toISOString() }).eq("id", id);
+    const { error } = await admin.auth.admin.deleteUser(id);
     if (error) return NextResponse.json({ hata: error.message }, { status: 400 });
     return NextResponse.json({ ok: true });
   } catch (e) {
