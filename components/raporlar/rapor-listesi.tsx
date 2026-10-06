@@ -36,7 +36,7 @@ import { DURUM_META, FORMAT_STIL, KATEGORI_META } from "@/components/raporlar/st
 import { useRaporFiltre } from "@/components/raporlar/filtre-store";
 import { useRaporAnaliz } from "@/lib/queries/raporlar";
 import { useDil } from "@/components/providers/dil-provider";
-import { csvIndir } from "@/lib/disa-aktar";
+import { csvIndir, pdfYazdir } from "@/lib/disa-aktar";
 import { cn } from "@/lib/utils";
 
 const KATEGORILER = ["Tümü", "Tüketim", "Performans", "Maliyet", "TEP", "Karşılaştırma", "Özel"];
@@ -115,6 +115,25 @@ export function RaporListesi() {
     toast.success(`${filtreli.length} ${t("rapor Excel'e aktarıldı")}`);
   }
 
+  function pdfAktar() {
+    if (filtreli.length === 0) {
+      toast.error(t("Dışa aktarılacak rapor yok"));
+      return;
+    }
+    pdfYazdir(
+      t("Rapor Listesi"),
+      [t("Rapor Adı"), t("Kategori"), t("Format"), t("Sıklık"), t("Son Oluşturulma"), t("Durum")],
+      filtreli.map((r) => [
+        t(r.ad),
+        t(KATEGORI_META[r.kategori].etiket),
+        r.format,
+        t(r.siklik),
+        r.sonOlusturma,
+        t(DURUM_META[r.durum].etiket),
+      ]),
+    );
+  }
+
   return (
     <Card id="rapor-listesi" className="scroll-mt-6">
       <CardHeader className="flex-col gap-3 @2xl/card-header:flex-row @2xl/card-header:items-center @2xl/card-header:justify-between">
@@ -134,7 +153,11 @@ export function RaporListesi() {
           <FiltreSelect etiket={t("Durum")} deger={durum} secenekler={DURUMLAR} onChange={(v) => set("durum", v)} genislik="w-[112px]" />
           <Button variant="outline" size="sm" className="h-9 w-full justify-center gap-1.5 bg-card md:w-auto" onClick={disaAktar}>
             <Icon icon="vscode-icons:file-type-excel" className="size-4" />
-            {t("Dışa Aktar")}
+            {t("Excel")}
+          </Button>
+          <Button variant="outline" size="sm" className="h-9 w-full justify-center gap-1.5 bg-card md:w-auto" onClick={pdfAktar}>
+            <Icon icon="vscode-icons:file-type-pdf2" className="size-4" />
+            {t("PDF")}
           </Button>
           {aktifMi ? (
             <Button variant="ghost" size="sm" className="h-9 w-full justify-center gap-1 text-muted-foreground md:w-auto" onClick={sifirla}>

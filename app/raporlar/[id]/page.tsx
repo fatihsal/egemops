@@ -45,9 +45,8 @@ export default function RaporOnizlemePage() {
             ) : null}
           </div>
           <p className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-sm text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5"><Icon icon="solar:calendar-linear" className="size-4" /> {t("Dönem")}: 01.01.2026 – 26.08.2026</span>
-            <span className="inline-flex items-center gap-1.5"><Icon icon="solar:user-linear" className="size-4" /> Uğur Melih</span>
-            <span className="inline-flex items-center gap-1.5"><Icon icon="solar:refresh-linear" className="size-4" /> {t("Son güncelleme")} 26.08.2026</span>
+            <span className="inline-flex items-center gap-1.5"><Icon icon="solar:user-linear" className="size-4" /> {sonRapor?.olusturan ?? "—"}</span>
+            <span className="inline-flex items-center gap-1.5"><Icon icon="solar:calendar-linear" className="size-4" /> {sonRapor?.tarih ?? rapor?.sonOlusturma ?? "—"}</span>
           </p>
         </div>
 

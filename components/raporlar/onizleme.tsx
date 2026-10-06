@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import { Icon } from "@iconify/react";
 import {
   Area,
@@ -16,10 +17,11 @@ import {
 } from "recharts";
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { raporOnizlemeGetir } from "@/lib/data/rapor-onizleme";
 import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
-import type { OnizlemeKpi, RaporKategoriAnahtar } from "@/lib/types";
+import type { OnizlemeKpi, RaporKategoriAnahtar, RaporOnizleme } from "@/lib/types";
 
 function Delta({ k }: { k: OnizlemeKpi }) {
   const { t } = useDil();
@@ -37,8 +39,27 @@ function Delta({ k }: { k: OnizlemeKpi }) {
 
 export function RaporOnizlemeIcerik({ kategori }: { kategori: RaporKategoriAnahtar }) {
   const { t } = useDil();
-  const d = raporOnizlemeGetir(kategori);
-  const toplamDagilim = d.dagilim.reduce((t, x) => t + x.deger, 0);
+  const [d, setD] = React.useState<RaporOnizleme | null>(null);
+
+  React.useEffect(() => {
+    let iptal = false;
+    raporOnizlemeGetir(kategori)
+      .then((r) => { if (!iptal) setD(r); })
+      .catch(() => { if (!iptal) setD(null); });
+    return () => { iptal = true; };
+  }, [kategori]);
+
+  if (!d) {
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-28 w-full" />
+        <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">{Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-28 w-full" />)}</div>
+        <Skeleton className="h-[320px] w-full" />
+      </div>
+    );
+  }
+
+  const toplamDagilim = d.dagilim.reduce((tp, x) => tp + x.deger, 0);
 
   return (
     <div className="space-y-6">

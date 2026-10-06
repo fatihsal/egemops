@@ -24,7 +24,7 @@ import {
 import { queryKeys } from "@/lib/queries/keys";
 import { useDil } from "@/components/providers/dil-provider";
 import { raporEkle, raporVerisiGetir } from "@/lib/data/raporlar";
-import { csvIndir } from "@/lib/disa-aktar";
+import { csvIndir, pdfYazdir } from "@/lib/disa-aktar";
 import type { RaporFormat, RaporKategoriAnahtar } from "@/lib/types";
 
 const TURLER = ["Tüketim Raporu", "Performans Raporu", "Maliyet Raporu", "TEP Raporu", "Karşılaştırma Raporu", "Özel Rapor"];
@@ -66,9 +66,10 @@ export function RaporOlusturForm({ onSubmitted }: { onSubmitted?: () => void }) 
         format: format2 as RaporFormat,
         donem: donemEtiket,
       });
-      // Gerçek veriyi Excel/CSV olarak indir
+      // Gerçek veriyi seçilen formatta üret
       const { basliklar, satirlar } = await raporVerisiGetir(aralik?.from, aralik?.to);
-      csvIndir(raporAdi, basliklar, satirlar);
+      if (format2 === "PDF") pdfYazdir(raporAdi, basliklar, satirlar);
+      else csvIndir(raporAdi, basliklar, satirlar);
 
       qc.invalidateQueries({ queryKey: queryKeys.raporlar.analiz });
       toast.success(`${raporAdi} ${t("oluşturuldu ve indirildi")}`);
