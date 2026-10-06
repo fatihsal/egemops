@@ -4,7 +4,7 @@ import { Icon } from "@iconify/react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { BelgeYukleDrawer } from "@/components/belgeler/yukle-drawer";
+import { BelgeYukleButonu } from "@/components/belgeler/belge-yukle";
 import { useDil } from "@/components/providers/dil-provider";
 
 export function BelgeFiltreler() {
@@ -15,14 +15,7 @@ export function BelgeFiltreler() {
         <Icon icon="solar:folder-with-files-bold-duotone" className="size-4.5 text-muted-foreground" />
         {t("Klasör Oluştur")}
       </Button>
-      <BelgeYukleDrawer
-        trigger={
-          <Button className="h-9 gap-1.5 bg-teal-600 text-white shadow-sm hover:bg-teal-700">
-            <Icon icon="solar:upload-minimalistic-bold-duotone" className="size-4.5" />
-            {t("Belge Yükle")}
-          </Button>
-        }
-      />
+      <BelgeYukleButonu />
     </div>
   );
 }
