@@ -185,6 +185,54 @@ export interface BakimDokuman {
   planId?: string;
 }
 
+// --------------------------- Dashboard ---------------------------
+
+export interface BakimKpi {
+  anahtar: string;
+  baslik: string;
+  deger: string;
+  birim?: string;
+  altMetin: string;
+  degisim?: number; // %
+  ikon: string;
+  renk: string; // tailwind sınıf grubu için anahtar: blue|emerald|amber|red|teal|slate
+  ilerleme?: number; // % (progress bar)
+}
+
+export interface HaftalikPlanSatir {
+  makineId: string;
+  makine: string;
+  gunler: BakimDurum[]; // 7 gün
+}
+
+export interface YaklasanBakim {
+  id: string;
+  tarih: string;
+  makine: string;
+  bakim: string;
+  periyot: string;
+  durum: "planlandi" | "yaklasiyor";
+}
+
+export interface GecikenBakim {
+  id: string;
+  gun: number; // kaç gün gecikti
+  makine: string;
+  bakim: string;
+  planlanan: string;
+}
+
+export interface BakimDashboardAnaliz {
+  kpiler: BakimKpi[];
+  gunEtiketleri: { kisa: string; tarih: string }[];
+  haftalikPlan: HaftalikPlanSatir[];
+  yaklasan: YaklasanBakim[];
+  geciken: GecikenBakim[];
+  uyumTrend: { ay: string; oran: number }[];
+  tipDagilimi: { tip: string; adet: number; renk: string }[];
+  makineYuk: { makine: string; adet: number }[];
+}
+
 export interface AuditKayit {
   id: string;
   varlik: string;
