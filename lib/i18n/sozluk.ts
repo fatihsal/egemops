@@ -1375,7 +1375,6 @@ export const EN: Record<string, string> = {
   "Modül Seçimine Dön": "Back to Module Selection",
   "EgemOps'a Hoş Geldiniz": "Welcome to EgemOps",
   "Fabrika operasyonlarınızı daha verimli, sürdürülebilir ve kontrollü yönetmek için kullanmak istediğiniz modülü seçin.": "Choose the module you want to manage your factory operations more efficiently, sustainably and under control.",
-  "Aktif": "Active",
   "Enerji Yönetimine Git": "Go to Energy Management",
   "Bakım Yönetimine Git": "Go to Maintenance Management",
   "Enerji izleme ve analiz": "Energy monitoring and analysis",
