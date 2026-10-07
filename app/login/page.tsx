@@ -311,14 +311,6 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* footer */}
-        <div className="mt-6 flex w-full max-w-md flex-col items-center gap-1.5 text-center text-xs text-slate-400 sm:flex-row sm:justify-between sm:text-left dark:text-slate-500">
-          <span>{t("© 2026 Egem Ambalaj A.Ş. | Enerji Yönetimi Platformu")}</span>
-          <span className="inline-flex items-center gap-1.5">
-            <Leaf className="size-3.5 text-teal-500" />
-            {t("Sürdürülebilir üretim, güçlü yarınlar.")}
-          </span>
-        </div>
         </div>
       </section>
 
