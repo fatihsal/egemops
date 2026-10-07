@@ -95,18 +95,17 @@ export default function BakimLoginPage() {
   }
 
   return (
-    <div className="grid min-h-screen bg-white text-slate-900 lg:grid-cols-[1.15fr_0.85fr] dark:bg-slate-950 dark:text-slate-100">
+    <div className="relative grid min-h-screen bg-white text-slate-900 lg:grid-cols-[1.15fr_0.85fr] dark:bg-slate-950 dark:text-slate-100">
+      {/* tam sayfa blurlu arka plan fotoğrafı (public/login-bakim.png) */}
+      <div
+        className="pointer-events-none fixed inset-0 scale-[1.08] bg-cover bg-center blur-[7px]"
+        style={{ backgroundImage: "url('/login-bakim.png')" }}
+      />
+      {/* okunabilirlik katmanı — kart ve metinler net kalsın */}
+      <div className="pointer-events-none fixed inset-0 bg-white/70 dark:bg-slate-950/80" />
+
       {/* ==================== SOL HERO ==================== */}
-      <section className="relative hidden overflow-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50 lg:flex lg:flex-col lg:justify-between lg:p-12 xl:p-16 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900">
-        {/* hero arka plan fotoğrafı (public/login-bakim.png; yoksa gradyan görünür) */}
-        <div
-          className="pointer-events-none absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/login-bakim.png')" }}
-        />
-        {/* soldan okunabilirlik katmanı — metin net, sağdaki sahne/kartlar görünür */}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white/92 via-white/70 to-white/25 dark:from-slate-950/92 dark:via-slate-950/70 dark:to-slate-950/30" />
-        {/* sağ kenar: fotoğraf login arka planına yumuşakça erir — dikiş görünmez */}
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-2/5 bg-gradient-to-r from-transparent via-slate-50/50 to-slate-50 dark:via-slate-950/50 dark:to-slate-950" />
+      <section className="relative z-10 hidden overflow-hidden lg:flex lg:flex-col lg:justify-between lg:p-12 xl:p-16">
         <div className="pointer-events-none absolute -top-24 -right-16 size-80 rounded-full bg-blue-200/30 blur-3xl dark:bg-blue-500/10" />
         <div className="pointer-events-none absolute top-1/3 -left-24 size-72 rounded-full bg-sky-200/40 blur-3xl dark:bg-sky-500/10" />
 
@@ -158,9 +157,7 @@ export default function BakimLoginPage() {
       </section>
 
       {/* ==================== SAĞ LOGIN ==================== */}
-      <section className="relative flex min-h-screen flex-col bg-slate-50 px-5 pb-10 sm:px-8 dark:bg-slate-950">
-        {/* sol kenar: hero'dan gelen yumuşak renk tonu — iki taraf görsel olarak birleşir */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-40 bg-gradient-to-r from-blue-50 via-sky-50/40 to-transparent lg:block dark:from-blue-500/10 dark:via-sky-500/5" />
+      <section className="relative z-10 flex min-h-screen flex-col px-5 pb-10 sm:px-8">
         {/* üst bar: modüller + dil seçici + tema (kartla çakışmaması için yer ayrılır) */}
         <div className="relative z-10 flex items-center justify-end gap-2 pt-5">
           <Link
