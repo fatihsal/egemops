@@ -1,5 +1,5 @@
-import { Yakinda } from "@/components/bakim/ortak/yakinda";
+import { IsEmriUygulama } from "@/components/bakim/is-emirleri/is-emri-uygulama";
 
 export default function Page() {
-  return <Yakinda baslik="İş Emri Detay" aciklama="SOP uygulama, fotoğraf, bulgu, bakım sonrası gözlem ve onay." ikon="solar:clipboard-check-bold-duotone" />;
+  return <IsEmriUygulama />;
 }

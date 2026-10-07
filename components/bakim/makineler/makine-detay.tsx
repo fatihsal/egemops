@@ -11,10 +11,10 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BosDurum } from "@/components/common/bos-durum";
-import { useMakine, useMakinePlanlar } from "@/lib/queries/bakim";
+import { useMakine, useMakinePlanlar, useMakineIsEmirleri } from "@/lib/queries/bakim";
 import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
-import { KRITIKLIK_META, PERIYOT_ETIKET, PERIYOT_META, uyumRenk } from "@/components/bakim/makineler/stiller";
+import { IS_EMRI_DURUM_META, KRITIKLIK_META, PERIYOT_ETIKET, PERIYOT_META, uyumRenk } from "@/components/bakim/makineler/stiller";
 import { planSonrakiOlusum, tarihBicim } from "@/lib/bakim/tarih";
 import type { Makine } from "@/lib/types/bakim";
 
@@ -168,6 +168,56 @@ function MakinePlanlar({ makineId }: { makineId: string }) {
   );
 }
 
+function MakineIsEmirleri({ makineId }: { makineId: string }) {
+  const { t } = useDil();
+  const { data, isLoading } = useMakineIsEmirleri(makineId);
+
+  if (isLoading) {
+    return <div className="space-y-2">{Array.from({ length: 2 }).map((_, i) => <Skeleton key={i} className="h-16 w-full" />)}</div>;
+  }
+  if (!data || data.length === 0) {
+    return (
+      <Card>
+        <CardContent className="p-0">
+          <BosDurum ikon="solar:clipboard-check-bold-duotone" baslik={t("İş emri yok")} aciklama={t("Bu makineye ait planlı iş emri bulunmuyor.")} />
+        </CardContent>
+      </Card>
+    );
+  }
+  return (
+    <div className="space-y-3">
+      {data.map((w) => {
+        const dm = IS_EMRI_DURUM_META[w.durum];
+        const yuzde = w.toplamMadde ? Math.round((w.tamamlananMadde / w.toplamMadde) * 100) : 0;
+        return (
+          <Link key={w.id} href={`/bakim/is-emirleri/${w.id}`} className="block">
+            <Card className="transition-colors hover:border-blue-300 dark:hover:border-blue-800">
+              <CardContent className="flex flex-wrap items-center justify-between gap-3 p-4">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-medium tabular-nums">{w.no}</span>
+                    <span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium", dm.sinif)}>
+                      <span className={cn("size-1.5 rounded-full", dm.nokta)} />
+                      {t(dm.etiket)}
+                    </span>
+                  </div>
+                  <p className="mt-0.5 text-xs text-muted-foreground">{t(w.bakimTuru)} · {w.planlananTarih}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="h-1.5 w-20 overflow-hidden rounded-full bg-muted">
+                    <span className="block h-full rounded-full bg-blue-500" style={{ width: `${yuzde}%` }} />
+                  </span>
+                  <span className="text-xs tabular-nums text-muted-foreground">{w.tamamlananMadde}/{w.toplamMadde}</span>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
+
 export function MakineDetay() {
   const { t } = useDil();
   const params = useParams<{ id: string }>();
@@ -262,15 +312,7 @@ export function MakineDetay() {
         </TabsContent>
 
         <TabsContent value="isemirleri" className="pt-5">
-          <Card>
-            <CardContent className="p-0">
-              <BosDurum
-                ikon="solar:clipboard-check-bold-duotone"
-                baslik={t("İş emri yok")}
-                aciklama={t("Bu makineye ait planlı iş emirleri ilgili modül devreye alındığında burada listelenecek.")}
-              />
-            </CardContent>
-          </Card>
+          <MakineIsEmirleri makineId={m.id} />
         </TabsContent>
 
         <TabsContent value="bulgular" className="pt-5">
