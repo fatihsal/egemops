@@ -18,6 +18,7 @@ import {
   Fuel,
   Gauge,
   LayoutDashboard,
+  Leaf,
   Lightbulb,
   ListChecks,
   PencilLine,
@@ -52,6 +53,8 @@ export interface ModulBilgi {
   href: string; // modüle giriş rotası
   renk: string; // vurgu rengi (inline)
   renk2: string; // gradyan ikinci renk
+  rozet: string; // kart sağ üst rozet metni
+  ctaMetin: string; // buton metni
   oneCikanlar: string[]; // kartta gösterilen başlıca özellikler
 }
 
@@ -59,22 +62,26 @@ export const moduller: ModulBilgi[] = [
   {
     anahtar: "enerji",
     ad: "Enerji Yönetimi",
-    aciklama: "Tüketim, TEP ve maliyet verilerini tek ekranda izleyin; verimliliği artırın.",
-    ikon: Zap,
+    aciklama: "Enerji tüketimlerinizi izleyin, analiz edin ve verimliliğinizi artırın.",
+    ikon: Leaf,
     href: "/enerji",
-    renk: "#14b8a6",
-    renk2: "#0891b2",
-    oneCikanlar: ["Tüketim & TEP", "GES İzleme", "Maliyet Analizi", "Raporlama"],
+    renk: "#10b981",
+    renk2: "#059669",
+    rozet: "Aktif",
+    ctaMetin: "Enerji Yönetimine Git",
+    oneCikanlar: ["Enerji izleme ve analiz", "Tüketim raporları", "Verimlilik takibi"],
   },
   {
     anahtar: "bakim",
     ad: "Bakım Yönetimi",
-    aciklama: "Planlı bakımı uçtan uca yönetin: plan, SOP, iş emri ve bakım geçmişi.",
-    ikon: Wrench,
+    aciklama: "Planlı bakım faaliyetlerinizi yönetin, kayıt altına alın ve sürekliliği sağlayın.",
+    ikon: Settings,
     href: "/bakim",
     renk: "#2563eb",
-    renk2: "#4f46e5",
-    oneCikanlar: ["Makine & Ekipman", "SOP & İş Emri", "Bakım Takvimi", "Bulgu Takibi"],
+    renk2: "#1d4ed8",
+    rozet: "Planlı Bakım",
+    ctaMetin: "Bakım Yönetimine Git",
+    oneCikanlar: ["Bakım planları ve takvimi", "SOP / checklist yönetimi", "Bakım kayıtları ve raporlar"],
   },
 ];
 

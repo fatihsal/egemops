@@ -1,10 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import { Icon } from "@iconify/react";
 import { ArrowRight, Check } from "lucide-react";
 
 import { useDil } from "@/components/providers/dil-provider";
 import type { ModulBilgi } from "@/lib/nav";
+
+const ROZET_IKON: Record<string, string> = {
+  enerji: "solar:bolt-bold",
+  bakim: "solar:magic-stick-3-bold",
+};
+const FILIGRAN: Record<string, string> = {
+  enerji: "solar:chart-2-bold-duotone",
+  bakim: "solar:settings-bold-duotone",
+};
 
 export function ModulKarti({ modul }: { modul: ModulBilgi }) {
   const { t } = useDil();
@@ -14,53 +24,60 @@ export function ModulKarti({ modul }: { modul: ModulBilgi }) {
   return (
     <Link
       href={modul.href}
-      className="group relative flex flex-col overflow-hidden rounded-3xl border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl"
-      style={{ ["--accent" as string]: modul.renk }}
+      className="group relative flex flex-col overflow-hidden rounded-[1.75rem] border border-white/60 bg-white/75 p-7 shadow-[0_20px_60px_-20px_rgb(15_23_42/0.25)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:bg-white/85 hover:shadow-[0_32px_80px_-24px_rgb(15_23_42/0.35)] dark:border-white/10 dark:bg-slate-900/60 dark:hover:bg-slate-900/75"
     >
-      {/* hover halo */}
-      <span
-        className="pointer-events-none absolute -inset-px rounded-3xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-        style={{ boxShadow: `0 0 0 1.5px ${modul.renk}55, 0 24px 60px -24px ${modul.renk}80` }}
+      {/* filigran */}
+      <Icon
+        icon={FILIGRAN[modul.anahtar]}
+        className="pointer-events-none absolute -right-6 bottom-2 size-44 opacity-[0.07]"
+        style={{ color: modul.renk }}
       />
 
-      {/* üst gradyan bant + ikon */}
-      <div className="relative h-24 overflow-hidden" style={{ background: gradyan }}>
-        <div className="pointer-events-none absolute -top-10 -right-6 size-32 rounded-full bg-white/15 blur-2xl" />
-        <div className="pointer-events-none absolute -bottom-12 -left-4 size-28 rounded-full bg-black/10 blur-2xl" />
-        <Ikon className="absolute right-5 top-1/2 size-16 -translate-y-1/2 text-white/15" />
-        <span className="absolute bottom-0 left-6 flex size-14 translate-y-1/2 items-center justify-center rounded-2xl border-4 border-card bg-card shadow-sm">
-          <span
-            className="flex size-full items-center justify-center rounded-[11px] text-white"
-            style={{ background: gradyan }}
-          >
-            <Ikon className="size-6" />
-          </span>
-        </span>
-      </div>
-
-      <div className="flex flex-1 flex-col gap-4 px-6 pt-10 pb-6">
-        <div className="space-y-1.5">
-          <h3 className="font-heading text-xl font-bold tracking-tight">{t(modul.ad)}</h3>
-          <p className="text-sm leading-relaxed text-muted-foreground">{t(modul.aciklama)}</p>
-        </div>
-
-        <div className="grid grid-cols-2 gap-x-3 gap-y-2">
-          {modul.oneCikanlar.map((o) => (
-            <span key={o} className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Check className="size-3.5 shrink-0" style={{ color: modul.renk }} />
-              {t(o)}
-            </span>
-          ))}
-        </div>
-
+      {/* üst: ikon + rozet */}
+      <div className="relative flex items-start justify-between">
         <span
-          className="mt-auto inline-flex items-center gap-2 self-start rounded-full px-4 py-2 text-sm font-semibold text-white shadow-sm transition-transform group-hover:gap-3"
-          style={{ background: gradyan }}
+          className="flex size-16 items-center justify-center rounded-2xl shadow-sm"
+          style={{ background: `${modul.renk}1a`, color: modul.renk }}
         >
-          {t("Modüle Gir")}
-          <ArrowRight className="size-4" />
+          <Ikon className="size-8" />
+        </span>
+        <span
+          className="inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold"
+          style={{ background: `${modul.renk}1a`, color: modul.renk }}
+        >
+          <Icon icon={ROZET_IKON[modul.anahtar]} className="size-3.5" />
+          {t(modul.rozet)}
         </span>
       </div>
+
+      <h3 className="relative mt-5 font-heading text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
+        {t(modul.ad)}
+      </h3>
+      <p className="relative mt-2 max-w-sm text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+        {t(modul.aciklama)}
+      </p>
+
+      <ul className="relative mt-5 space-y-2.5">
+        {modul.oneCikanlar.map((o) => (
+          <li key={o} className="flex items-center gap-2.5 text-sm text-slate-700 dark:text-slate-200">
+            <span
+              className="flex size-5 shrink-0 items-center justify-center rounded-full text-white"
+              style={{ background: modul.renk }}
+            >
+              <Check className="size-3" strokeWidth={3} />
+            </span>
+            {t(o)}
+          </li>
+        ))}
+      </ul>
+
+      <span
+        className="relative mt-7 flex h-12 w-full items-center justify-center gap-2 rounded-2xl text-[15px] font-semibold text-white shadow-lg transition-all group-hover:gap-3"
+        style={{ background: gradyan, boxShadow: `0 14px 30px -12px ${modul.renk}` }}
+      >
+        {t(modul.ctaMetin)}
+        <ArrowRight className="size-5" />
+      </span>
     </Link>
   );
 }
