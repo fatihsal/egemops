@@ -112,11 +112,11 @@ export default function LoginPage() {
     <div className="relative grid min-h-screen bg-white text-slate-900 lg:grid-cols-[1.15fr_0.85fr] dark:bg-slate-950 dark:text-slate-100">
       {/* tam sayfa blurlu arka plan fotoğrafı (public/login-enerji.png) */}
       <div
-        className="pointer-events-none fixed inset-0 scale-[1.05] bg-cover bg-center blur-[3px]"
+        className="pointer-events-none fixed inset-0 scale-[1.04] bg-cover bg-center blur-[1.5px]"
         style={{ backgroundImage: "url('/login-enerji.png')" }}
       />
       {/* okunabilirlik katmanı — kart ve metinler net kalsın */}
-      <div className="pointer-events-none fixed inset-0 bg-white/60 dark:bg-slate-950/72" />
+      <div className="pointer-events-none fixed inset-0 bg-white/55 dark:bg-slate-950/68" />
 
       {/* ==================== SOL HERO ==================== */}
       <section className="relative z-10 hidden overflow-hidden lg:flex lg:flex-col lg:justify-center lg:gap-10 lg:p-12 xl:p-16">
@@ -311,17 +311,6 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* geliştirici kredisi */}
-        <div className="mt-6 flex w-full max-w-md items-center gap-3">
-          <span className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-teal-100 bg-teal-50/70 px-3.5 py-1.5 text-[13px] text-slate-500 shadow-sm dark:border-teal-500/20 dark:bg-teal-500/10 dark:text-slate-300">
-            <Code2 className="size-4 text-teal-600 dark:text-teal-400" />
-            Design &amp; Development by{" "}
-            <span className="font-semibold text-teal-700 dark:text-teal-300">Fatih Sal</span>
-          </span>
-          <span className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
-        </div>
-
         {/* footer */}
         <div className="mt-6 flex w-full max-w-md flex-col items-center gap-1.5 text-center text-xs text-slate-400 sm:flex-row sm:justify-between sm:text-left dark:text-slate-500">
           <span>{t("© 2026 Egem Ambalaj A.Ş. | Enerji Yönetimi Platformu")}</span>
@@ -332,6 +321,15 @@ export default function LoginPage() {
         </div>
         </div>
       </section>
+
+      {/* imza — sayfanın alt ortasında */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-5 z-20 flex justify-center px-4">
+        <span className="pointer-events-auto inline-flex items-center gap-1.5 rounded-full border border-teal-100 bg-white/80 px-3.5 py-1.5 text-[13px] text-slate-500 shadow-sm backdrop-blur-sm dark:border-teal-500/20 dark:bg-slate-900/70 dark:text-slate-300">
+          <Code2 className="size-4 text-teal-600 dark:text-teal-400" />
+          Design &amp; Development by{" "}
+          <span className="font-semibold text-teal-700 dark:text-teal-300">Fatih Sal</span>
+        </span>
+      </div>
     </div>
   );
 }

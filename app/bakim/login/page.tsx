@@ -98,11 +98,11 @@ export default function BakimLoginPage() {
     <div className="relative grid min-h-screen bg-white text-slate-900 lg:grid-cols-[1.15fr_0.85fr] dark:bg-slate-950 dark:text-slate-100">
       {/* tam sayfa blurlu arka plan fotoğrafı (public/login-bakim.png) */}
       <div
-        className="pointer-events-none fixed inset-0 scale-[1.05] bg-cover bg-center blur-[3px]"
+        className="pointer-events-none fixed inset-0 scale-[1.04] bg-cover bg-center blur-[1.5px]"
         style={{ backgroundImage: "url('/login-bakim.png')" }}
       />
       {/* okunabilirlik katmanı — kart ve metinler net kalsın */}
-      <div className="pointer-events-none fixed inset-0 bg-white/60 dark:bg-slate-950/72" />
+      <div className="pointer-events-none fixed inset-0 bg-white/55 dark:bg-slate-950/68" />
 
       {/* ==================== SOL HERO ==================== */}
       <section className="relative z-10 hidden overflow-hidden lg:flex lg:flex-col lg:justify-center lg:gap-10 lg:p-12 xl:p-16">
@@ -280,18 +280,17 @@ export default function BakimLoginPage() {
           </Link>
         </div>
 
-        {/* geliştirici kredisi */}
-        <div className="mt-8 flex w-full max-w-md items-center gap-3">
-          <span className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-100 bg-blue-50/70 px-3.5 py-1.5 text-[13px] text-slate-500 shadow-sm dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-slate-300">
-            <Code2 className="size-4 text-blue-600 dark:text-blue-400" />
-            Design &amp; Development by{" "}
-            <span className="font-semibold text-blue-700 dark:text-blue-300">Fatih Sal</span>
-          </span>
-          <span className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
-        </div>
         </div>
       </section>
+
+      {/* imza — sayfanın alt ortasında */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-5 z-20 flex justify-center px-4">
+        <span className="pointer-events-auto inline-flex items-center gap-1.5 rounded-full border border-blue-100 bg-white/80 px-3.5 py-1.5 text-[13px] text-slate-500 shadow-sm backdrop-blur-sm dark:border-blue-500/20 dark:bg-slate-900/70 dark:text-slate-300">
+          <Code2 className="size-4 text-blue-600 dark:text-blue-400" />
+          Design &amp; Development by{" "}
+          <span className="font-semibold text-blue-700 dark:text-blue-300">Fatih Sal</span>
+        </span>
+      </div>
     </div>
   );
 }
