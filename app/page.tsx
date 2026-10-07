@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ChevronDown, LogOut } from "lucide-react";
+import { ChevronDown, Code2, LogOut } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -51,7 +51,7 @@ export default function LandingPage() {
         style={{ backgroundImage: "url('/fabrika.png')" }}
       />
       {/* okunabilirlik için hafif yumuşatma katmanı */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/45 via-white/25 to-white/55 dark:from-slate-950/70 dark:via-slate-950/55 dark:to-slate-950/80" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/35 via-white/15 to-white/45 dark:from-slate-950/65 dark:via-slate-950/45 dark:to-slate-950/75" />
 
       <div className="relative z-10 flex min-h-screen flex-col">
         {/* üst bar */}
@@ -124,9 +124,13 @@ export default function LandingPage() {
           </div>
         </main>
 
-        <footer className="px-5 pb-6 text-center text-[11px] text-slate-400 sm:px-10">
-          © 2026 Egem Ambalaj A.Ş. · Design &amp; Development by{" "}
-          <span className="font-semibold text-slate-500">Fatih Sal</span>
+        <footer className="flex flex-col items-center gap-1.5 px-5 pb-7 sm:px-10">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/70 px-4 py-1.5 text-[13px] text-slate-600 shadow-sm backdrop-blur dark:border-white/10 dark:bg-slate-900/60 dark:text-slate-300">
+            <Code2 className="size-4 text-teal-600 dark:text-teal-400" />
+            Design &amp; Development by{" "}
+            <span className="font-bold text-teal-700 dark:text-teal-400">Fatih Sal</span>
+          </span>
+          <span className="text-[11px] text-slate-400">© 2026 Egem Ambalaj A.Ş.</span>
         </footer>
       </div>
     </div>
