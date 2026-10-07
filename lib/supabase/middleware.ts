@@ -4,8 +4,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-// Girişsiz erişilebilen rotalar (login ekranı).
-const ACIK_ROTALAR = ["/login"];
+// Girişsiz erişilebilen rotalar: landing (modül seçimi) + modül login ekranları.
+const ACIK_ROTALAR = ["/", "/login", "/bakim/login"];
 
 export async function oturumuGuncelle(request: NextRequest) {
   let yanit = NextResponse.next({ request });
@@ -35,19 +35,20 @@ export async function oturumuGuncelle(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const yol = request.nextUrl.pathname;
-  const acikRota = ACIK_ROTALAR.some((r) => yol === r || yol.startsWith(r + "/"));
+  const acikRota = ACIK_ROTALAR.includes(yol);
+  const bakimMi = yol === "/bakim" || yol.startsWith("/bakim/");
 
-  // Girişsiz + korumalı rota → login'e gönder.
+  // Girişsiz + korumalı rota → ilgili modülün login ekranına gönder.
   if (!user && !acikRota) {
     const url = request.nextUrl.clone();
-    url.pathname = "/login";
+    url.pathname = bakimMi ? "/bakim/login" : "/login";
     return NextResponse.redirect(url);
   }
 
-  // Girişli + login sayfası → modül seçim hub'ına gönder.
-  if (user && acikRota) {
+  // Girişli + login sayfası → ilgili modül panosuna gönder.
+  if (user && (yol === "/login" || yol === "/bakim/login")) {
     const url = request.nextUrl.clone();
-    url.pathname = "/uygulamalar";
+    url.pathname = yol === "/bakim/login" ? "/bakim" : "/enerji";
     return NextResponse.redirect(url);
   }
 

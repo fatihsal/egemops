@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { aktifModul, modulGruplari } from "@/lib/nav";
+import { aktifModul, modulGruplari, MODUL_KOKLERI } from "@/lib/nav";
 import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
 
@@ -22,9 +22,9 @@ export function NavList({ onNavigate }: { onNavigate?: () => void }) {
             {t(grup.baslik)}
           </div>
           {grup.ogeler.map((oge) => {
-            // Modül kökleri ("/" ve "/bakim") yalnızca tam eşleşmede aktif;
+            // Modül kökleri ("/enerji" ve "/bakim") yalnızca tam eşleşmede aktif;
             // diğerleri alt rotalarda da aktif.
-            const kokMu = oge.href === "/" || oge.href === "/bakim";
+            const kokMu = MODUL_KOKLERI.includes(oge.href);
             const aktif = kokMu
               ? pathname === oge.href
               : pathname === oge.href || pathname.startsWith(`${oge.href}/`);

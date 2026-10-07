@@ -15,7 +15,7 @@ export function ModulGecis({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <Link
-      href="/uygulamalar"
+      href="/"
       onClick={onNavigate}
       className="group flex items-center gap-2 rounded-lg border border-sidebar-border/60 bg-sidebar-accent/40 px-2.5 py-2 transition-colors hover:bg-sidebar-accent"
     >

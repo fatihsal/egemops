@@ -7,7 +7,7 @@ export interface SayfaMeta {
 }
 
 const META: Record<string, SayfaMeta> = {
-  "/": { baslik: "Enerji Yönetimi", altBaslik: "Daha verimli, daha yaşanabilir bir gelecek için enerjimizi doğru yönetiyoruz." },
+  "/enerji": { baslik: "Enerji Yönetimi", altBaslik: "Daha verimli, daha yaşanabilir bir gelecek için enerjimizi doğru yönetiyoruz." },
   "/veri-girisi": { baslik: "Aylık Veri Girişi", altBaslik: "Aylık enerji tüketim ve üretim verilerini girin ve doğrulayın." },
   "/enerji-kayitlari": { baslik: "Enerji Kayıtları", altBaslik: "Tüm dönemlerin enerji kayıtlarını görüntüleyin ve yönetin." },
   "/elektrik-ges": { baslik: "Elektrik & GES", altBaslik: "Elektrik tüketimi ve güneş enerjisi (GES) üretim analizi." },
@@ -39,7 +39,7 @@ const META: Record<string, SayfaMeta> = {
   "/bakim/ayarlar": { baslik: "Bakım Ayarları", altBaslik: "Bölüm, makine grubu, periyot ve kritiklik tanımları." },
 };
 
-const VARSAYILAN: SayfaMeta = META["/"];
+const VARSAYILAN: SayfaMeta = META["/enerji"];
 
 export function sayfaMeta(pathname: string): SayfaMeta {
   if (META[pathname]) return META[pathname];

@@ -59,7 +59,7 @@ export const moduller: ModulBilgi[] = [
     ad: "Enerji Yönetimi",
     aciklama: "Tüketim, TEP, GES, maliyet ve performans takibi",
     ikon: Zap,
-    href: "/",
+    href: "/enerji",
     renk: "#14b8a6",
   },
   {
@@ -77,7 +77,7 @@ export const navGruplari: NavGrup[] = [
   {
     baslik: "Ana Sayfa",
     modul: "enerji",
-    ogeler: [{ baslik: "Dashboard", href: "/", ikon: LayoutDashboard }],
+    ogeler: [{ baslik: "Dashboard", href: "/enerji", ikon: LayoutDashboard }],
   },
   {
     baslik: "Enerji Yönetimi",
@@ -152,6 +152,9 @@ export const navGruplari: NavGrup[] = [
 export function aktifModul(pathname: string): ModulAnahtar {
   return pathname === "/bakim" || pathname.startsWith("/bakim/") ? "bakim" : "enerji";
 }
+
+/** Modül kök rotaları (sidebar'da yalnızca tam eşleşmede aktif). */
+export const MODUL_KOKLERI = ["/enerji", "/bakim"];
 
 /** Aktif modülün nav gruplarını döndürür. */
 export function modulGruplari(modul: ModulAnahtar): NavGrup[] {
