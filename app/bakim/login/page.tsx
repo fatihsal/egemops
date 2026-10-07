@@ -123,7 +123,7 @@ export default function BakimLoginPage() {
             <span className="text-blue-600 dark:text-blue-400">{t("güçlü üretim.")}</span>
           </h1>
           <p className="mt-5 max-w-md text-base leading-relaxed text-slate-600 dark:text-slate-300">
-            {t("Makinelerin bakımını planlayın, SOP'larla uygulayın, kanıtlayın ve geçmişe kaydedin.")}
+            {t("Bakım süreçlerinizi dijitalleştirin, uygulamaları standartlaştırın ve ekipman sürekliliğini güçlendirin.")}
           </p>
 
           <div className="mt-9 grid max-w-2xl grid-cols-3 gap-3 sm:grid-cols-6">

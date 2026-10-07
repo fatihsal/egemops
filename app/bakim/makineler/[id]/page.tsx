@@ -1,5 +1,5 @@
-import { Yakinda } from "@/components/bakim/ortak/yakinda";
+import { MakineDetay } from "@/components/bakim/makineler/makine-detay";
 
 export default function Page() {
-  return <Yakinda baslik="Makine Detay" aciklama="Makinenin dijital bakım dosyası." ikon="solar:cpu-bold-duotone" />;
+  return <MakineDetay />;
 }

@@ -1,5 +1,5 @@
-import { Yakinda } from "@/components/bakim/ortak/yakinda";
+import { MakineListesi } from "@/components/bakim/makineler/makine-listesi";
 
 export default function Page() {
-  return <Yakinda baslik="Makine & Ekipmanlar" aciklama="Fabrikadaki tüm makine ve ekipmanların envanteri." ikon="solar:cpu-bolt-bold-duotone" />;
+  return <MakineListesi />;
 }
