@@ -118,6 +118,8 @@ export default function LoginPage() {
         />
         {/* soldan okunabilirlik katmanı — metin net, sağdaki sahne/kartlar görünür */}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-white/92 via-white/70 to-white/25" />
+        {/* sağ kenar: fotoğraf login arka planına (slate-50) yumuşakça erir — dikiş görünmez */}
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-2/5 bg-gradient-to-r from-transparent via-slate-50/50 to-slate-50" />
         {/* yumuşak dekor bloblar */}
         <div className="pointer-events-none absolute -top-24 -right-16 size-80 rounded-full bg-teal-200/30 blur-3xl" />
         <div className="pointer-events-none absolute top-1/3 -left-24 size-72 rounded-full bg-sky-200/40 blur-3xl" />
@@ -182,6 +184,8 @@ export default function LoginPage() {
 
       {/* ==================== SAĞ LOGIN ==================== */}
       <section className="relative flex flex-col items-center justify-center bg-slate-50 px-5 py-10 sm:px-8">
+        {/* sol kenar: hero'dan gelen yumuşak renk tonu — iki taraf görsel olarak birleşir */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-40 bg-gradient-to-r from-teal-50 via-sky-50/40 to-transparent lg:block" />
         {/* dil seçici + modüller */}
         <div className="absolute top-5 right-5 flex items-center gap-2">
           <Link
@@ -200,7 +204,7 @@ export default function LoginPage() {
         </div>
 
         {/* login kartı */}
-        <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-7 shadow-[0_24px_70px_-24px_rgb(15_23_42/0.28)] sm:p-9">
+        <div className="relative w-full max-w-md rounded-3xl border border-slate-200 bg-white p-7 shadow-[0_24px_70px_-24px_rgb(15_23_42/0.28)] sm:p-9">
           <div className="flex flex-col items-center text-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo.png" alt="Egem Ambalaj" className="h-14 w-auto object-contain" />
