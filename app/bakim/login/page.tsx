@@ -98,14 +98,14 @@ export default function BakimLoginPage() {
     <div className="relative grid min-h-screen bg-white text-slate-900 lg:grid-cols-[1.15fr_0.85fr] dark:bg-slate-950 dark:text-slate-100">
       {/* tam sayfa blurlu arka plan fotoğrafı (public/login-bakim.png) */}
       <div
-        className="pointer-events-none fixed inset-0 scale-[1.08] bg-cover bg-center blur-[7px]"
+        className="pointer-events-none fixed inset-0 scale-[1.05] bg-cover bg-center blur-[3px]"
         style={{ backgroundImage: "url('/login-bakim.png')" }}
       />
       {/* okunabilirlik katmanı — kart ve metinler net kalsın */}
-      <div className="pointer-events-none fixed inset-0 bg-white/70 dark:bg-slate-950/80" />
+      <div className="pointer-events-none fixed inset-0 bg-white/60 dark:bg-slate-950/72" />
 
       {/* ==================== SOL HERO ==================== */}
-      <section className="relative z-10 hidden overflow-hidden lg:flex lg:flex-col lg:justify-between lg:p-12 xl:p-16">
+      <section className="relative z-10 hidden overflow-hidden lg:flex lg:flex-col lg:justify-center lg:gap-10 lg:p-12 xl:p-16">
         <div className="pointer-events-none absolute -top-24 -right-16 size-80 rounded-full bg-blue-200/30 blur-3xl dark:bg-blue-500/10" />
         <div className="pointer-events-none absolute top-1/3 -left-24 size-72 rounded-full bg-sky-200/40 blur-3xl dark:bg-sky-500/10" />
 
