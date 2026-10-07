@@ -1,5 +1,5 @@
-import { Yakinda } from "@/components/bakim/ortak/yakinda";
+import { PlanListesi } from "@/components/bakim/planlar/plan-listesi";
 
 export default function Page() {
-  return <Yakinda baslik="Bakım Planları" aciklama="Hangi makinede hangi bakım ne sıklıkta yapılacak." ikon="solar:clipboard-list-bold-duotone" />;
+  return <PlanListesi />;
 }

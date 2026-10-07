@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Icon } from "@iconify/react";
@@ -10,10 +11,11 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BosDurum } from "@/components/common/bos-durum";
-import { useMakine } from "@/lib/queries/bakim";
+import { useMakine, useMakinePlanlar } from "@/lib/queries/bakim";
 import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
-import { KRITIKLIK_META, uyumRenk } from "@/components/bakim/makineler/stiller";
+import { KRITIKLIK_META, PERIYOT_ETIKET, PERIYOT_META, uyumRenk } from "@/components/bakim/makineler/stiller";
+import { planSonrakiOlusum, tarihBicim } from "@/lib/bakim/tarih";
 import type { Makine } from "@/lib/types/bakim";
 
 const BOLUM_IKON: Record<string, string> = {
@@ -116,6 +118,56 @@ function Istatistik({ m }: { m: Makine }) {
   );
 }
 
+function MakinePlanlar({ makineId }: { makineId: string }) {
+  const { t } = useDil();
+  const { data, isLoading } = useMakinePlanlar(makineId);
+  const bugun = React.useMemo(() => new Date(), []);
+
+  if (isLoading) {
+    return <div className="space-y-2">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-16 w-full" />)}</div>;
+  }
+  if (!data || data.length === 0) {
+    return (
+      <Card>
+        <CardContent className="p-0">
+          <BosDurum ikon="solar:clipboard-list-bold-duotone" baslik={t("Bakım planı yok")} aciklama={t("Bu makineye henüz bakım planı tanımlanmamış.")} />
+        </CardContent>
+      </Card>
+    );
+  }
+  return (
+    <div className="space-y-3">
+      {data.map((p) => {
+        const per = PERIYOT_META[p.periyot];
+        const sureStr = p.tahminiSureSaat < 1 ? `${Math.round(p.tahminiSureSaat * 60)} dk` : `${p.tahminiSureSaat} sa`;
+        return (
+          <Card key={p.id}>
+            <CardContent className="flex flex-wrap items-center justify-between gap-3 p-4">
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="font-medium">{t(p.ad)}</span>
+                  <span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium", per.sinif)}>
+                    <span className={cn("size-1.5 rounded-full", per.nokta)} />
+                    {t(PERIYOT_ETIKET[p.periyot])}
+                  </span>
+                </div>
+                <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                  <span className="inline-flex items-center gap-1"><Icon icon="solar:user-linear" className="size-3.5" /> {t(p.sorumlu)}</span>
+                  <span className="inline-flex items-center gap-1"><Icon icon="solar:clock-circle-linear" className="size-3.5" /> {sureStr}</span>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-[11px] text-muted-foreground">{t("Sonraki Tarih")}</p>
+                <p className="font-medium tabular-nums">{tarihBicim(planSonrakiOlusum(p, bugun))}</p>
+              </div>
+            </CardContent>
+          </Card>
+        );
+      })}
+    </div>
+  );
+}
+
 export function MakineDetay() {
   const { t } = useDil();
   const params = useParams<{ id: string }>();
@@ -206,15 +258,7 @@ export function MakineDetay() {
         </TabsContent>
 
         <TabsContent value="planlar" className="pt-5">
-          <Card>
-            <CardContent className="p-0">
-              <BosDurum
-                ikon="solar:clipboard-list-bold-duotone"
-                baslik={t("Bakım planı yok")}
-                aciklama={t("Bu makineye ait bakım planları ilgili modül devreye alındığında burada listelenecek.")}
-              />
-            </CardContent>
-          </Card>
+          <MakinePlanlar makineId={m.id} />
         </TabsContent>
 
         <TabsContent value="isemirleri" className="pt-5">

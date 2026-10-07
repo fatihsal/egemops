@@ -34,6 +34,15 @@ export const PERIYOT_ETIKET: Record<BakimPeriyot, string> = {
   ozel: "Özel",
 };
 
+export const PERIYOT_META: Record<BakimPeriyot, { sinif: string; nokta: string }> = {
+  haftalik: { sinif: "bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-300", nokta: "bg-teal-500" },
+  aylik: { sinif: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300", nokta: "bg-blue-500" },
+  "3aylik": { sinif: "bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300", nokta: "bg-indigo-500" },
+  "6aylik": { sinif: "bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-300", nokta: "bg-violet-500" },
+  yillik: { sinif: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300", nokta: "bg-amber-500" },
+  ozel: { sinif: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300", nokta: "bg-slate-500" },
+};
+
 /** Uyum oranına göre renk sınıfı (metin + bar). */
 export function uyumRenk(oran: number): { metin: string; bar: string } {
   if (oran >= 90) return { metin: "text-emerald-600 dark:text-emerald-400", bar: "bg-emerald-500" };
