@@ -11,6 +11,7 @@ import {
   ChevronLeft,
   ClipboardCheck,
   ClipboardList,
+  Code2,
   Cpu,
   Eye,
   EyeOff,
@@ -280,9 +281,16 @@ export default function BakimLoginPage() {
           </Link>
         </div>
 
-        <p className="mt-8 text-center text-[11px] text-slate-400">
-          Design &amp; Development by <span className="font-semibold text-slate-500">Fatih Sal</span>
-        </p>
+        {/* geliştirici kredisi */}
+        <div className="mt-8 flex w-full max-w-md items-center gap-3">
+          <span className="h-px flex-1 bg-slate-200" />
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-blue-100 bg-blue-50/70 px-3.5 py-1.5 text-[13px] text-slate-500 shadow-sm">
+            <Code2 className="size-4 text-blue-600" />
+            Design &amp; Development by{" "}
+            <span className="font-semibold text-blue-700">Fatih Sal</span>
+          </span>
+          <span className="h-px flex-1 bg-slate-200" />
+        </div>
         </div>
       </section>
     </div>
