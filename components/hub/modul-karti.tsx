@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
 import { ArrowRight, Check } from "lucide-react";
@@ -20,18 +21,30 @@ export function ModulKarti({ modul }: { modul: ModulBilgi }) {
   const { t } = useDil();
   const Ikon = modul.ikon;
   const gradyan = `linear-gradient(135deg, ${modul.renk}, ${modul.renk2})`;
+  const [gorselHata, setGorselHata] = React.useState(false);
 
   return (
     <Link
       href={modul.href}
       className="group relative flex flex-col overflow-hidden rounded-[1.75rem] border border-white/60 bg-white/75 p-7 shadow-[0_20px_60px_-20px_rgb(15_23_42/0.25)] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:bg-white/85 hover:shadow-[0_32px_80px_-24px_rgb(15_23_42/0.35)] dark:border-white/10 dark:bg-slate-900/60 dark:hover:bg-slate-900/75"
     >
-      {/* filigran */}
-      <Icon
-        icon={FILIGRAN[modul.anahtar]}
-        className="pointer-events-none absolute -right-6 bottom-2 size-44 opacity-[0.07]"
-        style={{ color: modul.renk }}
-      />
+      {/* kart görseli (yoksa filigran ikon) */}
+      {!gorselHata ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={modul.gorsel}
+          alt=""
+          aria-hidden
+          onError={() => setGorselHata(true)}
+          className="pointer-events-none absolute right-0 bottom-0 h-40 w-1/2 object-contain object-right-bottom opacity-90 transition-transform duration-300 group-hover:scale-105 [mask-image:linear-gradient(to_left,black_55%,transparent)]"
+        />
+      ) : (
+        <Icon
+          icon={FILIGRAN[modul.anahtar]}
+          className="pointer-events-none absolute -right-6 bottom-2 size-44 opacity-[0.07]"
+          style={{ color: modul.renk }}
+        />
+      )}
 
       {/* üst: ikon + rozet */}
       <div className="relative flex items-start justify-between">

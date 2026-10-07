@@ -56,6 +56,7 @@ export interface ModulBilgi {
   rozet: string; // kart sağ üst rozet metni
   ctaMetin: string; // buton metni
   oneCikanlar: string[]; // kartta gösterilen başlıca özellikler
+  gorsel: string; // kart içi dekoratif görsel (public/)
 }
 
 export const moduller: ModulBilgi[] = [
@@ -70,6 +71,7 @@ export const moduller: ModulBilgi[] = [
     rozet: "Aktif",
     ctaMetin: "Enerji Yönetimine Git",
     oneCikanlar: ["Enerji izleme ve analiz", "Tüketim raporları", "Verimlilik takibi"],
+    gorsel: "/kart-enerji.png",
   },
   {
     anahtar: "bakim",
@@ -82,6 +84,7 @@ export const moduller: ModulBilgi[] = [
     rozet: "Planlı Bakım",
     ctaMetin: "Bakım Yönetimine Git",
     oneCikanlar: ["Bakım planları ve takvimi", "SOP / checklist yönetimi", "Bakım kayıtları ve raporlar"],
+    gorsel: "/kart-bakim.png",
   },
 ];
 

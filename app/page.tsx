@@ -48,7 +48,7 @@ export default function LandingPage() {
       {/* Fabrika arka planı (public/fabrika.jpg; yoksa gradyan görünür) */}
       <div
         className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-55 dark:opacity-25"
-        style={{ backgroundImage: "url('/fabrika.jpg')" }}
+        style={{ backgroundImage: "url('/fabrika.png')" }}
       />
       {/* yumuşatma katmanı */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/70 via-white/55 to-white/80 dark:from-slate-950/80 dark:via-slate-950/70 dark:to-slate-950/90" />
