@@ -21,7 +21,6 @@ import {
   ShieldCheck,
   TrendingUp,
   User,
-  Wrench,
   type LucideIcon,
 } from "lucide-react";
 
@@ -157,10 +156,11 @@ export default function BakimLoginPage() {
       </section>
 
       {/* ==================== SAĞ LOGIN ==================== */}
-      <section className="relative flex flex-col items-center justify-center bg-slate-50 px-5 py-10 sm:px-8">
+      <section className="relative flex min-h-screen flex-col bg-slate-50 px-5 pb-10 sm:px-8">
         {/* sol kenar: hero'dan gelen yumuşak renk tonu — iki taraf görsel olarak birleşir */}
         <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-40 bg-gradient-to-r from-blue-50 via-sky-50/40 to-transparent lg:block" />
-        <div className="absolute top-5 right-5 flex items-center gap-2">
+        {/* üst bar: modüller + dil seçici (kartla çakışmaması için yer ayrılır) */}
+        <div className="relative z-10 flex items-center justify-end gap-2 pt-5">
           <Link
             href="/"
             className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-[13px] font-semibold text-slate-600 shadow-sm transition-colors hover:bg-slate-50 hover:text-slate-900"
@@ -171,16 +171,17 @@ export default function BakimLoginPage() {
           <DilSecici ton="acik" />
         </div>
 
+        {/* ortalanan içerik */}
+        <div className="relative z-10 flex w-full flex-1 flex-col items-center justify-center py-8">
         <div className="mb-6 lg:hidden">
           <Marka boyut="sm" />
         </div>
 
         <div className="relative w-full max-w-md rounded-3xl border border-slate-200 bg-white p-7 shadow-[0_24px_70px_-24px_rgb(15_23_42/0.28)] sm:p-9">
           <div className="flex flex-col items-center text-center">
-            <span className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow-sm">
-              <Wrench className="size-7" />
-            </span>
-            <div className="mt-3 font-heading text-lg font-extrabold tracking-tight text-slate-800">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.png" alt="Egem Ambalaj" className="h-14 w-auto object-contain" />
+            <div className="mt-2 font-heading text-lg font-extrabold tracking-tight text-slate-800">
               EGEM <span className="font-semibold tracking-[0.2em] text-slate-400">AMBALAJ</span>
             </div>
             <h1 className="mt-5 font-heading text-xl leading-snug font-bold text-slate-900">
@@ -282,6 +283,7 @@ export default function BakimLoginPage() {
         <p className="mt-8 text-center text-[11px] text-slate-400">
           Design &amp; Development by <span className="font-semibold text-slate-500">Fatih Sal</span>
         </p>
+        </div>
       </section>
     </div>
   );

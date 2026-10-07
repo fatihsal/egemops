@@ -183,11 +183,11 @@ export default function LoginPage() {
       </section>
 
       {/* ==================== SAĞ LOGIN ==================== */}
-      <section className="relative flex flex-col items-center justify-center bg-slate-50 px-5 py-10 sm:px-8">
+      <section className="relative flex min-h-screen flex-col bg-slate-50 px-5 pb-10 sm:px-8">
         {/* sol kenar: hero'dan gelen yumuşak renk tonu — iki taraf görsel olarak birleşir */}
         <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-40 bg-gradient-to-r from-teal-50 via-sky-50/40 to-transparent lg:block" />
-        {/* dil seçici + modüller */}
-        <div className="absolute top-5 right-5 flex items-center gap-2">
+        {/* üst bar: modüller + dil seçici (kartla çakışmaması için yer ayrılır) */}
+        <div className="relative z-10 flex items-center justify-end gap-2 pt-5">
           <Link
             href="/"
             className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-[13px] font-semibold text-slate-600 shadow-sm transition-colors hover:bg-slate-50 hover:text-slate-900"
@@ -198,6 +198,8 @@ export default function LoginPage() {
           <DilSecici ton="acik" />
         </div>
 
+        {/* ortalanan içerik */}
+        <div className="relative z-10 flex w-full flex-1 flex-col items-center justify-center py-8">
         {/* mobil marka bandı */}
         <div className="mb-6 lg:hidden">
           <Marka boyut="sm" />
@@ -328,6 +330,7 @@ export default function LoginPage() {
             <Leaf className="size-3.5 text-teal-500" />
             {t("Sürdürülebilir üretim, güçlü yarınlar.")}
           </span>
+        </div>
         </div>
       </section>
     </div>
