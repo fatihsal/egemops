@@ -50,25 +50,31 @@ export interface ModulBilgi {
   aciklama: string;
   ikon: LucideIcon;
   href: string; // modüle giriş rotası
-  renk: string; // vurgu rengi (tailwind token olmayan, inline)
+  renk: string; // vurgu rengi (inline)
+  renk2: string; // gradyan ikinci renk
+  oneCikanlar: string[]; // kartta gösterilen başlıca özellikler
 }
 
 export const moduller: ModulBilgi[] = [
   {
     anahtar: "enerji",
     ad: "Enerji Yönetimi",
-    aciklama: "Tüketim, TEP, GES, maliyet ve performans takibi",
+    aciklama: "Tüketim, TEP ve maliyet verilerini tek ekranda izleyin; verimliliği artırın.",
     ikon: Zap,
     href: "/enerji",
     renk: "#14b8a6",
+    renk2: "#0891b2",
+    oneCikanlar: ["Tüketim & TEP", "GES İzleme", "Maliyet Analizi", "Raporlama"],
   },
   {
     anahtar: "bakim",
     ad: "Bakım Yönetimi",
-    aciklama: "Planlı bakım, SOP, iş emri ve ekipman takibi",
+    aciklama: "Planlı bakımı uçtan uca yönetin: plan, SOP, iş emri ve bakım geçmişi.",
     ikon: Wrench,
     href: "/bakim",
     renk: "#2563eb",
+    renk2: "#4f46e5",
+    oneCikanlar: ["Makine & Ekipman", "SOP & İş Emri", "Bakım Takvimi", "Bulgu Takibi"],
   },
 ];
 
