@@ -47,11 +47,11 @@ export default function LandingPage() {
     <div className="relative min-h-screen bg-gradient-to-br from-sky-100 via-white to-slate-100 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
       {/* Fabrika arka planı (public/fabrika.jpg; yoksa gradyan görünür) */}
       <div
-        className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-55 dark:opacity-25"
+        className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-100 dark:opacity-45"
         style={{ backgroundImage: "url('/fabrika.png')" }}
       />
-      {/* yumuşatma katmanı */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/70 via-white/55 to-white/80 dark:from-slate-950/80 dark:via-slate-950/70 dark:to-slate-950/90" />
+      {/* okunabilirlik için hafif yumuşatma katmanı */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/45 via-white/25 to-white/55 dark:from-slate-950/70 dark:via-slate-950/55 dark:to-slate-950/80" />
 
       <div className="relative z-10 flex min-h-screen flex-col">
         {/* üst bar */}
