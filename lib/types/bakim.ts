@@ -196,41 +196,79 @@ export interface BakimKpi {
   degisim?: number; // %
   ikon: string;
   renk: string; // tailwind sınıf grubu için anahtar: blue|emerald|amber|red|teal|slate
-  ilerleme?: number; // % (progress bar)
+  ilerleme?: number; // % (halka ilerleme)
 }
 
-export interface HaftalikPlanSatir {
-  makineId: string;
+export interface FormDagilimSatir {
   makine: string;
-  gunler: BakimDurum[]; // 7 gün
+  adet: number;
+}
+
+export interface PlanDurumDilim {
+  etiket: string;
+  adet: number;
+  yuzde: number;
+  renk: string;
+}
+
+export interface TrendNokta {
+  ay: string;
+  oran: number;
 }
 
 export interface YaklasanBakim {
   id: string;
-  tarih: string;
+  gun: string; // "15"
+  ayKisa: string; // "Eki"
   makine: string;
   bakim: string;
-  periyot: string;
-  durum: "planlandi" | "yaklasiyor";
+  kalanGun: number;
 }
 
-export interface GecikenBakim {
-  id: string;
-  gun: number; // kaç gün gecikti
+export interface SonKayit {
+  tarih: string;
   makine: string;
-  bakim: string;
-  planlanan: string;
+  bakimTuru: string;
+  formNo: string;
+  onaylayan: string;
+  durum: string;
+}
+
+export interface SopKullanim {
+  kullanildi: number;
+  kismen: number;
+  kullanilmadi: number;
+  yuzde: number;
+}
+
+export interface TeknisyenYuk {
+  ad: string;
+  yuzde: number;
+}
+
+export type UyumHucre = "yesil" | "amber" | "kirmizi";
+
+export interface UyumHaritaSatir {
+  makine: string;
+  haftalar: UyumHucre[];
+  genelUyum: number;
+}
+
+export interface HaftaEtiket {
+  kisa: string; // "H1"
+  tarih: string; // "18-24 Kas"
 }
 
 export interface BakimDashboardAnaliz {
   kpiler: BakimKpi[];
-  gunEtiketleri: { kisa: string; tarih: string }[];
-  haftalikPlan: HaftalikPlanSatir[];
+  formDagilimi: FormDagilimSatir[];
+  planDurumu: { toplam: number; dilimler: PlanDurumDilim[] };
+  tamamlamaTrend: TrendNokta[];
   yaklasan: YaklasanBakim[];
-  geciken: GecikenBakim[];
-  uyumTrend: { ay: string; oran: number }[];
-  tipDagilimi: { tip: string; adet: number; renk: string }[];
-  makineYuk: { makine: string; adet: number }[];
+  sonKayitlar: SonKayit[];
+  sopKullanim: SopKullanim;
+  teknisyenYuk: TeknisyenYuk[];
+  uyumHaritasi: { haftalar: HaftaEtiket[]; satirlar: UyumHaritaSatir[] };
 }
 
 export interface AuditKayit {
