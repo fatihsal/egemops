@@ -156,7 +156,7 @@ export function BakimDashboard() {
       {/* ============== Takvim + sağ paneller ============== */}
       <div className="grid gap-6 xl:grid-cols-3">
         {/* Bu Ayki Bakım Takvimi */}
-        <Card className="xl:col-span-2">
+        <Card className="flex flex-col xl:col-span-2">
           <CardHeader className="flex-row flex-wrap items-center justify-between gap-3 space-y-0">
             <div className="flex items-center gap-2">
               <Icon icon="solar:calendar-bold-duotone" className="size-5 text-blue-500" />
@@ -176,17 +176,19 @@ export function BakimDashboard() {
               <Filtre etiket="Tüm Durumlar" />
             </div>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="flex flex-1 flex-col gap-2">
             <div className="grid grid-cols-7 gap-1">
               {GUN_KISA.map((g) => (
-                <div key={g} className="pb-1 text-center text-[11px] font-medium text-muted-foreground">{t(g)}</div>
+                <div key={g} className="text-center text-[11px] font-medium text-muted-foreground">{t(g)}</div>
               ))}
+            </div>
+            <div className="grid flex-1 grid-cols-7 grid-rows-6 gap-1">
               {izgara.map((d, i) => {
                 const disAy = d.getMonth() !== ay;
                 const olaylar = !disAy ? olayMap.get(d.getDate()) ?? [] : [];
                 const buGun = ayniGun(d, bugun) && buAy;
                 return (
-                  <div key={i} className={cn("flex min-h-[82px] flex-col gap-1 rounded-lg border p-1", disAy ? "bg-muted/30" : "bg-card")}>
+                  <div key={i} className={cn("flex min-h-[72px] flex-col gap-1 overflow-hidden rounded-lg border p-1", disAy ? "bg-muted/30" : "bg-card")}>
                     <span className={cn(
                       "flex size-5 items-center justify-center self-start rounded-full text-[11px] tabular-nums",
                       disAy ? "text-muted-foreground/50" : buGun ? "bg-blue-600 font-semibold text-white" : "font-medium",
@@ -338,31 +340,29 @@ export function BakimDashboard() {
         </div>
       </div>
 
-      {/* ============== Alt sıra ============== */}
-      <div className="grid gap-6 xl:grid-cols-3">
-        {/* Haftalık Form Tamamlama Takibi (heatmap) */}
-        <Card>
-          <CardHeader className="flex-row items-center gap-2 space-y-0">
-            <Icon icon="solar:clipboard-check-bold-duotone" className="size-5 text-blue-500" />
-            <h3 className="font-heading text-sm font-medium">{t("Haftalık Form Tamamlama Takibi")} <span className="font-normal text-muted-foreground">({t("Son 8 Hafta")})</span></h3>
+      {/* ============== Haftalık Form Isı Haritası (tam genişlik) ============== */}
+      <Card>
+        <CardHeader className="flex-row items-center gap-2 space-y-0">
+          <Icon icon="solar:clipboard-check-bold-duotone" className="size-5 text-blue-500" />
+          <h3 className="font-heading text-base font-medium">{t("Haftalık Form Tamamlama Takibi")} <span className="font-normal text-muted-foreground">({t("Son 8 Hafta")})</span></h3>
           </CardHeader>
           <CardContent className="space-y-3 overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
                 <tr>
-                  <th className="pr-2 pb-1 text-left text-[10px] font-medium text-muted-foreground">{t("Makine")}</th>
+                  <th className="pr-3 pb-1.5 text-left text-xs font-medium text-muted-foreground">{t("Makine")}</th>
                   {data.formTakip.haftalar.map((h) => (
-                    <th key={h} className="px-0.5 pb-1 text-center text-[9px] font-medium whitespace-nowrap text-muted-foreground">{h}</th>
+                    <th key={h} className="px-1 pb-1.5 text-center text-[11px] font-medium whitespace-nowrap text-muted-foreground">{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {data.formTakip.satirlar.map((s) => (
                   <tr key={s.makine}>
-                    <td className="py-1 pr-2 text-xs font-medium whitespace-nowrap">{s.makine}</td>
+                    <td className="py-1.5 pr-3 text-sm font-medium whitespace-nowrap">{s.makine}</td>
                     {s.haftalar.map((h, i) => (
-                      <td key={i} className="px-0.5 py-1">
-                        <span className={cn("block h-4 rounded-sm", FORM_RENK[h])} />
+                      <td key={i} className="px-1 py-1.5">
+                        <span className={cn("block h-6 rounded", FORM_RENK[h])} />
                       </td>
                     ))}
                   </tr>
@@ -375,10 +375,10 @@ export function BakimDashboard() {
               <span className="inline-flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-slate-200 dark:bg-slate-700" /> {t("Uygulanmadı")}</span>
             </div>
           </CardContent>
-        </Card>
+      </Card>
 
-        {/* Orta: Form Oran bar + Yaklaşan Periyodik */}
-        <div className="space-y-6">
+      {/* ============== Form Oranı + Yaklaşan + Son Tamamlanan ============== */}
+      <div className="grid gap-6 xl:grid-cols-3">
           <Card>
             <CardHeader className="flex-row items-center gap-2 space-y-0">
               <Icon icon="solar:chart-2-bold-duotone" className="size-5 text-blue-500" />
@@ -435,7 +435,6 @@ export function BakimDashboard() {
               </table>
             </CardContent>
           </Card>
-        </div>
 
         {/* Son Tamamlanan Bakımlar */}
         <Card>
