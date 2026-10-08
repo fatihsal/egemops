@@ -1,93 +1,108 @@
 // -----------------------------------------------------------------------------
-// BAKIM — Dashboard (mock)
+// BAKIM — Dashboard (mock) — ay takvimi merkezli genel bakış
 // -----------------------------------------------------------------------------
 
-import type { BakimDashboardAnaliz, UyumHucre } from "@/lib/types/bakim";
+import type { BakimDashboardAnaliz, FormHucre, TakvimTip } from "@/lib/types/bakim";
 import { gecikmeIle } from "@/lib/data/mock-utils";
 
-const Y: UyumHucre = "yesil";
-const A: UyumHucre = "amber";
-const K: UyumHucre = "kirmizi";
+const T: FormHucre = "tamamlandi";
+const E: FormHucre = "eksik";
+const U: FormHucre = "uygulanmadi";
+
+const olay = (gun: number, kod: string, tip: TakvimTip) => ({ gun, kod, tip });
 
 export function bakimDashboardGetir(): Promise<BakimDashboardAnaliz> {
   const veri: BakimDashboardAnaliz = {
     kpiler: [
-      { anahtar: "makine", baslik: "Toplam Makine", deger: "13", altMetin: "Önceki döneme göre", degisim: 0, ikon: "solar:settings-bold-duotone", renk: "blue" },
-      { anahtar: "planli", baslik: "Planlı Bakımlar", deger: "142", altMetin: "Önceki döneme göre", degisim: 12, ikon: "solar:clipboard-list-bold-duotone", renk: "blue" },
-      { anahtar: "tamamlama", baslik: "Bakım Tamamlama Oranı", deger: "%92", altMetin: "Önceki döneme göre", degisim: 4, ikon: "solar:shield-check-bold-duotone", renk: "emerald", ilerleme: 92 },
-      { anahtar: "buHafta", baslik: "Bu Hafta Tamamlanan", deger: "24", altMetin: "Geçen haftaya göre", degisim: 20, ikon: "solar:chart-2-bold-duotone", renk: "blue" },
-      { anahtar: "onayBekleyen", baslik: "Onay Bekleyen Kayıtlar", deger: "6", altMetin: "Geçen haftaya göre", degisim: -40, ikon: "solar:clock-circle-bold-duotone", renk: "red" },
-      { anahtar: "formUyum", baslik: "Haftalık Form Uyumu", deger: "%94", altMetin: "Önceki döneme göre", degisim: 6, ikon: "solar:document-text-bold-duotone", renk: "emerald", ilerleme: 94 },
+      { anahtar: "makine", baslik: "Toplam Makine", deger: "18", ikon: "solar:buildings-3-bold-duotone", renk: "blue" },
+      { anahtar: "yaklasan", baslik: "Yaklaşan Periyodik Bakım", deger: "7", ikon: "solar:calendar-mark-bold-duotone", renk: "blue" },
+      { anahtar: "planlama", baslik: "Planlama Bekliyor", deger: "3", ikon: "solar:clipboard-list-bold-duotone", renk: "amber" },
+      { anahtar: "ertelenen", baslik: "Ertelenen Bakım", deger: "2", ikon: "solar:clock-circle-bold-duotone", renk: "red" },
+      { anahtar: "tamamlanma", baslik: "Tamamlanma Oranı", deger: "%92", ikon: "solar:check-circle-bold-duotone", renk: "emerald", bilgi: true },
+      { anahtar: "formUyum", baslik: "Haftalık Form Uyum Oranı", deger: "%94", ikon: "solar:document-text-bold-duotone", renk: "blue", bilgi: true },
     ],
-    formDagilimi: [
-      { makine: "Lemanic-1", adet: 12 },
-      { makine: "Lemanic-2", adet: 11 },
-      { makine: "Rotomec-1", adet: 9 },
-      { makine: "SP 104-ER", adet: 8 },
-      { makine: "Foilmaster", adet: 7 },
-      { makine: "Expertfoil", adet: 6 },
-      { makine: "Rotomec-2", adet: 5 },
-    ],
-    planDurumu: {
-      toplam: 142,
+    takvim: {
+      yil: 2026,
+      ay: 9, // Ekim (0-tabanlı)
+      olaylar: [
+        olay(1, "LM-01", "haftalikForm"),
+        olay(3, "PK-02", "3aylik"),
+        olay(6, "HT-05", "haftalikForm"),
+        olay(8, "PK-07", "6aylik"),
+        olay(10, "FM-03", "haftalikForm"),
+        olay(12, "LM-04", "3aylik"),
+        olay(15, "HA-02", "haftalikForm"),
+        olay(17, "PK-11", "12aylik"),
+        olay(20, "LM-01", "haftalikForm"),
+        olay(22, "PK-08", "planlamaBekliyor"),
+        olay(24, "FM-05", "3aylik"),
+        olay(27, "PK-10", "haftalikForm"),
+        olay(29, "YA-01", "tarihOnerildi"),
+      ],
+    },
+    buAyPlanlanan: {
+      toplam: 22,
       dilimler: [
-        { etiket: "Tamamlandı", adet: 131, yuzde: 92, renk: "#10b981" },
-        { etiket: "Devam Ediyor", adet: 5, yuzde: 4, renk: "#3b82f6" },
-        { etiket: "Gecikti", adet: 4, yuzde: 3, renk: "#f97316" },
-        { etiket: "Onay Bekliyor", adet: 2, yuzde: 1, renk: "#eab308" },
+        { etiket: "Haftalık Form", adet: 12, renk: "#3b82f6" },
+        { etiket: "3 Aylık Bakım", adet: 5, renk: "#10b981" },
+        { etiket: "6 Aylık Bakım", adet: 3, renk: "#f97316" },
+        { etiket: "12 Aylık Bakım", adet: 2, renk: "#a855f7" },
       ],
     },
-    tamamlamaTrend: [
-      { ay: "May", oran: 84 },
-      { ay: "Haz", oran: 86 },
-      { ay: "Tem", oran: 88 },
-      { ay: "Ağu", oran: 89 },
-      { ay: "Eyl", oran: 91 },
-      { ay: "Eki", oran: 92 },
-    ],
-    yaklasan: [
-      { id: "y1", gun: "09", ayKisa: "Eki", makine: "Lemanic-1", bakim: "Haftalık Bakım", kalanGun: 1 },
-      { id: "y2", gun: "10", ayKisa: "Eki", makine: "Spanthera 106-LER", bakim: "Baskı Bakımı", kalanGun: 2 },
-      { id: "y3", gun: "12", ayKisa: "Eki", makine: "Lemanic-2", bakim: "Aylık Genel Bakım", kalanGun: 4 },
-      { id: "y4", gun: "15", ayKisa: "Eki", makine: "Foilmaster", bakim: "Yaldız Ünitesi Bakımı", kalanGun: 7 },
-      { id: "y5", gun: "16", ayKisa: "Eki", makine: "Rotomec-1", bakim: "Aylık Genel Bakım", kalanGun: 8 },
-    ],
-    sonKayitlar: [
-      { tarih: "07.10.2026", makine: "Focusight Shark 500", bakimTuru: "Kalibrasyon", formNo: "F-2026-0014", onaylayan: "Müh. Serkan D.", durum: "Onaylandı" },
-      { tarih: "06.10.2026", makine: "Lemanic-1", bakimTuru: "Haftalık Bakım", formNo: "F-2026-0013", onaylayan: "Ahmet K.", durum: "Onaylandı" },
-      { tarih: "02.10.2026", makine: "SP 104-ER", bakimTuru: "Aylık Bakım", formNo: "F-2026-0012", onaylayan: "Mehmet Y.", durum: "Onaylandı" },
-      { tarih: "29.09.2026", makine: "Rotomec-1", bakimTuru: "Haftalık Bakım", formNo: "F-2026-0011", onaylayan: "Ahmet K.", durum: "Onaylandı" },
-      { tarih: "28.09.2026", makine: "Spanthera 106-LER", bakimTuru: "Aylık Bakım", formNo: "F-2026-0010", onaylayan: "Mehmet Y.", durum: "Onaylandı" },
-    ],
-    sopKullanim: { kullanildi: 136, kismen: 4, kullanilmadi: 2, yuzde: 96 },
-    teknisyenYuk: [
-      { ad: "Mehmet Y.", yuzde: 100 },
-      { ad: "Ahmet K.", yuzde: 80 },
-      { ad: "Ali K.", yuzde: 60 },
-      { ad: "Hasan D.", yuzde: 40 },
-    ],
-    uyumHaritasi: {
-      haftalar: [
-        { kisa: "H1", tarih: "11-17 Ağu" },
-        { kisa: "H2", tarih: "18-24 Ağu" },
-        { kisa: "H3", tarih: "25-31 Ağu" },
-        { kisa: "H4", tarih: "1-7 Eyl" },
-        { kisa: "H5", tarih: "8-14 Eyl" },
-        { kisa: "H6", tarih: "15-21 Eyl" },
-        { kisa: "H7", tarih: "22-28 Eyl" },
-        { kisa: "H8", tarih: "29 Eyl-5 Eki" },
+    periyodikDagilim: {
+      toplam: 78,
+      dilimler: [
+        { etiket: "3 Aylık", adet: 34, renk: "#10b981" },
+        { etiket: "6 Aylık", adet: 24, renk: "#f97316" },
+        { etiket: "12 Aylık", adet: 20, renk: "#a855f7" },
       ],
+    },
+    buAyTamamlanan: { yuzde: 92, tamamlanan: 20, planlanan: 22 },
+    planlamaDurumu: [
+      { etiket: "Onaylandı", adet: 9, renk: "#10b981" },
+      { etiket: "Cevap Bekliyor", adet: 3, renk: "#eab308" },
+      { etiket: "Üretim Uyum Değil", adet: 2, renk: "#ef4444" },
+      { etiket: "Tarih Önerildi", adet: 4, renk: "#f43f5e" },
+    ],
+    formTakip: {
+      haftalar: ["4 Ağu", "11 Ağu", "18 Ağu", "25 Ağu", "1 Eyl", "8 Eyl", "15 Eyl", "22 Eyl"],
       satirlar: [
-        { makine: "Lemanic-1", haftalar: [Y, Y, Y, Y, Y, Y, Y, Y], genelUyum: 96 },
-        { makine: "Lemanic-2", haftalar: [Y, Y, A, Y, Y, Y, Y, Y], genelUyum: 93 },
-        { makine: "Rotomec-1", haftalar: [A, Y, K, Y, A, Y, Y, Y], genelUyum: 88 },
-        { makine: "SP 104-ER", haftalar: [Y, A, Y, Y, A, Y, Y, Y], genelUyum: 91 },
-        { makine: "Foilmaster", haftalar: [Y, Y, Y, A, Y, Y, Y, Y], genelUyum: 95 },
-        { makine: "Expertfoil", haftalar: [A, A, Y, A, Y, A, Y, Y], genelUyum: 89 },
-        { makine: "Rotomec-2", haftalar: [A, K, Y, A, Y, K, A, Y], genelUyum: 87 },
-        { makine: "Spanthera 106-LER", haftalar: [Y, Y, Y, Y, A, Y, Y, Y], genelUyum: 94 },
+        { makine: "Lemanic-1", haftalar: [T, T, T, T, T, T, T, T] },
+        { makine: "Lemanic-2", haftalar: [T, T, E, T, T, T, T, T] },
+        { makine: "Rotomec-1", haftalar: [T, E, T, T, E, T, T, T] },
+        { makine: "Rotomec-2", haftalar: [E, T, T, E, T, T, E, T] },
+        { makine: "SP 104-ER", haftalar: [T, T, T, E, T, T, T, T] },
+        { makine: "Foilmaster", haftalar: [T, T, E, T, T, U, T, T] },
+        { makine: "Expertcut 106", haftalar: [T, E, T, T, T, T, E, T] },
+        { makine: "Spanthera 106", haftalar: [T, T, T, T, E, T, T, T] },
       ],
     },
+    formOran: [
+      { hafta: "4 Ağu", oran: 88 },
+      { hafta: "11 Ağu", oran: 92 },
+      { hafta: "18 Ağu", oran: 85 },
+      { hafta: "25 Ağu", oran: 96 },
+      { hafta: "1 Eyl", oran: 90 },
+      { hafta: "8 Eyl", oran: 94 },
+      { hafta: "15 Eyl", oran: 92 },
+      { hafta: "22 Eyl", oran: 94 },
+    ],
+    yaklasanPeriyodik: [
+      { tarih: "03.10.2026", makine: "Spanthera 106-LER", bakimTuru: "3 Aylık", durum: "Cevap Bekliyor", durumTipi: "cevapBekliyor" },
+      { tarih: "08.10.2026", makine: "Expertcut 106-PER", bakimTuru: "6 Aylık", durum: "Cevap Bekliyor", durumTipi: "cevapBekliyor" },
+      { tarih: "12.10.2026", makine: "Foilmaster", bakimTuru: "3 Aylık", durum: "Tarih Önerildi", durumTipi: "tarihOnerildi" },
+      { tarih: "20.10.2026", makine: "SP 104-ER", bakimTuru: "12 Aylık", durum: "Üretim Uyum Değil", durumTipi: "uretimUyumDegil" },
+    ],
+    sonTamamlanan: [
+      { tarih: "28.09.2026", makine: "Lemanic-1", bakimTuru: "3 Aylık", aciklama: "Kayış kontrolü" },
+      { tarih: "26.09.2026", makine: "Rotomec-2", bakimTuru: "6 Aylık", aciklama: "Yağ değişimi" },
+      { tarih: "24.09.2026", makine: "SP 104-ER", bakimTuru: "3 Aylık", aciklama: "Filtre temizliği" },
+      { tarih: "22.09.2026", makine: "Foilmaster", bakimTuru: "12 Aylık", aciklama: "Genel kontrol" },
+      { tarih: "20.09.2026", makine: "Expertcut 106-PER", bakimTuru: "3 Aylık", aciklama: "Sensör temizliği" },
+      { tarih: "18.09.2026", makine: "Lemanic-2", bakimTuru: "3 Aylık", aciklama: "Yağlama" },
+      { tarih: "16.09.2026", makine: "Spanthera 106-LER", bakimTuru: "6 Aylık", aciklama: "Pnömatik kontrol" },
+      { tarih: "14.09.2026", makine: "Rotomec-1", bakimTuru: "3 Aylık", aciklama: "Elektrik panosu kontrolü" },
+    ],
   };
   return gecikmeIle(veri);
 }

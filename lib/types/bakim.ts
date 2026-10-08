@@ -192,83 +192,71 @@ export interface BakimKpi {
   baslik: string;
   deger: string;
   birim?: string;
-  altMetin: string;
+  altMetin?: string;
   degisim?: number; // %
   ikon: string;
-  renk: string; // tailwind sınıf grubu için anahtar: blue|emerald|amber|red|teal|slate
+  renk: string; // blue|emerald|amber|red|teal|slate|purple
   ilerleme?: number; // % (halka ilerleme)
+  bilgi?: boolean; // (i) bilgi ikonu
 }
 
-export interface FormDagilimSatir {
-  makine: string;
-  adet: number;
+/** Takvim olay tipi (periyot + planlama durumu). */
+export type TakvimTip =
+  | "haftalikForm"
+  | "3aylik"
+  | "6aylik"
+  | "12aylik"
+  | "planlamaBekliyor"
+  | "tarihOnerildi"
+  | "ertelendi";
+
+export interface TakvimOlay {
+  gun: number; // ayın günü
+  kod: string; // "LM-01"
+  tip: TakvimTip;
 }
 
-export interface PlanDurumDilim {
+/** Genel renkli sayaç dilimi (liste/donut). */
+export interface SayiDilim {
   etiket: string;
   adet: number;
-  yuzde: number;
-  renk: string;
+  renk: string; // hex
 }
 
-export interface TrendNokta {
-  ay: string;
-  oran: number;
-}
+/** Haftalık form hücre durumu (3 seviye). */
+export type FormHucre = "tamamlandi" | "eksik" | "uygulanmadi";
 
-export interface YaklasanBakim {
-  id: string;
-  gun: string; // "15"
-  ayKisa: string; // "Eki"
+export interface FormTakipSatir {
   makine: string;
-  bakim: string;
-  kalanGun: number;
+  haftalar: FormHucre[];
 }
 
-export interface SonKayit {
+export interface YaklasanPeriyodik {
   tarih: string;
   makine: string;
   bakimTuru: string;
-  formNo: string;
-  onaylayan: string;
-  durum: string;
+  durum: string; // planlama durumu etiketi
+  durumTipi: "cevapBekliyor" | "tarihOnerildi" | "uretimUyumDegil" | "onaylandi";
 }
 
-export interface SopKullanim {
-  kullanildi: number;
-  kismen: number;
-  kullanilmadi: number;
-  yuzde: number;
-}
-
-export interface TeknisyenYuk {
-  ad: string;
-  yuzde: number;
-}
-
-export type UyumHucre = "yesil" | "amber" | "kirmizi";
-
-export interface UyumHaritaSatir {
+export interface SonTamamlanan {
+  tarih: string;
   makine: string;
-  haftalar: UyumHucre[];
-  genelUyum: number;
-}
-
-export interface HaftaEtiket {
-  kisa: string; // "H1"
-  tarih: string; // "18-24 Kas"
+  bakimTuru: string;
+  aciklama: string;
 }
 
 export interface BakimDashboardAnaliz {
   kpiler: BakimKpi[];
-  formDagilimi: FormDagilimSatir[];
-  planDurumu: { toplam: number; dilimler: PlanDurumDilim[] };
-  tamamlamaTrend: TrendNokta[];
-  yaklasan: YaklasanBakim[];
-  sonKayitlar: SonKayit[];
-  sopKullanim: SopKullanim;
-  teknisyenYuk: TeknisyenYuk[];
-  uyumHaritasi: { haftalar: HaftaEtiket[]; satirlar: UyumHaritaSatir[] };
+  takvim: { yil: number; ay: number; olaylar: TakvimOlay[] };
+  buAyPlanlanan: { dilimler: SayiDilim[]; toplam: number };
+  periyodikDagilim: { toplam: number; dilimler: SayiDilim[] };
+  buAyTamamlanan: { yuzde: number; tamamlanan: number; planlanan: number };
+  planlamaDurumu: SayiDilim[];
+  formTakip: { haftalar: string[]; satirlar: FormTakipSatir[] };
+  formOran: { hafta: string; oran: number }[];
+  yaklasanPeriyodik: YaklasanPeriyodik[];
+  sonTamamlanan: SonTamamlanan[];
 }
 
 export interface AuditKayit {
