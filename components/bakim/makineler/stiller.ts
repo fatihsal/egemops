@@ -1,6 +1,6 @@
 // Makine ekranları için ortak etiket/renk yardımcıları.
 
-import type { Kritiklik, BakimPeriyot, BulguDurum, GozlemSonuc, IsEmriDurum, MaddeDurum, MaddeTuru, OperatorDurum, OperatorKontrolDurum, RagDurum } from "@/lib/types/bakim";
+import type { ChecklistTip, Kritiklik, BakimPeriyot, BulguDurum, GozlemSonuc, IsEmriDurum, MaddeDurum, MaddeTuru, OperatorDurum, OperatorKontrolDurum, RagDurum } from "@/lib/types/bakim";
 
 export const KRITIKLIK_META: Record<Kritiklik, { etiket: string; sinif: string; nokta: string }> = {
   dusuk: {
@@ -64,6 +64,12 @@ export const MADDE_DURUM_META: Record<MaddeDurum, { etiket: string; sinif: strin
   bulguVar: { etiket: "Bulgu Var", sinif: "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300", renk: "text-red-500", ikon: "solar:danger-triangle-bold" },
   uygulanmadi: { etiket: "Uygulanmadı", sinif: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300", renk: "text-amber-500", ikon: "solar:close-circle-bold" },
   uygulanamaz: { etiket: "Uygulanamaz", sinif: "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400", renk: "text-slate-400", ikon: "solar:forbidden-circle-bold" },
+};
+
+export const CHECKLIST_TIP_META: Record<ChecklistTip, { etiket: string; sinif: string; ikon: string }> = {
+  TECHNICAL_MAINTENANCE: { etiket: "Teknik Bakım (SOP)", sinif: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300", ikon: "solar:wrench-bold" },
+  OPERATOR_INSPECTION: { etiket: "Operatör Kontrolü", sinif: "bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-300", ikon: "solar:user-bold" },
+  FACILITY_INSPECTION: { etiket: "Tesis Kontrolü", sinif: "bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-300", ikon: "solar:buildings-bold" },
 };
 
 export const MADDE_TURU_ETIKET: Record<MaddeTuru, string> = {

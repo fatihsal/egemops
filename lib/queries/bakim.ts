@@ -11,6 +11,7 @@ import { isEmirleriGetir, isEmriGetir, makineIsEmirleriGetir } from "@/lib/data/
 import { operatorKontrolleriGetir, operatorKontrolGetir } from "@/lib/data/bakim/operator-kontrolleri";
 import { bulgulariGetir, makineBulgulariGetir } from "@/lib/data/bakim/bulgular";
 import { bakimKayitlariGetir } from "@/lib/data/bakim/kayitlar";
+import { sopListeGetir, sopGetir } from "@/lib/data/bakim/sop";
 import { queryKeys } from "@/lib/queries/keys";
 
 export function useBakimDashboard() {
@@ -79,4 +80,12 @@ export function useMakineBulgular(makineId: string) {
 
 export function useBakimKayitlar() {
   return useQuery({ queryKey: queryKeys.bakim.kayitlar, queryFn: bakimKayitlariGetir });
+}
+
+export function useSopListe() {
+  return useQuery({ queryKey: queryKeys.bakim.sopListe, queryFn: sopListeGetir });
+}
+
+export function useSop(id: string) {
+  return useQuery({ queryKey: queryKeys.bakim.sop(id), queryFn: () => sopGetir(id), enabled: !!id });
 }

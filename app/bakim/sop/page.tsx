@@ -1,5 +1,5 @@
-import { Yakinda } from "@/components/bakim/ortak/yakinda";
+import { SopListesi } from "@/components/bakim/sop/sop-listesi";
 
 export default function Page() {
-  return <Yakinda baslik="SOP & Checklistler" aciklama="Tekrar kullanılan bakım şablonları ve versiyonları." ikon="solar:checklist-minimalistic-bold-duotone" />;
+  return <SopListesi />;
 }
