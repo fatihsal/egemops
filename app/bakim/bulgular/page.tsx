@@ -1,5 +1,5 @@
-import { Yakinda } from "@/components/bakim/ortak/yakinda";
+import { BulguListesi } from "@/components/bakim/bulgular/bulgu-listesi";
 
 export default function Page() {
-  return <Yakinda baslik="Bakım Bulguları" aciklama="Bakım sırasında tespit edilen takip noktaları." ikon="solar:danger-triangle-bold-duotone" />;
+  return <BulguListesi />;
 }

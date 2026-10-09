@@ -9,6 +9,7 @@ import { bakimDashboardGetir } from "@/lib/data/bakim/dashboard";
 import { planlariGetir, planGetir, makinePlanlariGetir } from "@/lib/data/bakim/planlar";
 import { isEmirleriGetir, isEmriGetir, makineIsEmirleriGetir } from "@/lib/data/bakim/is-emirleri";
 import { operatorKontrolleriGetir, operatorKontrolGetir } from "@/lib/data/bakim/operator-kontrolleri";
+import { bulgulariGetir, makineBulgulariGetir } from "@/lib/data/bakim/bulgular";
 import { queryKeys } from "@/lib/queries/keys";
 
 export function useBakimDashboard() {
@@ -61,4 +62,16 @@ export function useOperatorKontroller() {
 
 export function useOperatorKontrol(id: string) {
   return useQuery({ queryKey: queryKeys.bakim.operatorKontrol(id), queryFn: () => operatorKontrolGetir(id), enabled: !!id });
+}
+
+export function useBulgular() {
+  return useQuery({ queryKey: queryKeys.bakim.bulgular, queryFn: bulgulariGetir });
+}
+
+export function useMakineBulgular(makineId: string) {
+  return useQuery({
+    queryKey: queryKeys.bakim.makineBulgular(makineId),
+    queryFn: () => makineBulgulariGetir(makineId),
+    enabled: !!makineId,
+  });
 }

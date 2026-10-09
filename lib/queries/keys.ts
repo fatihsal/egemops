@@ -82,6 +82,7 @@ export const queryKeys = {
     sopListe: ["bakim", "sop"] as const,
     sop: (id: string) => ["bakim", "sop-detay", id] as const,
     bulgular: ["bakim", "bulgular"] as const,
+    makineBulgular: (makineId: string) => ["bakim", "makine-bulgular", makineId] as const,
     operatorKontroller: ["bakim", "operator-kontroller"] as const,
     operatorKontrol: (id: string) => ["bakim", "operator-kontrol", id] as const,
     dokumanlar: ["bakim", "dokumanlar"] as const,

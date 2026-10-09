@@ -1,6 +1,6 @@
 // Makine ekranları için ortak etiket/renk yardımcıları.
 
-import type { Kritiklik, BakimPeriyot, GozlemSonuc, IsEmriDurum, MaddeDurum, MaddeTuru, OperatorDurum, OperatorKontrolDurum, RagDurum } from "@/lib/types/bakim";
+import type { Kritiklik, BakimPeriyot, BulguDurum, GozlemSonuc, IsEmriDurum, MaddeDurum, MaddeTuru, OperatorDurum, OperatorKontrolDurum, RagDurum } from "@/lib/types/bakim";
 
 export const KRITIKLIK_META: Record<Kritiklik, { etiket: string; sinif: string; nokta: string }> = {
   dusuk: {
@@ -97,6 +97,18 @@ export const GOZLEM_SONUC_META: Record<GozlemSonuc, { etiket: string; sinif: str
   uretimeUygun: { etiket: "Üretime Uygun", sinif: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300", nokta: "bg-emerald-500", aktif: "border-emerald-500 bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300", ikon: "solar:check-circle-bold" },
   takip: { etiket: "Takip Gerekli", sinif: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300", nokta: "bg-amber-500", aktif: "border-amber-500 bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300", ikon: "solar:eye-bold" },
   ekIslem: { etiket: "Ek İşlem Gerekli", sinif: "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300", nokta: "bg-red-500", aktif: "border-red-500 bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300", ikon: "solar:wrench-bold" },
+};
+
+export const BULGU_DURUM_META: Record<BulguDurum, { etiket: string; sinif: string; nokta: string; ikon: string }> = {
+  acik: { etiket: "Açık", sinif: "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300", nokta: "bg-red-500", ikon: "solar:danger-triangle-bold" },
+  planlandi: { etiket: "Planlandı", sinif: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300", nokta: "bg-blue-500", ikon: "solar:calendar-mark-bold" },
+  tamamlandi: { etiket: "Tamamlandı", sinif: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300", nokta: "bg-emerald-500", ikon: "solar:check-circle-bold" },
+  iptal: { etiket: "İptal", sinif: "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400", nokta: "bg-slate-400", ikon: "solar:close-circle-bold" },
+};
+
+export const BULGU_KAYNAK_META: Record<"bakim" | "operator", { etiket: string; sinif: string; ikon: string }> = {
+  bakim: { etiket: "Bakım (SOP)", sinif: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300", ikon: "solar:wrench-bold" },
+  operator: { etiket: "Operatör", sinif: "bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-300", ikon: "solar:user-bold" },
 };
 
 export const GOZLEM_KATEGORI: { anahtar: "mekanik" | "elektrik" | "pnomatik" | "sensor" | "emniyet" | "urunAkisi"; etiket: string; ikon: string }[] = [

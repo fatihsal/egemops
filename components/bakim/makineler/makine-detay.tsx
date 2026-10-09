@@ -11,10 +11,10 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BosDurum } from "@/components/common/bos-durum";
-import { useMakine, useMakinePlanlar, useMakineIsEmirleri } from "@/lib/queries/bakim";
+import { useMakine, useMakinePlanlar, useMakineIsEmirleri, useMakineBulgular } from "@/lib/queries/bakim";
 import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
-import { IS_EMRI_DURUM_META, KRITIKLIK_META, PERIYOT_ETIKET, PERIYOT_META, uyumRenk } from "@/components/bakim/makineler/stiller";
+import { BULGU_DURUM_META, BULGU_KAYNAK_META, IS_EMRI_DURUM_META, KRITIKLIK_META, PERIYOT_ETIKET, PERIYOT_META, uyumRenk } from "@/components/bakim/makineler/stiller";
 import { planSonrakiOlusum, tarihBicim } from "@/lib/bakim/tarih";
 import type { Makine } from "@/lib/types/bakim";
 
@@ -218,6 +218,58 @@ function MakineIsEmirleri({ makineId }: { makineId: string }) {
   );
 }
 
+function MakineBulgular({ makineId }: { makineId: string }) {
+  const { t } = useDil();
+  const { data, isLoading } = useMakineBulgular(makineId);
+
+  if (isLoading) {
+    return <div className="space-y-2">{Array.from({ length: 2 }).map((_, i) => <Skeleton key={i} className="h-16 w-full" />)}</div>;
+  }
+  if (!data || data.length === 0) {
+    return (
+      <Card>
+        <CardContent className="p-0">
+          <BosDurum ikon="solar:check-circle-bold-duotone" baslik={t("Bulgu yok")} aciklama={t("Bu makineye ait açık/kapalı bulgu bulunmuyor.")} />
+        </CardContent>
+      </Card>
+    );
+  }
+  return (
+    <div className="space-y-3">
+      {data.map((b) => {
+        const dm = BULGU_DURUM_META[b.durum];
+        const km = BULGU_KAYNAK_META[b.kaynak];
+        return (
+          <Card key={b.id}>
+            <CardContent className="space-y-2 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium", km.sinif)}>
+                    <Icon icon={km.ikon} className="size-3" />
+                    {t(km.etiket)}
+                  </span>
+                  <span className="text-xs text-muted-foreground">{b.olusturmaTarihi}</span>
+                </div>
+                <span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium", dm.sinif)}>
+                  <span className={cn("size-1.5 rounded-full", dm.nokta)} />
+                  {t(dm.etiket)}
+                </span>
+              </div>
+              <p className="text-sm">{t(b.aciklama)}</p>
+              {b.sorumlu || b.termin ? (
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                  {b.sorumlu ? <span className="inline-flex items-center gap-1"><Icon icon="solar:user-linear" className="size-3.5" /> {t(b.sorumlu)}</span> : null}
+                  {b.termin ? <span className="inline-flex items-center gap-1"><Icon icon="solar:calendar-linear" className="size-3.5" /> {b.termin}</span> : null}
+                </div>
+              ) : null}
+            </CardContent>
+          </Card>
+        );
+      })}
+    </div>
+  );
+}
+
 export function MakineDetay() {
   const { t } = useDil();
   const params = useParams<{ id: string }>();
@@ -316,15 +368,7 @@ export function MakineDetay() {
         </TabsContent>
 
         <TabsContent value="bulgular" className="pt-5">
-          <Card>
-            <CardContent className="p-0">
-              <BosDurum
-                ikon="solar:danger-triangle-bold-duotone"
-                baslik={t("Bulgu yok")}
-                aciklama={t("Bu makineye ait bakım bulguları ilgili modül devreye alındığında burada listelenecek.")}
-              />
-            </CardContent>
-          </Card>
+          <MakineBulgular makineId={m.id} />
         </TabsContent>
 
         <TabsContent value="dokumanlar" className="pt-5">
