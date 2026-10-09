@@ -155,6 +155,15 @@ export const IS_EMIRLERI: IsEmri[] = [
       { 0: "tamamlandi", 1: "tamamlandi", 2: "tamamlandi", 3: "tamamlandi", 4: "tamamlandi", 5: "tamamlandi" },
       "Ali K.", "07.07.2026 11:45",
     ),
+    gozlem: {
+      genelGozlem: "Kalibrasyon sonrası tüm eksenler ve kamera modülü referans değerlerinde. Deneme çalışmasında hata/kaçak gözlenmedi.",
+      kontrol: { mekanik: "uygun", elektrik: "uygun", pnomatik: "uygun", sensor: "uygun", emniyet: "uygun", urunAkisi: "uygun" },
+      denemeYapildi: true,
+      sonuc: "uretimeUygun",
+      takipNotlari: "",
+      onaylayan: "Müh. Serkan D.",
+      onayTarihi: "08.07.2026",
+    },
   }),
 ];
 

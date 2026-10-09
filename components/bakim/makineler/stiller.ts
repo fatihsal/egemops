@@ -1,6 +1,6 @@
 // Makine ekranları için ortak etiket/renk yardımcıları.
 
-import type { Kritiklik, BakimPeriyot, IsEmriDurum, MaddeDurum, MaddeTuru, OperatorDurum, OperatorKontrolDurum } from "@/lib/types/bakim";
+import type { Kritiklik, BakimPeriyot, GozlemSonuc, IsEmriDurum, MaddeDurum, MaddeTuru, OperatorDurum, OperatorKontrolDurum, RagDurum } from "@/lib/types/bakim";
 
 export const KRITIKLIK_META: Record<Kritiklik, { etiket: string; sinif: string; nokta: string }> = {
   dusuk: {
@@ -85,3 +85,25 @@ export const OPERATOR_KONTROL_DURUM_META: Record<OperatorKontrolDurum, { etiket:
   devam: { etiket: "Devam Ediyor", sinif: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300", nokta: "bg-amber-500" },
   tamamlandi: { etiket: "Tamamlandı", sinif: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300", nokta: "bg-emerald-500" },
 };
+
+/** Bakım sonrası gözlem — kategori durumu (RAG). */
+export const RAG_META: Record<RagDurum, { etiket: string; sinif: string; nokta: string; aktif: string }> = {
+  uygun: { etiket: "Uygun", sinif: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300", nokta: "bg-emerald-500", aktif: "bg-emerald-600 text-white" },
+  takip: { etiket: "Takip", sinif: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300", nokta: "bg-amber-500", aktif: "bg-amber-500 text-white" },
+  uygunDegil: { etiket: "Uygun Değil", sinif: "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300", nokta: "bg-red-500", aktif: "bg-red-600 text-white" },
+};
+
+export const GOZLEM_SONUC_META: Record<GozlemSonuc, { etiket: string; sinif: string; nokta: string; aktif: string; ikon: string }> = {
+  uretimeUygun: { etiket: "Üretime Uygun", sinif: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300", nokta: "bg-emerald-500", aktif: "border-emerald-500 bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300", ikon: "solar:check-circle-bold" },
+  takip: { etiket: "Takip Gerekli", sinif: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300", nokta: "bg-amber-500", aktif: "border-amber-500 bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300", ikon: "solar:eye-bold" },
+  ekIslem: { etiket: "Ek İşlem Gerekli", sinif: "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300", nokta: "bg-red-500", aktif: "border-red-500 bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300", ikon: "solar:wrench-bold" },
+};
+
+export const GOZLEM_KATEGORI: { anahtar: "mekanik" | "elektrik" | "pnomatik" | "sensor" | "emniyet" | "urunAkisi"; etiket: string; ikon: string }[] = [
+  { anahtar: "mekanik", etiket: "Mekanik", ikon: "solar:settings-bold-duotone" },
+  { anahtar: "elektrik", etiket: "Elektrik", ikon: "solar:bolt-bold-duotone" },
+  { anahtar: "pnomatik", etiket: "Pnömatik / Vakum", ikon: "solar:wind-bold-duotone" },
+  { anahtar: "sensor", etiket: "Sensör / Ölçüm", ikon: "solar:eye-scan-bold-duotone" },
+  { anahtar: "emniyet", etiket: "Emniyet", ikon: "solar:shield-check-bold-duotone" },
+  { anahtar: "urunAkisi", etiket: "Ürün Akışı", ikon: "solar:box-bold-duotone" },
+];

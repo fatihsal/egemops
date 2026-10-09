@@ -21,7 +21,8 @@ import {
   PERIYOT_ETIKET,
   PERIYOT_META,
 } from "@/components/bakim/makineler/stiller";
-import type { Foto, IsEmriDurum, IsEmriMadde, MaddeDurum } from "@/lib/types/bakim";
+import { GozlemFormu, varsayilanGozlem } from "@/components/bakim/is-emirleri/gozlem-formu";
+import type { BakimSonrasiGozlem, Foto, IsEmriDurum, IsEmriMadde, MaddeDurum } from "@/lib/types/bakim";
 
 const SECIM_DURUMLARI: MaddeDurum[] = ["tamamlandi", "bulguVar", "uygulanmadi", "uygulanamaz"];
 
@@ -42,12 +43,14 @@ export function IsEmriUygulama() {
   const [maddeler, setMaddeler] = React.useState<IsEmriMadde[]>([]);
   const [durum, setDurum] = React.useState<IsEmriDurum>("planlandi");
   const [secili, setSecili] = React.useState(0);
+  const [gozlem, setGozlem] = React.useState<BakimSonrasiGozlem>(varsayilanGozlem());
 
   React.useEffect(() => {
     if (data) {
       setMaddeler(data.maddeler.map((m) => ({ ...m, fotograflar: [...m.fotograflar] })));
       setDurum(data.durum);
       setSecili(0);
+      setGozlem(data.gozlem ?? { ...varsayilanGozlem(), onaylayan: personel });
     }
   }, [data?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -91,6 +94,15 @@ export function IsEmriUygulama() {
   function durumIlerlet(hedef: IsEmriDurum, mesaj: string) {
     setDurum(hedef);
     toast.success(t(mesaj));
+  }
+
+  function onayla() {
+    if (!gozlem.genelGozlem.trim()) {
+      toast.error(t("Onaylamadan önce bakım sonrası gözlemi doldurun."));
+      return;
+    }
+    setGozlem((g) => ({ ...g, onayTarihi: simdiStr().slice(0, 10), onaylayan: g.onaylayan?.trim() || personel }));
+    durumIlerlet("onaylandi", "İş emri onaylandı.");
   }
 
   if (isLoading || !data) {
@@ -166,7 +178,7 @@ export function IsEmriUygulama() {
                   <Button variant="outline" className="h-9 gap-1.5 bg-card" onClick={() => durumIlerlet("devam", "Revizyona gönderildi.")}>
                     <Icon icon="solar:rewind-back-linear" className="size-4" /> {t("Revizyona Gönder")}
                   </Button>
-                  <Button className="h-9 gap-1.5 bg-teal-600 text-white shadow-sm hover:bg-teal-700" onClick={() => durumIlerlet("onaylandi", "İş emri onaylandı.")}>
+                  <Button className="h-9 gap-1.5 bg-teal-600 text-white shadow-sm hover:bg-teal-700" onClick={onayla}>
                     <Icon icon="solar:verified-check-bold" className="size-4" /> {t("Onayla")}
                   </Button>
                 </>
@@ -381,6 +393,16 @@ export function IsEmriUygulama() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Bakım Sonrası Gözlem — mühendis kontrol/onay aşamasında */}
+      {durum === "muhendisKontrol" || durum === "onaylandi" ? (
+        <GozlemFormu
+          gozlem={gozlem}
+          setGozlem={setGozlem}
+          duzenlenebilir={durum === "muhendisKontrol"}
+          isEmri={data}
+        />
+      ) : null}
     </div>
   );
 }
