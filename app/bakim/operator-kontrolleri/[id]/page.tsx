@@ -1,5 +1,5 @@
-import { Yakinda } from "@/components/bakim/ortak/yakinda";
+import { OperatorForm } from "@/components/bakim/operator-kontrolleri/operator-form";
 
 export default function Page() {
-  return <Yakinda baslik="Operatör Kontrolü" aciklama="Haftalık kontrol uygulama ekranı." ikon="solar:clipboard-list-bold-duotone" />;
+  return <OperatorForm />;
 }

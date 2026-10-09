@@ -269,3 +269,37 @@ export interface AuditKayit {
   tarih: string;
   neden?: string;
 }
+
+// --------------------------- Operatör Kontrolleri ---------------------------
+// Haftalık operatör formu — aynı Checklist Engine (OPERATOR_INSPECTION).
+// 2 durumlu: Uygun / Uygunsuzluk. Uygunsuzlukta not+foto → bakıma bulgu.
+
+export type OperatorKontrolDurum = "planlandi" | "devam" | "tamamlandi";
+
+export interface OperatorMadde {
+  no: string;
+  bolum?: string;
+  gorev: string;
+  turu: MaddeTuru;
+  aciklama?: string;
+  durum: OperatorDurum; // bekliyor | uygun | uygunsuzluk
+  not?: string;
+  fotograflar: Foto[];
+  bulguId?: string;
+}
+
+export interface OperatorKontrol {
+  id: string;
+  no: string; // "OK-2026-0042"
+  makineId: string;
+  makineAd: string;
+  hafta: string; // "06 - 12 Ekim 2026"
+  tarih: string; // planlanan / oluşturma
+  operator: string;
+  vardiya?: string; // "Gündüz" | "Gece"
+  durum: OperatorKontrolDurum;
+  maddeler: OperatorMadde[];
+  tamamlananMadde: number;
+  toplamMadde: number;
+  uygunsuzlukSayi: number;
+}
