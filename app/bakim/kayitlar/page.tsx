@@ -1,5 +1,5 @@
-import { Yakinda } from "@/components/bakim/ortak/yakinda";
+import { KayitListesi } from "@/components/bakim/kayitlar/kayit-listesi";
 
 export default function Page() {
-  return <Yakinda baslik="Bakım Kayıtları" aciklama="Tamamlanmış geçmiş bakım kayıtları arşivi." ikon="solar:archive-bold-duotone" />;
+  return <KayitListesi />;
 }

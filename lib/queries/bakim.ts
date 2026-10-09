@@ -10,6 +10,7 @@ import { planlariGetir, planGetir, makinePlanlariGetir } from "@/lib/data/bakim/
 import { isEmirleriGetir, isEmriGetir, makineIsEmirleriGetir } from "@/lib/data/bakim/is-emirleri";
 import { operatorKontrolleriGetir, operatorKontrolGetir } from "@/lib/data/bakim/operator-kontrolleri";
 import { bulgulariGetir, makineBulgulariGetir } from "@/lib/data/bakim/bulgular";
+import { bakimKayitlariGetir } from "@/lib/data/bakim/kayitlar";
 import { queryKeys } from "@/lib/queries/keys";
 
 export function useBakimDashboard() {
@@ -74,4 +75,8 @@ export function useMakineBulgular(makineId: string) {
     queryFn: () => makineBulgulariGetir(makineId),
     enabled: !!makineId,
   });
+}
+
+export function useBakimKayitlar() {
+  return useQuery({ queryKey: queryKeys.bakim.kayitlar, queryFn: bakimKayitlariGetir });
 }

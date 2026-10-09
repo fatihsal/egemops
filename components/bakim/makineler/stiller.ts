@@ -111,6 +111,17 @@ export const BULGU_KAYNAK_META: Record<"bakim" | "operator", { etiket: string; s
   operator: { etiket: "Operatör", sinif: "bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-300", ikon: "solar:user-bold" },
 };
 
+export const KAYIT_SONUC_META: Record<"uygun" | "takip" | "bulguVar", { etiket: string; sinif: string; nokta: string }> = {
+  uygun: { etiket: "Uygun", sinif: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300", nokta: "bg-emerald-500" },
+  takip: { etiket: "Takip", sinif: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300", nokta: "bg-amber-500" },
+  bulguVar: { etiket: "Bulgu Çıktı", sinif: "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300", nokta: "bg-red-500" },
+};
+
+export const KAYIT_KAYNAK_META: Record<"teknik" | "operator", { etiket: string; sinif: string; ikon: string }> = {
+  teknik: { etiket: "Teknik Bakım", sinif: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300", ikon: "solar:wrench-bold" },
+  operator: { etiket: "Operatör", sinif: "bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-300", ikon: "solar:user-bold" },
+};
+
 export const GOZLEM_KATEGORI: { anahtar: "mekanik" | "elektrik" | "pnomatik" | "sensor" | "emniyet" | "urunAkisi"; etiket: string; ikon: string }[] = [
   { anahtar: "mekanik", etiket: "Mekanik", ikon: "solar:settings-bold-duotone" },
   { anahtar: "elektrik", etiket: "Elektrik", ikon: "solar:bolt-bold-duotone" },

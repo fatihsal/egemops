@@ -288,6 +288,25 @@ export interface OperatorMadde {
   bulguId?: string;
 }
 
+// --------------------------- Bakım Kayıtları (arşiv) ---------------------------
+
+export interface BakimKayit {
+  id: string;
+  formNo: string; // "WO-2026-0139"
+  tarih: string; // tamamlanma tarihi
+  makineId: string;
+  makineAd: string;
+  bakimTuru: string;
+  periyot: BakimPeriyot;
+  kaynak: "teknik" | "operator";
+  yapan: string;
+  sureSaat: number;
+  sonuc: "uygun" | "takip" | "bulguVar";
+  bulguSayi: number;
+  onaylayan?: string;
+  isEmriId?: string;
+}
+
 export interface OperatorKontrol {
   id: string;
   no: string; // "OK-2026-0042"
