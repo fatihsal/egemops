@@ -12,6 +12,7 @@ import { operatorKontrolleriGetir, operatorKontrolGetir } from "@/lib/data/bakim
 import { bulgulariGetir, makineBulgulariGetir } from "@/lib/data/bakim/bulgular";
 import { bakimKayitlariGetir } from "@/lib/data/bakim/kayitlar";
 import { sopListeGetir, sopGetir } from "@/lib/data/bakim/sop";
+import { sopSayfaGetir } from "@/lib/data/bakim/sop-sayfa";
 import { queryKeys } from "@/lib/queries/keys";
 
 export function useBakimDashboard() {
@@ -88,4 +89,8 @@ export function useSopListe() {
 
 export function useSop(id: string) {
   return useQuery({ queryKey: queryKeys.bakim.sop(id), queryFn: () => sopGetir(id), enabled: !!id });
+}
+
+export function useSopSayfa() {
+  return useQuery({ queryKey: queryKeys.bakim.sopSayfa, queryFn: sopSayfaGetir });
 }

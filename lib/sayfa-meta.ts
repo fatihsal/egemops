@@ -31,7 +31,7 @@ const META: Record<string, SayfaMeta> = {
   "/bakim/takvim": { baslik: "Bakım Takvimi", altBaslik: "Planlı bakımların haftalık ve aylık takvim görünümü." },
   "/bakim/is-emirleri": { baslik: "Planlı İş Emirleri", altBaslik: "Planlanmış bakımların uygulama kayıtlarını yönetin." },
   "/bakim/kayitlar": { baslik: "Bakım Kayıtları", altBaslik: "Tamamlanmış geçmiş bakım kayıtlarının arşivi." },
-  "/bakim/sop": { baslik: "SOP & Checklistler", altBaslik: "Tekrar kullanılan bakım şablonları ve versiyon yönetimi." },
+  "/bakim/sop": { baslik: "SOP & Form Yönetimi", altBaslik: "Tüm makinelere ait SOP şablonlarını, revizyonları ve kullanım durumlarını yönetin." },
   "/bakim/bulgular": { baslik: "Bakım Bulguları", altBaslik: "Bakım sırasında tespit edilen takip noktalarını yönetin." },
   "/bakim/operator-kontrolleri": { baslik: "Operatör Kontrolleri", altBaslik: "Operatörlerin haftalık temizlik ve görsel kontrol formları." },
   "/bakim/dokumanlar": { baslik: "Dokümanlar", altBaslik: "Makine ve bakım planlarına bağlı teknik dokümanlar." },

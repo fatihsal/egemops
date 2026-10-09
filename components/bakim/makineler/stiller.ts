@@ -1,6 +1,6 @@
 // Makine ekranları için ortak etiket/renk yardımcıları.
 
-import type { ChecklistTip, Kritiklik, BakimPeriyot, BulguDurum, GozlemSonuc, IsEmriDurum, MaddeDurum, MaddeTuru, OperatorDurum, OperatorKontrolDurum, RagDurum } from "@/lib/types/bakim";
+import type { ChecklistTip, Kritiklik, BakimPeriyot, BulguDurum, EslesenHazir, GozlemSonuc, IsEmriDurum, MaddeDurum, MaddeTuru, OperatorDurum, OperatorKontrolDurum, RagDurum, SopBakimTipi, SopRevDurum } from "@/lib/types/bakim";
 
 export const KRITIKLIK_META: Record<Kritiklik, { etiket: string; sinif: string; nokta: string }> = {
   dusuk: {
@@ -64,6 +64,26 @@ export const MADDE_DURUM_META: Record<MaddeDurum, { etiket: string; sinif: strin
   bulguVar: { etiket: "Bulgu Var", sinif: "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300", renk: "text-red-500", ikon: "solar:danger-triangle-bold" },
   uygulanmadi: { etiket: "Uygulanmadı", sinif: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300", renk: "text-amber-500", ikon: "solar:close-circle-bold" },
   uygulanamaz: { etiket: "Uygulanamaz", sinif: "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400", renk: "text-slate-400", ikon: "solar:forbidden-circle-bold" },
+};
+
+export const SOP_TIP_META: Record<SopBakimTipi, { etiket: string; sinif: string; renk: string }> = {
+  "3A": { etiket: "3A", sinif: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300", renk: "#3b82f6" },
+  "6A": { etiket: "6A", sinif: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300", renk: "#10b981" },
+  "12A": { etiket: "12A", sinif: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300", renk: "#f59e0b" },
+};
+export const SOP_TIP_UZUN: Record<SopBakimTipi, string> = { "3A": "3 Aylık SOP", "6A": "6 Aylık SOP", "12A": "12 Aylık SOP" };
+
+export const SOP_REV_DURUM_META: Record<SopRevDurum, { etiket: string; kisa: string; sinif: string; nokta: string; ikon: string; renk: string }> = {
+  aktif: { etiket: "Aktif", kisa: "Aktif", sinif: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300", nokta: "bg-emerald-500", ikon: "solar:check-circle-bold", renk: "#10b981" },
+  kullanimda: { etiket: "Kullanımda", kisa: "Kullanımda", sinif: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300", nokta: "bg-blue-500", ikon: "solar:refresh-circle-bold", renk: "#3b82f6" },
+  revizeBekliyor: { etiket: "Revize Bekliyor", kisa: "Revize", sinif: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300", nokta: "bg-amber-500", ikon: "solar:clock-circle-bold", renk: "#f59e0b" },
+  eksikFoto: { etiket: "Eksik Fotoğraf Zorunluluğu", kisa: "Eksik Foto", sinif: "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300", nokta: "bg-red-500", ikon: "solar:danger-triangle-bold", renk: "#ef4444" },
+};
+
+export const ESLESEN_HAZIR_META: Record<EslesenHazir, { etiket: string; sinif: string; ikon: string }> = {
+  hazir: { etiket: "Hazır", sinif: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300", ikon: "solar:check-circle-bold" },
+  revizeBekliyor: { etiket: "Revize Bekliyor", sinif: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300", ikon: "solar:clock-circle-bold" },
+  eksikFoto: { etiket: "Eksik Fotoğraf", sinif: "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300", ikon: "solar:danger-triangle-bold" },
 };
 
 export const CHECKLIST_TIP_META: Record<ChecklistTip, { etiket: string; sinif: string; ikon: string }> = {

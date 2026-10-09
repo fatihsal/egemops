@@ -288,6 +288,44 @@ export interface OperatorMadde {
   bulguId?: string;
 }
 
+// --------------------------- SOP & Form Yönetimi (sayfa) ---------------------------
+
+export type SopBakimTipi = "3A" | "6A" | "12A";
+export type SopRevDurum = "aktif" | "kullanimda" | "revizeBekliyor" | "eksikFoto";
+export type EslesenHazir = "hazir" | "revizeBekliyor" | "eksikFoto";
+
+export interface MakineSopSatir {
+  makineId: string;
+  makineAd: string;
+  ekipmanKodu: string;
+  bakimTipleri: SopBakimTipi[];
+  sonRevizyon: string; // "Rev.5"
+  sonKullanim: string;
+  durum: SopRevDurum;
+  sopId?: string; // varsa gerçek SOP şablonu
+}
+
+export interface SonRevizeSatir {
+  sopAd: string;
+  revNo: string;
+  tarih: string;
+  sorumlu: string;
+}
+
+export interface EslesenSopSatir {
+  makine: string;
+  bakimTipi: string;
+  planlananTarih: string;
+  eslesenSop: string;
+  hazir: EslesenHazir;
+}
+
+export interface SopSayfaAnaliz {
+  satirlar: MakineSopSatir[];
+  sonRevize: SonRevizeSatir[];
+  yaklasanEslesen: EslesenSopSatir[];
+}
+
 // --------------------------- Bakım Kayıtları (arşiv) ---------------------------
 
 export interface BakimKayit {
