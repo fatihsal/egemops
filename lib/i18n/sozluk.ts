@@ -701,6 +701,7 @@ export const EN: Record<string, string> = {
   "Madde": "Items",
   "Yeni Versiyon": "New Version",
   "Formu Doldur": "Fill Form",
+  "Doldur": "Fill",
   "Versiyon": "Version",
   "madde": "items",
   "dk": "min",

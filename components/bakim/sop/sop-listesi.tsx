@@ -234,13 +234,12 @@ export function SopListesi() {
                         </span>
                       </TableCell>
                       <TableCell>
-                        <div className="flex items-center justify-end gap-1">
-                          <button type="button" onClick={() => git(s)} aria-label={t("Görüntüle")} className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
-                            <Icon icon="solar:eye-linear" className="size-4" />
-                          </button>
-                          <button type="button" onClick={() => toast(t("Bu özellik yakında eklenecek."))} aria-label={t("Düzenle")} className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
-                            <Icon icon="solar:pen-linear" className="size-4" />
-                          </button>
+                        <div className="flex items-center justify-end gap-1.5">
+                          {s.sopId ? (
+                            <Button size="sm" className="h-7 gap-1 bg-blue-600 text-white text-xs shadow-sm hover:bg-blue-700" nativeButton={false} render={<Link href={`/bakim/sop/${s.sopId}/doldur`} />}>
+                              <Icon icon="solar:clipboard-check-bold" className="size-3.5" /> {t("Doldur")}
+                            </Button>
+                          ) : null}
                           <Button variant="outline" size="sm" className="h-7 bg-card text-xs" onClick={() => git(s)}>{t("Detay")}</Button>
                         </div>
                       </TableCell>
