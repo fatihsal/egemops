@@ -53,6 +53,13 @@ function gunKaldi(tarih: string | undefined, bugun: Date): number | null {
 function gunRenk(g: number): string {
   return g <= 7 ? "text-red-600 dark:text-red-400" : g <= 21 ? "text-amber-600 dark:text-amber-400" : "text-emerald-600 dark:text-emerald-400";
 }
+function gunPil(g: number): string {
+  return g <= 7
+    ? "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300"
+    : g <= 21
+      ? "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300"
+      : "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300";
+}
 
 export function MakineListesi() {
   const { data, isLoading } = useMakineler();
@@ -109,12 +116,12 @@ export function MakineListesi() {
   const bolumDagilim = bolumler.map((b, i) => ({ bolum: b, adet: data.filter((m) => m.bolum === b).length, renk: PALET[i % PALET.length] }));
 
   const kpi = [
-    { ik: "solar:posts-carousel-horizontal-bold-duotone", renk: "bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300", baslik: "Toplam Makine", deger: String(data.length) },
-    { ik: "solar:danger-triangle-bold-duotone", renk: "bg-red-50 text-red-600 dark:bg-red-950 dark:text-red-300", baslik: "Kritik Ekipman", deger: String(kritikSay) },
-    { ik: "solar:calendar-mark-bold-duotone", renk: "bg-amber-50 text-amber-600 dark:bg-amber-950 dark:text-amber-300", baslik: "Yaklaşan Bakım", deger: String(yaklasan.length) },
-    { ik: "solar:document-text-bold-duotone", renk: "bg-teal-50 text-teal-600 dark:bg-teal-950 dark:text-teal-300", baslik: "Aktif SOP", deger: String(aktifSop) },
-    { ik: "solar:pen-new-square-bold-duotone", renk: "bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300", baslik: "Bu Ay Güncellenen Kayıt", deger: "9" },
-    { ik: "solar:buildings-2-bold-duotone", renk: "bg-purple-50 text-purple-600 dark:bg-purple-950 dark:text-purple-300", baslik: "Bölüm Sayısı", deger: String(bolumSay) },
+    { ik: "solar:posts-carousel-horizontal-bold-duotone", g1: "#3b82f6", g2: "#2563eb", baslik: "Toplam Makine", deger: String(data.length) },
+    { ik: "solar:danger-triangle-bold-duotone", g1: "#f87171", g2: "#dc2626", baslik: "Kritik Ekipman", deger: String(kritikSay) },
+    { ik: "solar:calendar-mark-bold-duotone", g1: "#fbbf24", g2: "#d97706", baslik: "Yaklaşan Bakım", deger: String(yaklasan.length) },
+    { ik: "solar:document-text-bold-duotone", g1: "#2dd4bf", g2: "#0d9488", baslik: "Aktif SOP", deger: String(aktifSop) },
+    { ik: "solar:pen-new-square-bold-duotone", g1: "#818cf8", g2: "#4f46e5", baslik: "Bu Ay Güncellenen Kayıt", deger: "9" },
+    { ik: "solar:buildings-2-bold-duotone", g1: "#c084fc", g2: "#9333ea", baslik: "Bölüm Sayısı", deger: String(bolumSay) },
   ];
 
   const secGun = gunKaldi(secili.sonrakiBakim, bugun);
@@ -142,12 +149,13 @@ export function MakineListesi() {
       {/* KPI */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-6">
         {kpi.map((k) => (
-          <Card key={k.baslik}>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between gap-2">
-                <span className={cn("flex size-10 shrink-0 items-center justify-center rounded-lg", k.renk)}><Icon icon={k.ik} className="size-5" /></span>
-              </div>
-              <p className="mt-2 text-xs text-muted-foreground">{t(k.baslik)}</p>
+          <Card key={k.baslik} className="group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-18px_rgb(15_23_42/0.4)]">
+            <div className="pointer-events-none absolute -top-8 -right-8 size-24 rounded-full opacity-25 blur-2xl transition-opacity group-hover:opacity-40" style={{ background: k.g1 }} />
+            <CardContent className="relative p-4">
+              <span className="flex size-11 items-center justify-center rounded-xl text-white shadow-sm ring-1 ring-white/20" style={{ background: `linear-gradient(135deg, ${k.g1}, ${k.g2})`, boxShadow: `0 8px 20px -8px ${k.g2}` }}>
+                <Icon icon={k.ik} className="size-6" />
+              </span>
+              <p className="mt-3 truncate text-xs font-medium text-muted-foreground">{t(k.baslik)}</p>
               <p className="mt-0.5 font-heading text-2xl font-bold tracking-tight tabular-nums">{k.deger}</p>
             </CardContent>
           </Card>
@@ -159,7 +167,7 @@ export function MakineListesi() {
         {/* Ekipman Listesi */}
         <Card className="flex min-w-0 flex-col xl:col-span-2">
           <CardHeader className="flex-row flex-wrap items-center justify-between gap-3 space-y-0">
-            <div className="flex items-center gap-2"><Icon icon="solar:checklist-minimalistic-bold-duotone" className="size-5 text-blue-500" /><h3 className="font-heading text-base font-medium">{t("Ekipman Listesi")}</h3></div>
+            <div className="flex items-center gap-2"><span className="flex size-7 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-300"><Icon icon="solar:checklist-minimalistic-bold-duotone" className="size-4" /></span><h3 className="font-heading text-base font-medium">{t("Ekipman Listesi")}</h3></div>
             <div className="flex items-center gap-1 rounded-lg border bg-card p-0.5">
               {(["tablo", "kart"] as const).map((g) => (
                 <button key={g} type="button" onClick={() => setGorunum(g)} className={cn("flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-colors", gorunum === g ? "bg-blue-600 text-white" : "text-muted-foreground hover:text-foreground")}>
@@ -202,7 +210,7 @@ export function MakineListesi() {
                       const krit = KRITIKLIK_META[m.kritiklik];
                       const dm = MAKINE_DURUM_META[m.durum ?? "aktif"];
                       return (
-                        <TableRow key={m.id} onClick={() => setSeciliId(m.id)} className={cn("cursor-pointer", m.id === seciliId && "bg-blue-50/60 dark:bg-blue-950/40")}>
+                        <TableRow key={m.id} onClick={() => setSeciliId(m.id)} className={cn("cursor-pointer border-l-2 border-l-transparent transition-colors", m.id === seciliId ? "border-l-blue-500 bg-blue-50/70 dark:bg-blue-950/40" : "hover:bg-muted/50")}>
                           <TableCell>
                             <div className="flex items-center gap-2">
                               <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300"><Icon icon={BOLUM_IKON[m.bolum] ?? VARSAYILAN_IKON} className="size-4" /></span>
@@ -259,12 +267,12 @@ export function MakineListesi() {
           {/* Ekipman Detayı */}
           <Card>
             <CardHeader className="flex-row items-center justify-between gap-2 space-y-0">
-              <div className="flex items-center gap-2"><Icon icon="solar:cpu-bolt-bold-duotone" className="size-5 text-blue-500" /><h3 className="font-heading text-base font-medium">{t("Ekipman Detayı")}</h3></div>
+              <div className="flex items-center gap-2"><span className="flex size-7 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-300"><Icon icon="solar:cpu-bolt-bold-duotone" className="size-4" /></span><h3 className="font-heading text-base font-medium">{t("Ekipman Detayı")}</h3></div>
               <Button size="sm" className="h-7 gap-1 bg-blue-600 text-white text-xs shadow-sm hover:bg-blue-700" onClick={() => toast(t("Bu özellik yakında eklenecek."))}><Icon icon="solar:pen-linear" className="size-3.5" />{t("Düzenle")}</Button>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="flex items-center gap-3">
-                <span className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300"><Icon icon={BOLUM_IKON[secili.bolum] ?? VARSAYILAN_IKON} className="size-8" /></span>
+                <span className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow-md ring-1 ring-white/20"><Icon icon={BOLUM_IKON[secili.bolum] ?? VARSAYILAN_IKON} className="size-8" /></span>
                 <div><div className="flex items-center gap-2"><h4 className="font-heading text-lg font-bold">{secili.ad}</h4><span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium", secDurum.sinif)}><span className={cn("size-1.5 rounded-full", secDurum.nokta)} />{t(secDurum.etiket)}</span></div><p className="text-xs text-muted-foreground">{secili.kod}</p></div>
               </div>
               <dl className="space-y-1.5 text-sm">
@@ -314,10 +322,10 @@ export function MakineListesi() {
             <CardHeader className="flex-row items-center justify-between gap-2 space-y-0"><div className="flex items-center gap-2"><Icon icon="solar:calendar-bold-duotone" className="size-5 text-blue-500" /><h3 className="font-heading text-sm font-medium">{t("Yaklaşan Periyodik Bakımlar")}</h3></div><Link href="/bakim/takvim" className="text-xs font-medium text-blue-600 hover:underline dark:text-blue-400">{t("Tümünü Gör")}</Link></CardHeader>
             <CardContent className="space-y-2.5">
               {yaklasan.length === 0 ? <p className="py-4 text-center text-sm text-muted-foreground">{t("Yaklaşan bakım yok.")}</p> : yaklasan.map(({ m, gun }) => (
-                <div key={m.id} className="flex items-center gap-2.5">
-                  <Icon icon="solar:clock-circle-bold" className={cn("size-4 shrink-0", gunRenk(gun))} />
+                <div key={m.id} className="flex items-center gap-2.5 rounded-lg p-1.5 transition-colors hover:bg-muted/50">
+                  <span className={cn("flex size-8 shrink-0 items-center justify-center rounded-lg", gunPil(gun))}><Icon icon="solar:clock-circle-bold" className="size-4" /></span>
                   <div className="min-w-0 flex-1"><p className="truncate text-sm font-medium">{m.ad}</p><p className="text-xs text-muted-foreground tabular-nums">{m.sonrakiBakim}</p></div>
-                  <span className={cn("shrink-0 text-xs font-semibold tabular-nums", gunRenk(gun))}>{gun} {t("gün kaldı")}</span>
+                  <span className={cn("shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold tabular-nums", gunPil(gun))}>{gun} {t("gün kaldı")}</span>
                 </div>
               ))}
             </CardContent>
