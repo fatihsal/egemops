@@ -103,6 +103,14 @@ export function SopListesi() {
   const donut = (["3A", "6A", "12A"] as SopBakimTipi[]).map((tp) => ({ tp, ad: SOP_TIP_UZUN[tp], adet: tipSay(tp), renk: SOP_TIP_META[tp].renk }));
   const durumlar = (["aktif", "kullanimda", "revizeBekliyor", "eksikFoto"] as SopRevDurum[]).map((d) => ({ d, adet: durumSay(d) }));
 
+  // SOP sağlık özeti
+  const guncelSop = durumSay("aktif") + durumSay("kullanimda");
+  const guncellemeGereken = durumSay("revizeBekliyor") + durumSay("eksikFoto");
+  const guncellikOrani = satirlar.length ? Math.round((guncelSop / satirlar.length) * 100) : 0;
+  const ortRevizyon = satirlar.length
+    ? satirlar.reduce((a, s) => a + (Number.parseInt(s.sonRevizyon.replace(/\D/g, ""), 10) || 0), 0) / satirlar.length
+    : 0;
+
   const toplamSayfa = Math.max(1, Math.ceil(filtreli.length / BOYUT));
   const geciliSayfa = Math.min(sayfa, toplamSayfa);
   const bas = (geciliSayfa - 1) * BOYUT;
@@ -314,6 +322,45 @@ export function SopListesi() {
                   </div>
                 );
               })}
+            </CardContent>
+          </Card>
+
+          {/* SOP Sağlık Durumu */}
+          <Card>
+            <CardHeader className="flex-row items-center gap-2 space-y-0">
+              <Icon icon="solar:shield-check-bold-duotone" className="size-5 text-emerald-500" />
+              <h3 className="font-heading text-base font-medium">{t("SOP Sağlık Durumu")}</h3>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">{t("Güncellik Oranı")}</span>
+                  <span className="font-heading text-lg font-bold tabular-nums">%{guncellikOrani}</span>
+                </div>
+                <span className="block h-2 overflow-hidden rounded-full bg-muted">
+                  <span className="block h-full rounded-full bg-emerald-500" style={{ width: `${guncellikOrani}%` }} />
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="rounded-lg border p-3">
+                  <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Icon icon="solar:check-circle-bold" className="size-3.5 text-emerald-500" /> {t("Güncel SOP")}
+                  </p>
+                  <p className="mt-1 font-heading text-xl font-bold tabular-nums">{guncelSop}</p>
+                </div>
+                <div className="rounded-lg border p-3">
+                  <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Icon icon="solar:danger-triangle-bold" className="size-3.5 text-amber-500" /> {t("Güncelleme Gereken")}
+                  </p>
+                  <p className="mt-1 font-heading text-xl font-bold tabular-nums">{guncellemeGereken}</p>
+                </div>
+              </div>
+              <div className="flex items-center justify-between rounded-lg bg-muted/50 p-3 text-sm">
+                <span className="inline-flex items-center gap-2 text-muted-foreground">
+                  <Icon icon="solar:bookmark-bold-duotone" className="size-4 text-blue-500" /> {t("Ortalama Revizyon")}
+                </span>
+                <span className="font-semibold tabular-nums">Rev {ortRevizyon.toFixed(1)}</span>
+              </div>
             </CardContent>
           </Card>
         </div>
