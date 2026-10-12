@@ -4,8 +4,11 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Icon } from "@iconify/react";
+import { toast } from "sonner";
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,7 +19,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Table,
   TableBody,
   TableCell,
   TableHead,
@@ -27,8 +29,9 @@ import { BosDurum } from "@/components/common/bos-durum";
 import { useMakineler } from "@/lib/queries/bakim";
 import { useDil } from "@/components/providers/dil-provider";
 import { cn } from "@/lib/utils";
-import { KRITIKLIK_META, uyumRenk } from "@/components/bakim/makineler/stiller";
-import type { Kritiklik, Makine } from "@/lib/types/bakim";
+import { KRITIKLIK_META, MAKINE_DURUM_META } from "@/components/bakim/makineler/stiller";
+import { tarihAyristir } from "@/lib/bakim/tarih";
+import type { Kritiklik, Makine, MakineDurum } from "@/lib/types/bakim";
 
 const BOLUM_IKON: Record<string, string> = {
   Laminasyon: "solar:layers-bold-duotone",
@@ -40,275 +43,288 @@ const BOLUM_IKON: Record<string, string> = {
   Sevkiyat: "solar:box-bold-duotone",
 };
 const VARSAYILAN_IKON = "solar:cpu-bolt-bold-duotone";
+const PALET = ["#3b82f6", "#10b981", "#f59e0b", "#8b5cf6", "#ef4444", "#14b8a6", "#64748b"];
+const grafikTooltip = { background: "var(--popover)", border: "1px solid var(--border)", borderRadius: "0.5rem", fontSize: "12px", color: "var(--popover-foreground)" };
 
-const KRITIKLIK_SIRA: Record<Kritiklik, number> = { kritik: 0, yuksek: 1, orta: 2, dusuk: 3 };
-
-function Ozet({ makineler }: { makineler: Makine[] }) {
-  const { t } = useDil();
-  const toplam = makineler.length;
-  const kritikSayi = makineler.filter((m) => m.kritiklik === "kritik" || m.kritiklik === "yuksek").length;
-  const acikIsEmri = makineler.reduce((s, m) => s + m.acikIsEmri, 0);
-  const ortUyum = toplam ? Math.round(makineler.reduce((s, m) => s + m.uyumOrani, 0) / toplam) : 0;
-
-  const kartlar = [
-    { ik: "solar:cpu-bolt-bold-duotone", renk: "bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300", baslik: "Toplam Makine", deger: String(toplam) },
-    { ik: "solar:danger-triangle-bold-duotone", renk: "bg-orange-50 text-orange-600 dark:bg-orange-950 dark:text-orange-300", baslik: "Kritik / Yüksek", deger: String(kritikSayi) },
-    { ik: "solar:clipboard-list-bold-duotone", renk: "bg-amber-50 text-amber-600 dark:bg-amber-950 dark:text-amber-300", baslik: "Açık İş Emri", deger: String(acikIsEmri) },
-    { ik: "solar:shield-check-bold-duotone", renk: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-300", baslik: "Ortalama Uyum", deger: `%${ortUyum}` },
-  ];
-
-  return (
-    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-      {kartlar.map((k) => (
-        <Card key={k.baslik}>
-          <CardContent className="flex items-center gap-3 p-4">
-            <span className={cn("flex size-10 shrink-0 items-center justify-center rounded-lg", k.renk)}>
-              <Icon icon={k.ik} className="size-5" />
-            </span>
-            <div className="min-w-0">
-              <p className="truncate text-xs text-muted-foreground">{t(k.baslik)}</p>
-              <p className="font-heading text-xl font-bold tracking-tight tabular-nums">{k.deger}</p>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  );
+function gunKaldi(tarih: string | undefined, bugun: Date): number | null {
+  if (!tarih) return null;
+  return Math.round((tarihAyristir(tarih).getTime() - bugun.getTime()) / 86400000);
 }
-
-function MakineKarti({ m }: { m: Makine }) {
-  const { t } = useDil();
-  const krit = KRITIKLIK_META[m.kritiklik];
-  const uyum = uyumRenk(m.uyumOrani);
-  return (
-    <Link
-      href={`/bakim/makineler/${m.id}`}
-      className="group flex flex-col rounded-xl border bg-card p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md dark:hover:border-blue-800"
-    >
-      <div className="flex items-start justify-between gap-2">
-        <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300">
-          <Icon icon={BOLUM_IKON[m.bolum] ?? VARSAYILAN_IKON} className="size-6" />
-        </span>
-        <span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium", krit.sinif)}>
-          <span className={cn("size-1.5 rounded-full", krit.nokta)} />
-          {t(krit.etiket)}
-        </span>
-      </div>
-
-      <h3 className="mt-3 truncate font-heading text-base font-semibold tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400">
-        {m.ad}
-      </h3>
-      <p className="text-xs text-muted-foreground">
-        {m.kod} · {t(m.bolum)}
-      </p>
-
-      <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1.5 border-t pt-3 text-xs">
-        <span className="text-muted-foreground">{t("Son Bakım")}</span>
-        <span className="text-right font-medium tabular-nums">{m.sonBakim ?? "—"}</span>
-        <span className="text-muted-foreground">{t("Sonraki Bakım")}</span>
-        <span className="text-right font-medium tabular-nums">{m.sonrakiBakim ?? "—"}</span>
-      </div>
-
-      <div className="mt-3 flex items-center justify-between gap-2">
-        <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
-          <Icon icon="solar:clipboard-list-linear" className="size-3.5" />
-          {m.acikIsEmri > 0 ? (
-            <span className="font-medium text-amber-600 dark:text-amber-400">
-              {m.acikIsEmri} {t("açık iş emri")}
-            </span>
-          ) : (
-            t("açık iş emri yok")
-          )}
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span className="h-1.5 w-14 overflow-hidden rounded-full bg-muted">
-            <span className={cn("block h-full rounded-full", uyum.bar)} style={{ width: `${m.uyumOrani}%` }} />
-          </span>
-          <span className={cn("text-[11px] font-semibold tabular-nums", uyum.metin)}>%{m.uyumOrani}</span>
-        </span>
-      </div>
-    </Link>
-  );
+function gunRenk(g: number): string {
+  return g <= 7 ? "text-red-600 dark:text-red-400" : g <= 21 ? "text-amber-600 dark:text-amber-400" : "text-emerald-600 dark:text-emerald-400";
 }
 
 export function MakineListesi() {
   const { data, isLoading } = useMakineler();
   const { t } = useDil();
   const router = useRouter();
+  const bugun = React.useMemo(() => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }, []);
 
   const [arama, setArama] = React.useState("");
   const [bolum, setBolum] = React.useState("hepsi");
+  const [grup, setGrup] = React.useState("hepsi");
   const [kritiklik, setKritiklik] = React.useState("hepsi");
-  const [gorunum, setGorunum] = React.useState<"kart" | "tablo">("kart");
+  const [durum, setDurum] = React.useState("hepsi");
+  const [gorunum, setGorunum] = React.useState<"tablo" | "kart">("tablo");
+  const [seciliId, setSeciliId] = React.useState<string | null>(null);
 
-  const bolumler = React.useMemo(
-    () => Array.from(new Set((data ?? []).map((m) => m.bolum))).sort(),
-    [data],
-  );
+  const bolumler = React.useMemo(() => Array.from(new Set((data ?? []).map((m) => m.bolum))).sort(), [data]);
+  const gruplar = React.useMemo(() => Array.from(new Set((data ?? []).map((m) => m.grup))).sort(), [data]);
 
   const filtreli = React.useMemo(() => {
     const q = arama.trim().toLocaleLowerCase("tr");
-    return (data ?? [])
-      .filter((m) => {
-        if (bolum !== "hepsi" && m.bolum !== bolum) return false;
-        if (kritiklik !== "hepsi" && m.kritiklik !== kritiklik) return false;
-        if (q) {
-          const havuz = `${m.ad} ${m.kod} ${m.marka ?? ""} ${m.model ?? ""} ${m.seriNo ?? ""}`.toLocaleLowerCase("tr");
-          if (!havuz.includes(q)) return false;
-        }
-        return true;
-      })
-      .sort((a, b) => KRITIKLIK_SIRA[a.kritiklik] - KRITIKLIK_SIRA[b.kritiklik] || a.ad.localeCompare(b.ad, "tr"));
-  }, [data, arama, bolum, kritiklik]);
+    return (data ?? []).filter((m) => {
+      if (bolum !== "hepsi" && m.bolum !== bolum) return false;
+      if (grup !== "hepsi" && m.grup !== grup) return false;
+      if (kritiklik !== "hepsi" && m.kritiklik !== kritiklik) return false;
+      if (durum !== "hepsi" && (m.durum ?? "aktif") !== durum) return false;
+      if (q && !`${m.ad} ${m.kod} ${m.seriNo ?? ""}`.toLocaleLowerCase("tr").includes(q)) return false;
+      return true;
+    });
+  }, [data, arama, bolum, grup, kritiklik, durum]);
+
+  React.useEffect(() => { if (data && data.length && !seciliId) setSeciliId(data[0].id); }, [data, seciliId]);
 
   if (isLoading || !data) {
     return (
-      <div className="space-y-6">
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-20 w-full" />)}
-        </div>
-        <Skeleton className="h-12 w-full" />
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-48 w-full" />)}
-        </div>
+      <div className="space-y-5">
+        <Skeleton className="h-40 w-full" />
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-6">{Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-24 w-full" />)}</div>
+        <div className="grid gap-5 xl:grid-cols-3"><Skeleton className="h-96 w-full xl:col-span-2" /><Skeleton className="h-96 w-full" /></div>
       </div>
     );
   }
 
+  const secili = data.find((m) => m.id === seciliId) ?? data[0];
+  const kritikSay = data.filter((m) => m.kritiklik === "yuksek" || m.kritiklik === "kritik").length;
+  const aktifSop = data.reduce((a, m) => a + (m.sopSayi ?? 0), 0);
+  const bolumSay = bolumler.length;
+
+  const yaklasan = data
+    .map((m) => ({ m, gun: gunKaldi(m.sonrakiBakim, bugun) }))
+    .filter((x): x is { m: Makine; gun: number } => x.gun !== null && x.gun >= 0 && x.gun <= 60)
+    .sort((a, b) => a.gun - b.gun)
+    .slice(0, 5);
+
+  const bolumDagilim = bolumler.map((b, i) => ({ bolum: b, adet: data.filter((m) => m.bolum === b).length, renk: PALET[i % PALET.length] }));
+
+  const kpi = [
+    { ik: "solar:posts-carousel-horizontal-bold-duotone", renk: "bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300", baslik: "Toplam Makine", deger: String(data.length) },
+    { ik: "solar:danger-triangle-bold-duotone", renk: "bg-red-50 text-red-600 dark:bg-red-950 dark:text-red-300", baslik: "Kritik Ekipman", deger: String(kritikSay) },
+    { ik: "solar:calendar-mark-bold-duotone", renk: "bg-amber-50 text-amber-600 dark:bg-amber-950 dark:text-amber-300", baslik: "Yaklaşan Bakım", deger: String(yaklasan.length) },
+    { ik: "solar:document-text-bold-duotone", renk: "bg-teal-50 text-teal-600 dark:bg-teal-950 dark:text-teal-300", baslik: "Aktif SOP", deger: String(aktifSop) },
+    { ik: "solar:pen-new-square-bold-duotone", renk: "bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300", baslik: "Bu Ay Güncellenen Kayıt", deger: "9" },
+    { ik: "solar:buildings-2-bold-duotone", renk: "bg-purple-50 text-purple-600 dark:bg-purple-950 dark:text-purple-300", baslik: "Bölüm Sayısı", deger: String(bolumSay) },
+  ];
+
+  const secGun = gunKaldi(secili.sonrakiBakim, bugun);
+  const secKrit = KRITIKLIK_META[secili.kritiklik];
+  const secDurum = MAKINE_DURUM_META[secili.durum ?? "aktif"];
+
   return (
-    <div className="space-y-6">
-      <Ozet makineler={data} />
-
-      {/* Araç çubuğu */}
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="relative min-w-[220px] flex-1">
-          <Icon icon="solar:magnifer-linear" className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={arama}
-            onChange={(e) => setArama(e.target.value)}
-            placeholder={t("Makine adı, kod, marka veya seri no ara…")}
-            className="h-9 bg-card pl-9"
-          />
-        </div>
-
-        <Select value={bolum} onValueChange={(v) => setBolum(v ?? "hepsi")}>
-          <SelectTrigger size="sm" className="w-[160px] bg-card">
-            <SelectValue placeholder={t("Bölüm")} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="hepsi">{t("Tüm Bölümler")}</SelectItem>
-            {bolumler.map((b) => (
-              <SelectItem key={b} value={b}>{t(b)}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <Select value={kritiklik} onValueChange={(v) => setKritiklik(v ?? "hepsi")}>
-          <SelectTrigger size="sm" className="w-[150px] bg-card">
-            <SelectValue placeholder={t("Kritiklik")} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="hepsi">{t("Tüm Kritiklikler")}</SelectItem>
-            {(["kritik", "yuksek", "orta", "dusuk"] as Kritiklik[]).map((k) => (
-              <SelectItem key={k} value={k}>{t(KRITIKLIK_META[k].etiket)}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        <div className="ml-auto flex items-center gap-1 rounded-lg border bg-card p-0.5">
-          {(["kart", "tablo"] as const).map((g) => (
-            <button
-              key={g}
-              type="button"
-              onClick={() => setGorunum(g)}
-              aria-label={t(g === "kart" ? "Kart görünümü" : "Tablo görünümü")}
-              className={cn(
-                "flex size-7 items-center justify-center rounded-md transition-colors",
-                gorunum === g ? "bg-blue-600 text-white" : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              <Icon icon={g === "kart" ? "solar:widget-5-bold" : "solar:list-bold"} className="size-4" />
-            </button>
-          ))}
+    <div className="space-y-5">
+      {/* HERO */}
+      <div className="relative overflow-hidden rounded-2xl border">
+        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/login-bakim.png')" }} />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/85 via-slate-900/55 to-slate-900/20" />
+        <div className="relative flex items-start justify-between gap-4 p-6 sm:p-8">
+          <div className="max-w-lg text-white">
+            <h2 className="font-heading text-xl leading-snug font-bold sm:text-2xl">{t("Ekipmanlarınızı yönetin, bakım geçmişini izleyin ve periyodik planlamayı güçlendirin.")}</h2>
+            <p className="mt-2 text-sm text-white/80">{t("Güvenilir ekipmanlar, kesintisiz üretim, sürdürülebilir başarı.")}</p>
+          </div>
+          <div className="hidden shrink-0 items-center gap-2 rounded-xl bg-white/90 px-3 py-2 text-xs font-medium text-slate-700 shadow-sm backdrop-blur sm:flex dark:bg-slate-900/80 dark:text-slate-200">
+            <Icon icon="solar:leaf-bold-duotone" className="size-5 text-emerald-500" />
+            <span className="leading-tight">{t("Daha iyi ambalajlar")}<br />{t("Daha temiz bir gelecek")}</span>
+          </div>
         </div>
       </div>
 
-      {/* Sonuç sayısı */}
-      <p className="-mt-2 text-xs text-muted-foreground">
-        <span className="tabular-nums">{filtreli.length}</span> / {data.length} {t("makine")}
-      </p>
+      {/* KPI */}
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-6">
+        {kpi.map((k) => (
+          <Card key={k.baslik}>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between gap-2">
+                <span className={cn("flex size-10 shrink-0 items-center justify-center rounded-lg", k.renk)}><Icon icon={k.ik} className="size-5" /></span>
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">{t(k.baslik)}</p>
+              <p className="mt-0.5 font-heading text-2xl font-bold tracking-tight tabular-nums">{k.deger}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
-      {filtreli.length === 0 ? (
-        <BosDurum baslik={t("Makine bulunamadı")} aciklama={t("Arama veya filtre kriterlerine uygun makine yok.")} />
-      ) : gorunum === "kart" ? (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {filtreli.map((m) => <MakineKarti key={m.id} m={m} />)}
-        </div>
-      ) : (
-        <Card>
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{t("Makine / Ekipman")}</TableHead>
-                  <TableHead>{t("Bölüm")}</TableHead>
-                  <TableHead>{t("Kritiklik")}</TableHead>
-                  <TableHead className="text-center">{t("Son Bakım")}</TableHead>
-                  <TableHead className="text-center">{t("Sonraki Bakım")}</TableHead>
-                  <TableHead className="text-center">{t("Açık İş Emri")}</TableHead>
-                  <TableHead className="text-right">{t("Uyum")}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+      {/* Tablo + sağ panel */}
+      <div className="grid gap-5 xl:grid-cols-3">
+        {/* Ekipman Listesi */}
+        <Card className="flex min-w-0 flex-col xl:col-span-2">
+          <CardHeader className="flex-row flex-wrap items-center justify-between gap-3 space-y-0">
+            <div className="flex items-center gap-2"><Icon icon="solar:checklist-minimalistic-bold-duotone" className="size-5 text-blue-500" /><h3 className="font-heading text-base font-medium">{t("Ekipman Listesi")}</h3></div>
+            <div className="flex items-center gap-1 rounded-lg border bg-card p-0.5">
+              {(["tablo", "kart"] as const).map((g) => (
+                <button key={g} type="button" onClick={() => setGorunum(g)} className={cn("flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-colors", gorunum === g ? "bg-blue-600 text-white" : "text-muted-foreground hover:text-foreground")}>
+                  <Icon icon={g === "tablo" ? "solar:list-bold" : "solar:widget-5-bold"} className="size-3.5" />{t(g === "tablo" ? "Tablo" : "Kart")}
+                </button>
+              ))}
+            </div>
+          </CardHeader>
+          <CardContent className="flex flex-1 flex-col gap-3 p-3">
+            {/* Filtreler */}
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="relative min-w-[180px] flex-1">
+                <Icon icon="solar:magnifer-linear" className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+                <Input value={arama} onChange={(e) => setArama(e.target.value)} placeholder={t("Makine adı, kod veya seri no ara…")} className="h-8 bg-card pl-9 text-sm" />
+              </div>
+              <Select value={bolum} onValueChange={(v) => setBolum(v ?? "hepsi")}><SelectTrigger size="sm" className="w-[130px] bg-card"><SelectValue placeholder={t("Bölüm")} /></SelectTrigger><SelectContent><SelectItem value="hepsi">{t("Tüm Bölümler")}</SelectItem>{bolumler.map((b) => <SelectItem key={b} value={b}>{t(b)}</SelectItem>)}</SelectContent></Select>
+              <Select value={grup} onValueChange={(v) => setGrup(v ?? "hepsi")}><SelectTrigger size="sm" className="w-[150px] bg-card"><SelectValue placeholder={t("Makine Grubu")} /></SelectTrigger><SelectContent><SelectItem value="hepsi">{t("Tüm Makine Grupları")}</SelectItem>{gruplar.map((g) => <SelectItem key={g} value={g}>{t(g)}</SelectItem>)}</SelectContent></Select>
+              <Select value={kritiklik} onValueChange={(v) => setKritiklik(v ?? "hepsi")}><SelectTrigger size="sm" className="w-[120px] bg-card"><SelectValue placeholder={t("Kritiklik")} /></SelectTrigger><SelectContent><SelectItem value="hepsi">{t("Tüm Kritiklik")}</SelectItem>{(["kritik", "yuksek", "orta", "dusuk"] as Kritiklik[]).map((k) => <SelectItem key={k} value={k}>{t(KRITIKLIK_META[k].etiket)}</SelectItem>)}</SelectContent></Select>
+              <Select value={durum} onValueChange={(v) => setDurum(v ?? "hepsi")}><SelectTrigger size="sm" className="w-[140px] bg-card"><SelectValue placeholder={t("Durum")} /></SelectTrigger><SelectContent><SelectItem value="hepsi">{t("Tüm Bakım Durumu")}</SelectItem>{(["aktif", "planli", "izlemede"] as MakineDurum[]).map((d) => <SelectItem key={d} value={d}>{t(MAKINE_DURUM_META[d].etiket)}</SelectItem>)}</SelectContent></Select>
+            </div>
+
+            {filtreli.length === 0 ? (
+              <BosDurum baslik={t("Makine bulunamadı")} aciklama={t("Arama veya filtre kriterlerine uygun makine yok.")} />
+            ) : gorunum === "tablo" ? (
+              <div className="flex-1 overflow-x-auto">
+                <table className="w-full caption-bottom text-sm">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>{t("Makine Adı")}</TableHead>
+                      <TableHead>{t("Kod")}</TableHead>
+                      <TableHead>{t("Bölüm")}</TableHead>
+                      <TableHead>{t("Kritiklik")}</TableHead>
+                      <TableHead className="text-center">{t("Sonraki Bakım")}</TableHead>
+                      <TableHead className="text-center">{t("Plan")}</TableHead>
+                      <TableHead className="text-center">{t("SOP")}</TableHead>
+                      <TableHead>{t("Durum")}</TableHead>
+                      <TableHead className="text-right">{t("İşlem")}</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filtreli.map((m) => {
+                      const krit = KRITIKLIK_META[m.kritiklik];
+                      const dm = MAKINE_DURUM_META[m.durum ?? "aktif"];
+                      return (
+                        <TableRow key={m.id} onClick={() => setSeciliId(m.id)} className={cn("cursor-pointer", m.id === seciliId && "bg-blue-50/60 dark:bg-blue-950/40")}>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300"><Icon icon={BOLUM_IKON[m.bolum] ?? VARSAYILAN_IKON} className="size-4" /></span>
+                              <span className="font-medium whitespace-nowrap">{m.ad}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="tabular-nums whitespace-nowrap text-muted-foreground">{m.kod}</TableCell>
+                          <TableCell className="whitespace-nowrap text-muted-foreground">{t(m.bolum)}</TableCell>
+                          <TableCell><span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium", krit.sinif)}><span className={cn("size-1.5 rounded-full", krit.nokta)} />{t(krit.etiket)}</span></TableCell>
+                          <TableCell className="text-center tabular-nums whitespace-nowrap">{m.sonrakiBakim ?? "—"}</TableCell>
+                          <TableCell className="text-center">{m.aktifPlanKodu ? <span className="text-xs font-medium text-blue-600 dark:text-blue-400">{t("Var")}</span> : <span className="text-xs text-muted-foreground">{t("Yok")}</span>}</TableCell>
+                          <TableCell className="text-center tabular-nums">{m.sopSayi ?? 0}</TableCell>
+                          <TableCell><span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium whitespace-nowrap", dm.sinif)}><span className={cn("size-1.5 rounded-full", dm.nokta)} />{t(dm.etiket)}</span></TableCell>
+                          <TableCell>
+                            <div className="flex items-center justify-end gap-0.5">
+                              <button type="button" onClick={(e) => { e.stopPropagation(); setSeciliId(m.id); }} aria-label={t("Görüntüle")} className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"><Icon icon="solar:eye-linear" className="size-4" /></button>
+                              <button type="button" onClick={(e) => { e.stopPropagation(); router.push(`/bakim/makineler/${m.id}`); }} aria-label={t("Detay")} className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"><Icon icon="solar:arrow-right-up-linear" className="size-4" /></button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </table>
+              </div>
+            ) : (
+              <div className="grid flex-1 grid-cols-1 gap-3 sm:grid-cols-2">
                 {filtreli.map((m) => {
                   const krit = KRITIKLIK_META[m.kritiklik];
-                  const uyum = uyumRenk(m.uyumOrani);
+                  const dm = MAKINE_DURUM_META[m.durum ?? "aktif"];
                   return (
-                    <TableRow
-                      key={m.id}
-                      onClick={() => router.push(`/bakim/makineler/${m.id}`)}
-                      className="cursor-pointer"
-                    >
-                      <TableCell>
-                        <div className="flex items-center gap-2.5">
-                          <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300">
-                            <Icon icon={BOLUM_IKON[m.bolum] ?? VARSAYILAN_IKON} className="size-4" />
-                          </span>
-                          <div className="min-w-0">
-                            <div className="truncate font-medium">{m.ad}</div>
-                            <div className="text-xs text-muted-foreground">{m.kod}</div>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">{t(m.bolum)}</TableCell>
-                      <TableCell>
-                        <span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium", krit.sinif)}>
-                          <span className={cn("size-1.5 rounded-full", krit.nokta)} />
-                          {t(krit.etiket)}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-center tabular-nums">{m.sonBakim ?? "—"}</TableCell>
-                      <TableCell className="text-center tabular-nums">{m.sonrakiBakim ?? "—"}</TableCell>
-                      <TableCell className="text-center">
-                        {m.acikIsEmri > 0 ? (
-                          <span className="inline-flex items-center justify-center rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-700 tabular-nums dark:bg-amber-950 dark:text-amber-300">
-                            {m.acikIsEmri}
-                          </span>
-                        ) : (
-                          <span className="text-muted-foreground">—</span>
-                        )}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <span className={cn("font-semibold tabular-nums", uyum.metin)}>%{m.uyumOrani}</span>
-                      </TableCell>
-                    </TableRow>
+                    <button key={m.id} type="button" onClick={() => setSeciliId(m.id)} className={cn("flex flex-col gap-2 rounded-xl border p-3 text-left transition-colors", m.id === seciliId ? "border-blue-500 bg-blue-50/60 dark:bg-blue-950/40" : "hover:border-blue-300 dark:hover:border-blue-800")}>
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2"><span className="flex size-8 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300"><Icon icon={BOLUM_IKON[m.bolum] ?? VARSAYILAN_IKON} className="size-4" /></span><span><span className="block font-medium">{m.ad}</span><span className="block text-[11px] text-muted-foreground">{m.kod}</span></span></div>
+                        <span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium", dm.sinif)}><span className={cn("size-1.5 rounded-full", dm.nokta)} />{t(dm.etiket)}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-xs text-muted-foreground"><span className={cn("inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 font-medium", krit.sinif)}>{t(krit.etiket)}</span><span>{t("Sonraki")}: {m.sonrakiBakim ?? "—"}</span></div>
+                    </button>
                   );
                 })}
-              </TableBody>
-            </Table>
+              </div>
+            )}
+
+            <div className="flex flex-wrap items-center justify-between gap-2 border-t pt-3 text-xs text-muted-foreground">
+              <span><span className="tabular-nums">{filtreli.length}</span> {t("kayıttan 1-")}{filtreli.length} {t("arası görüntüleniyor")}</span>
+              <span className="inline-flex items-center gap-1 rounded-md border bg-card px-2 py-1 font-medium">1</span>
+            </div>
           </CardContent>
         </Card>
-      )}
+
+        {/* Sağ panel */}
+        <div className="space-y-5">
+          {/* Ekipman Detayı */}
+          <Card>
+            <CardHeader className="flex-row items-center justify-between gap-2 space-y-0">
+              <div className="flex items-center gap-2"><Icon icon="solar:cpu-bolt-bold-duotone" className="size-5 text-blue-500" /><h3 className="font-heading text-base font-medium">{t("Ekipman Detayı")}</h3></div>
+              <Button size="sm" className="h-7 gap-1 bg-blue-600 text-white text-xs shadow-sm hover:bg-blue-700" onClick={() => toast(t("Bu özellik yakında eklenecek."))}><Icon icon="solar:pen-linear" className="size-3.5" />{t("Düzenle")}</Button>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex items-center gap-3">
+                <span className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300"><Icon icon={BOLUM_IKON[secili.bolum] ?? VARSAYILAN_IKON} className="size-8" /></span>
+                <div><div className="flex items-center gap-2"><h4 className="font-heading text-lg font-bold">{secili.ad}</h4><span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium", secDurum.sinif)}><span className={cn("size-1.5 rounded-full", secDurum.nokta)} />{t(secDurum.etiket)}</span></div><p className="text-xs text-muted-foreground">{secili.kod}</p></div>
+              </div>
+              <dl className="space-y-1.5 text-sm">
+                {[
+                  { e: "Seri No", d: secili.seriNo ?? "—" },
+                  { e: "Marka / Model", d: `${secili.marka ?? ""} ${secili.model ?? ""}`.trim() || "—" },
+                  { e: "Bölüm", d: t(secili.bolum) },
+                  { e: "Makine Grubu", d: t(secili.grup) },
+                ].map((r) => (<div key={r.e} className="flex items-center justify-between gap-2 border-b border-dashed pb-1.5"><dt className="text-muted-foreground">{t(r.e)}</dt><dd className="text-right font-medium">{r.d}</dd></div>))}
+                <div className="flex items-center justify-between gap-2 border-b border-dashed pb-1.5"><dt className="text-muted-foreground">{t("Kritiklik")}</dt><dd><span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium", secKrit.sinif)}><span className={cn("size-1.5 rounded-full", secKrit.nokta)} />{t(secKrit.etiket)}</span></dd></div>
+                <div className="flex items-center justify-between gap-2 border-b border-dashed pb-1.5"><dt className="text-muted-foreground">{t("Sonraki Bakım")}</dt><dd className="font-medium tabular-nums">{secili.sonrakiBakim ?? "—"}{secGun !== null && secGun >= 0 ? <span className={cn("ml-1 text-xs", gunRenk(secGun))}>({secGun} {t("gün kaldı")})</span> : null}</dd></div>
+                <div className="flex items-center justify-between gap-2 border-b border-dashed pb-1.5"><dt className="text-muted-foreground">{t("Aktif Plan")}</dt><dd className="font-medium">{secili.aktifPlanKodu ? <span className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400"><Icon icon="solar:clipboard-list-linear" className="size-3.5" />{t("Var")} ({secili.aktifPlanKodu})</span> : t("Yok")}</dd></div>
+                <div className="flex items-center justify-between gap-2"><dt className="text-muted-foreground">{t("Aktif SOP")}</dt><dd className="font-medium tabular-nums">{secili.sopSayi ?? 0} {t("adet")}</dd></div>
+              </dl>
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <Button variant="outline" size="sm" className="gap-1.5 bg-card" nativeButton={false} render={<Link href={`/bakim/makineler/${secili.id}`} />}><Icon icon="solar:cpu-bolt-linear" className="size-4" />{t("Makine Detayı")}</Button>
+                <Button variant="outline" size="sm" className="gap-1.5 bg-card" nativeButton={false} render={<Link href="/bakim/kayitlar" />}><Icon icon="solar:history-linear" className="size-4" />{t("Bakım Geçmişi")}</Button>
+                <Button variant="outline" size="sm" className="gap-1.5 bg-card" nativeButton={false} render={<Link href="/bakim/sop" />}><Icon icon="solar:clipboard-list-linear" className="size-4" />{t("SOP Listesi")}</Button>
+                <Button variant="outline" size="sm" className="gap-1.5 bg-card" nativeButton={false} render={<Link href="/bakim/dokumanlar" />}><Icon icon="solar:folder-linear" className="size-4" />{t("Dokümanlar")}</Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Bölüm Dağılımı */}
+          <Card>
+            <CardHeader className="flex-row items-center gap-2 space-y-0"><Icon icon="solar:pie-chart-2-bold-duotone" className="size-5 text-blue-500" /><h3 className="font-heading text-sm font-medium">{t("Bölümlere Göre Ekipman Dağılımı")}</h3></CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-4">
+                <div className="relative h-32 w-32 shrink-0">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Tooltip contentStyle={grafikTooltip} formatter={(v, n) => [`${v}`, t(String(n))]} />
+                      <Pie data={bolumDagilim} dataKey="adet" nameKey="bolum" innerRadius={40} outerRadius={60} paddingAngle={2} isAnimationActive={false}>{bolumDagilim.map((d) => <Cell key={d.bolum} fill={d.renk} />)}</Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center"><span className="font-heading text-xl font-bold tabular-nums">{data.length}</span><span className="text-[10px] text-muted-foreground">{t("Makine")}</span></div>
+                </div>
+                <div className="flex-1 space-y-1 text-sm">
+                  {bolumDagilim.map((d) => (<div key={d.bolum} className="flex items-center justify-between gap-2"><span className="inline-flex min-w-0 items-center gap-1.5"><span className="size-2.5 shrink-0 rounded-full" style={{ background: d.renk }} /><span className="truncate text-xs">{t(d.bolum)}</span></span><span className="font-semibold tabular-nums">{d.adet}</span></div>))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Yaklaşan Periyodik Bakımlar */}
+          <Card>
+            <CardHeader className="flex-row items-center justify-between gap-2 space-y-0"><div className="flex items-center gap-2"><Icon icon="solar:calendar-bold-duotone" className="size-5 text-blue-500" /><h3 className="font-heading text-sm font-medium">{t("Yaklaşan Periyodik Bakımlar")}</h3></div><Link href="/bakim/takvim" className="text-xs font-medium text-blue-600 hover:underline dark:text-blue-400">{t("Tümünü Gör")}</Link></CardHeader>
+            <CardContent className="space-y-2.5">
+              {yaklasan.length === 0 ? <p className="py-4 text-center text-sm text-muted-foreground">{t("Yaklaşan bakım yok.")}</p> : yaklasan.map(({ m, gun }) => (
+                <div key={m.id} className="flex items-center gap-2.5">
+                  <Icon icon="solar:clock-circle-bold" className={cn("size-4 shrink-0", gunRenk(gun))} />
+                  <div className="min-w-0 flex-1"><p className="truncate text-sm font-medium">{m.ad}</p><p className="text-xs text-muted-foreground tabular-nums">{m.sonrakiBakim}</p></div>
+                  <span className={cn("shrink-0 text-xs font-semibold tabular-nums", gunRenk(gun))}>{gun} {t("gün kaldı")}</span>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 }

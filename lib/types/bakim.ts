@@ -51,7 +51,12 @@ export interface Makine {
   sonrakiBakim?: string;
   acikIsEmri: number;
   uyumOrani: number; // %
+  durum?: MakineDurum;
+  aktifPlanKodu?: string; // "PM-OFSET-01"; yoksa plan yok
+  sopSayi?: number;
 }
+
+export type MakineDurum = "aktif" | "planli" | "izlemede";
 
 export interface BakimPlani {
   id: string;

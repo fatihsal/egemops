@@ -1,6 +1,6 @@
 // Makine ekranları için ortak etiket/renk yardımcıları.
 
-import type { ChecklistTip, Kritiklik, BakimPeriyot, BulguDurum, EslesenHazir, GozlemSonuc, IsEmriDurum, MaddeDurum, MaddeTuru, OperatorDurum, OperatorKontrolDurum, RagDurum, SopBakimTipi, SopRevDurum } from "@/lib/types/bakim";
+import type { ChecklistTip, Kritiklik, BakimPeriyot, BulguDurum, EslesenHazir, GozlemSonuc, IsEmriDurum, MaddeDurum, MaddeTuru, MakineDurum, OperatorDurum, OperatorKontrolDurum, RagDurum, SopBakimTipi, SopRevDurum } from "@/lib/types/bakim";
 
 export const KRITIKLIK_META: Record<Kritiklik, { etiket: string; sinif: string; nokta: string }> = {
   dusuk: {
@@ -23,6 +23,12 @@ export const KRITIKLIK_META: Record<Kritiklik, { etiket: string; sinif: string; 
     sinif: "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300",
     nokta: "bg-red-500",
   },
+};
+
+export const MAKINE_DURUM_META: Record<MakineDurum, { etiket: string; sinif: string; nokta: string }> = {
+  aktif: { etiket: "Aktif", sinif: "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300", nokta: "bg-emerald-500" },
+  planli: { etiket: "Planlı", sinif: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300", nokta: "bg-blue-500" },
+  izlemede: { etiket: "İzlemede", sinif: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300", nokta: "bg-amber-500" },
 };
 
 export const PERIYOT_ETIKET: Record<BakimPeriyot, string> = {
