@@ -20,7 +20,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Table,
   TableBody,
   TableCell,
   TableHead,
@@ -171,7 +170,7 @@ export function SopListesi() {
       {/* ===== Tablo + sağ paneller ===== */}
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
         {/* Makine ve SOP Listesi */}
-        <Card className="min-w-0">
+        <Card className="flex min-w-0 flex-col">
           <CardHeader className="flex-row flex-wrap items-center justify-between gap-2 space-y-0">
             <div className="flex items-center gap-2">
               <Icon icon="solar:clipboard-list-bold-duotone" className="size-5 text-blue-500" />
@@ -179,8 +178,9 @@ export function SopListesi() {
             </div>
             <span className="text-xs text-muted-foreground">{t("Toplam")} {satirlar.length} {t("makine")}, {toplamSop} {t("SOP şablonu")}</span>
           </CardHeader>
-          <CardContent className="p-0">
-            <Table>
+          <CardContent className="flex flex-1 flex-col p-0">
+            <div className="flex-1 overflow-x-auto">
+            <table className="h-full w-full caption-bottom text-sm">
               <TableHeader>
                 <TableRow>
                   <TableHead>{t("Makine")}</TableHead>
@@ -247,7 +247,8 @@ export function SopListesi() {
                   );
                 })}
               </TableBody>
-            </Table>
+            </table>
+            </div>
             {filtreli.length === 0 ? (
               <BosDurum baslik={t("SOP bulunamadı")} aciklama={t("Arama veya filtre kriterlerine uygun SOP yok.")} />
             ) : (
