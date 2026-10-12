@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { makineGetir, makineleriGetir } from "@/lib/data/bakim/makineler";
 import { bakimDashboardGetir } from "@/lib/data/bakim/dashboard";
 import { planlariGetir, planGetir, makinePlanlariGetir } from "@/lib/data/bakim/planlar";
+import { planSayfaGetir } from "@/lib/data/bakim/plan-sayfa";
 import { isEmirleriGetir, isEmriGetir, makineIsEmirleriGetir } from "@/lib/data/bakim/is-emirleri";
 import { operatorKontrolleriGetir, operatorKontrolGetir } from "@/lib/data/bakim/operator-kontrolleri";
 import { bulgulariGetir, makineBulgulariGetir } from "@/lib/data/bakim/bulgular";
@@ -29,6 +30,10 @@ export function useMakine(id: string) {
 
 export function usePlanlar() {
   return useQuery({ queryKey: queryKeys.bakim.planlar, queryFn: planlariGetir });
+}
+
+export function usePlanSayfa() {
+  return useQuery({ queryKey: queryKeys.bakim.planSayfa, queryFn: planSayfaGetir });
 }
 
 export function usePlan(id: string) {

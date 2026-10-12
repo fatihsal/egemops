@@ -27,7 +27,7 @@ const META: Record<string, SayfaMeta> = {
   // --------------------------- BAKIM ---------------------------
   "/bakim": { baslik: "Bakım Yönetimi", altBaslik: "Planlı bakım süreçlerinin genel görünümü." },
   "/bakim/makineler": { baslik: "Makine ve Ekipmanlar", altBaslik: "Tüm ekipmanların merkezi envanter görünümü." },
-  "/bakim/planlar": { baslik: "Bakım Planları", altBaslik: "Hangi makinede hangi bakımın ne sıklıkta yapılacağını tanımlayın." },
+  "/bakim/planlar": { baslik: "Bakım Planları", altBaslik: "Tüm makinelerin planlı bakım faaliyetlerini görüntüleyin, planlayın ve yönetin." },
   "/bakim/takvim": { baslik: "Bakım Takvimi", altBaslik: "Planlı bakımların haftalık ve aylık takvim görünümü." },
   "/bakim/is-emirleri": { baslik: "Planlı İş Emirleri", altBaslik: "Planlanmış bakımların uygulama kayıtlarını yönetin." },
   "/bakim/kayitlar": { baslik: "Bakım Kayıtları", altBaslik: "Tamamlanmış geçmiş bakım kayıtlarının arşivi." },
