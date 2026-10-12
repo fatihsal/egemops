@@ -189,8 +189,6 @@ export function MakineListesi() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>{t("Makine Adı")}</TableHead>
-                      <TableHead>{t("Kod")}</TableHead>
-                      <TableHead>{t("Bölüm")}</TableHead>
                       <TableHead>{t("Kritiklik")}</TableHead>
                       <TableHead className="text-center">{t("Sonraki Bakım")}</TableHead>
                       <TableHead className="text-center">{t("Plan")}</TableHead>
@@ -208,11 +206,12 @@ export function MakineListesi() {
                           <TableCell>
                             <div className="flex items-center gap-2">
                               <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300"><Icon icon={BOLUM_IKON[m.bolum] ?? VARSAYILAN_IKON} className="size-4" /></span>
-                              <span className="font-medium whitespace-nowrap">{m.ad}</span>
+                              <span className="min-w-0">
+                                <span className="block truncate font-medium">{m.ad}</span>
+                                <span className="block text-[11px] text-muted-foreground">{m.kod} · {t(m.bolum)}</span>
+                              </span>
                             </div>
                           </TableCell>
-                          <TableCell className="tabular-nums whitespace-nowrap text-muted-foreground">{m.kod}</TableCell>
-                          <TableCell className="whitespace-nowrap text-muted-foreground">{t(m.bolum)}</TableCell>
                           <TableCell><span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium", krit.sinif)}><span className={cn("size-1.5 rounded-full", krit.nokta)} />{t(krit.etiket)}</span></TableCell>
                           <TableCell className="text-center tabular-nums whitespace-nowrap">{m.sonrakiBakim ?? "—"}</TableCell>
                           <TableCell className="text-center">{m.aktifPlanKodu ? <span className="text-xs font-medium text-blue-600 dark:text-blue-400">{t("Var")}</span> : <span className="text-xs text-muted-foreground">{t("Yok")}</span>}</TableCell>
