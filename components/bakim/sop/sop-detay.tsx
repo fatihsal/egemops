@@ -87,10 +87,16 @@ export function SopDetay() {
             </p>
           </div>
         </div>
-        <Button variant="outline" className="h-9 gap-1.5 bg-card" onClick={() => toast(t("Bu özellik yakında eklenecek."))}>
-          <Icon icon="solar:add-square-bold-duotone" className="size-4" />
-          {t("Yeni Versiyon")}
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button variant="outline" className="h-9 gap-1.5 bg-card" onClick={() => toast(t("Bu özellik yakında eklenecek."))}>
+            <Icon icon="solar:add-square-bold-duotone" className="size-4" />
+            {t("Yeni Versiyon")}
+          </Button>
+          <Button className="h-9 gap-1.5 bg-blue-600 text-white shadow-sm hover:bg-blue-700" nativeButton={false} render={<Link href={`/bakim/sop/${data.id}/doldur`} />}>
+            <Icon icon="solar:clipboard-check-bold-duotone" className="size-4" />
+            {t("Formu Doldur")}
+          </Button>
+        </div>
       </div>
 
       {/* Versiyon seçici */}

@@ -700,6 +700,7 @@ export const EN: Record<string, string> = {
   "Aktif Rev": "Active Rev",
   "Madde": "Items",
   "Yeni Versiyon": "New Version",
+  "Formu Doldur": "Fill Form",
   "Versiyon": "Version",
   "madde": "items",
   "dk": "min",
