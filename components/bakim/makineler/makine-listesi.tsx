@@ -166,8 +166,12 @@ export function MakineListesi() {
       <div className="grid gap-5 xl:grid-cols-3">
         {/* Ekipman Listesi */}
         <Card className="flex min-w-0 flex-col xl:col-span-2">
-          <CardHeader className="flex-row flex-wrap items-center justify-between gap-3 space-y-0">
+          <CardHeader className="flex-row flex-wrap items-center gap-3 space-y-0">
             <h3 className="font-heading text-lg font-bold tracking-tight">{t("Ekipman Listesi")}</h3>
+            <div className="relative min-w-[200px] flex-1">
+              <Icon icon="solar:magnifer-linear" className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Input value={arama} onChange={(e) => setArama(e.target.value)} placeholder={t("Makine adı, kod veya seri no ara…")} className="h-8 bg-card pl-9 text-sm" />
+            </div>
             <div className="flex items-center gap-1 rounded-lg border bg-card p-0.5">
               {(["tablo", "kart"] as const).map((g) => (
                 <button key={g} type="button" onClick={() => setGorunum(g)} className={cn("flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-colors", gorunum === g ? "bg-blue-600 text-white" : "text-muted-foreground hover:text-foreground")}>
@@ -179,10 +183,6 @@ export function MakineListesi() {
           <CardContent className="flex flex-1 flex-col gap-3 p-3">
             {/* Filtreler */}
             <div className="flex flex-wrap items-center gap-2">
-              <div className="relative min-w-[180px] flex-1">
-                <Icon icon="solar:magnifer-linear" className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-                <Input value={arama} onChange={(e) => setArama(e.target.value)} placeholder={t("Makine adı, kod veya seri no ara…")} className="h-8 bg-card pl-9 text-sm" />
-              </div>
               <Select value={bolum} onValueChange={(v) => setBolum(v ?? "hepsi")}><SelectTrigger size="sm" className="w-[130px] bg-card"><SelectValue placeholder={t("Bölüm")} /></SelectTrigger><SelectContent><SelectItem value="hepsi">{t("Tüm Bölümler")}</SelectItem>{bolumler.map((b) => <SelectItem key={b} value={b}>{t(b)}</SelectItem>)}</SelectContent></Select>
               <Select value={grup} onValueChange={(v) => setGrup(v ?? "hepsi")}><SelectTrigger size="sm" className="w-[150px] bg-card"><SelectValue placeholder={t("Makine Grubu")} /></SelectTrigger><SelectContent><SelectItem value="hepsi">{t("Tüm Makine Grupları")}</SelectItem>{gruplar.map((g) => <SelectItem key={g} value={g}>{t(g)}</SelectItem>)}</SelectContent></Select>
               <Select value={kritiklik} onValueChange={(v) => setKritiklik(v ?? "hepsi")}><SelectTrigger size="sm" className="w-[120px] bg-card"><SelectValue placeholder={t("Kritiklik")} /></SelectTrigger><SelectContent><SelectItem value="hepsi">{t("Tüm Kritiklik")}</SelectItem>{(["kritik", "yuksek", "orta", "dusuk"] as Kritiklik[]).map((k) => <SelectItem key={k} value={k}>{t(KRITIKLIK_META[k].etiket)}</SelectItem>)}</SelectContent></Select>
