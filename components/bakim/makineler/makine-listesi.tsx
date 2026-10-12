@@ -177,9 +177,9 @@ export function MakineListesi() {
                 </span>
               ))}
             </div>
-            <div className="flex items-center gap-1 rounded-lg border bg-card p-0.5">
+            <div className="flex items-center gap-2">
               {(["tablo", "kart"] as const).map((g) => (
-                <button key={g} type="button" onClick={() => setGorunum(g)} className={cn("flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-colors", gorunum === g ? "bg-blue-600 text-white" : "text-muted-foreground hover:text-foreground")}>
+                <button key={g} type="button" onClick={() => setGorunum(g)} className={cn("flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors", gorunum === g ? "border-blue-600 bg-blue-600 text-white shadow-sm" : "border-border bg-card text-muted-foreground hover:bg-muted hover:text-foreground")}>
                   <Icon icon={g === "tablo" ? "solar:list-bold" : "solar:widget-5-bold"} className="size-3.5" />{t(g === "tablo" ? "Tablo" : "Kart")}
                 </button>
               ))}
