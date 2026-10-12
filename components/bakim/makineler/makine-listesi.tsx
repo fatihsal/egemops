@@ -167,7 +167,7 @@ export function MakineListesi() {
         {/* Ekipman Listesi */}
         <Card className="flex min-w-0 flex-col xl:col-span-2">
           <CardHeader className="flex-row flex-wrap items-center justify-between gap-3 space-y-0">
-            <div className="flex items-center gap-2"><span className="flex size-7 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-300"><Icon icon="solar:checklist-minimalistic-bold-duotone" className="size-4" /></span><h3 className="font-heading text-base font-medium">{t("Ekipman Listesi")}</h3></div>
+            <h3 className="font-heading text-lg font-bold tracking-tight">{t("Ekipman Listesi")}</h3>
             <div className="flex items-center gap-1 rounded-lg border bg-card p-0.5">
               {(["tablo", "kart"] as const).map((g) => (
                 <button key={g} type="button" onClick={() => setGorunum(g)} className={cn("flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-colors", gorunum === g ? "bg-blue-600 text-white" : "text-muted-foreground hover:text-foreground")}>
@@ -193,7 +193,7 @@ export function MakineListesi() {
               <BosDurum baslik={t("Makine bulunamadı")} aciklama={t("Arama veya filtre kriterlerine uygun makine yok.")} />
             ) : gorunum === "tablo" ? (
               <div className="flex-1 overflow-x-auto">
-                <table className="w-full caption-bottom text-sm">
+                <table className="h-full w-full caption-bottom text-sm">
                   <TableHeader>
                     <TableRow>
                       <TableHead>{t("Makine Adı")}</TableHead>
@@ -267,7 +267,7 @@ export function MakineListesi() {
           {/* Ekipman Detayı */}
           <Card>
             <CardHeader className="flex-row items-center justify-between gap-2 space-y-0">
-              <div className="flex items-center gap-2"><span className="flex size-7 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-300"><Icon icon="solar:cpu-bolt-bold-duotone" className="size-4" /></span><h3 className="font-heading text-base font-medium">{t("Ekipman Detayı")}</h3></div>
+              <h3 className="font-heading text-lg font-bold tracking-tight">{t("Ekipman Detayı")}</h3>
               <Button size="sm" className="h-7 gap-1 bg-blue-600 text-white text-xs shadow-sm hover:bg-blue-700" onClick={() => toast(t("Bu özellik yakında eklenecek."))}><Icon icon="solar:pen-linear" className="size-3.5" />{t("Düzenle")}</Button>
             </CardHeader>
             <CardContent className="space-y-3">
@@ -298,7 +298,7 @@ export function MakineListesi() {
 
           {/* Bölüm Dağılımı */}
           <Card>
-            <CardHeader className="flex-row items-center gap-2 space-y-0"><Icon icon="solar:pie-chart-2-bold-duotone" className="size-5 text-blue-500" /><h3 className="font-heading text-sm font-medium">{t("Bölümlere Göre Ekipman Dağılımı")}</h3></CardHeader>
+            <CardHeader><h3 className="font-heading text-base font-bold tracking-tight">{t("Bölümlere Göre Ekipman Dağılımı")}</h3></CardHeader>
             <CardContent>
               <div className="flex items-center gap-4">
                 <div className="relative h-32 w-32 shrink-0">
@@ -319,7 +319,7 @@ export function MakineListesi() {
 
           {/* Yaklaşan Periyodik Bakımlar */}
           <Card>
-            <CardHeader className="flex-row items-center justify-between gap-2 space-y-0"><div className="flex items-center gap-2"><Icon icon="solar:calendar-bold-duotone" className="size-5 text-blue-500" /><h3 className="font-heading text-sm font-medium">{t("Yaklaşan Periyodik Bakımlar")}</h3></div><Link href="/bakim/takvim" className="text-xs font-medium text-blue-600 hover:underline dark:text-blue-400">{t("Tümünü Gör")}</Link></CardHeader>
+            <CardHeader className="flex-row items-center justify-between gap-2 space-y-0"><h3 className="font-heading text-base font-bold tracking-tight">{t("Yaklaşan Periyodik Bakımlar")}</h3><Link href="/bakim/takvim" className="text-xs font-medium text-blue-600 hover:underline dark:text-blue-400">{t("Tümünü Gör")}</Link></CardHeader>
             <CardContent className="space-y-2.5">
               {yaklasan.length === 0 ? <p className="py-4 text-center text-sm text-muted-foreground">{t("Yaklaşan bakım yok.")}</p> : yaklasan.map(({ m, gun }) => (
                 <div key={m.id} className="flex items-center gap-2.5 rounded-lg p-1.5 transition-colors hover:bg-muted/50">
