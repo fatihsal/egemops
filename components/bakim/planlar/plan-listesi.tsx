@@ -159,7 +159,6 @@ export function PlanListesi() {
           {(["liste", "kart", "gantt"] as const).map((g) => (
             <button key={g} type="button" onClick={() => setGorunum(g)} className={cn("rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors", gorunum === g ? "border-blue-600 bg-blue-600 text-white" : "border-border bg-card text-muted-foreground hover:bg-muted")}>{t(g === "liste" ? "Liste" : g === "kart" ? "Kart" : "Zaman Çizelgesi")}</button>
           ))}
-          <Button size="sm" className="h-9 gap-1.5 bg-blue-600 text-white shadow-sm hover:bg-blue-700" onClick={() => toast(t("Bu özellik yakında eklenecek."))}><Icon icon="solar:add-circle-bold-duotone" className="size-4" />{t("Yeni Plan")}</Button>
         </div>
       </div>
 
