@@ -9,6 +9,7 @@ import { bakimDashboardGetir } from "@/lib/data/bakim/dashboard";
 import { planlariGetir, planGetir, makinePlanlariGetir } from "@/lib/data/bakim/planlar";
 import { planSayfaGetir } from "@/lib/data/bakim/plan-sayfa";
 import { isEmirleriGetir, isEmriGetir, makineIsEmirleriGetir } from "@/lib/data/bakim/is-emirleri";
+import { isEmriSayfaGetir } from "@/lib/data/bakim/is-emri-sayfa";
 import { operatorKontrolleriGetir, operatorKontrolGetir } from "@/lib/data/bakim/operator-kontrolleri";
 import { bulgulariGetir, makineBulgulariGetir } from "@/lib/data/bakim/bulgular";
 import { bakimKayitlariGetir } from "@/lib/data/bakim/kayitlar";
@@ -50,6 +51,10 @@ export function useMakinePlanlar(makineId: string) {
 
 export function useIsEmirleri() {
   return useQuery({ queryKey: queryKeys.bakim.isEmirleri, queryFn: isEmirleriGetir });
+}
+
+export function useIsEmriSayfa() {
+  return useQuery({ queryKey: queryKeys.bakim.isEmriSayfa, queryFn: isEmriSayfaGetir });
 }
 
 export function useIsEmri(id: string) {
