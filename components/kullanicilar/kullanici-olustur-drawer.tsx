@@ -30,6 +30,7 @@ import { queryKeys } from "@/lib/queries/keys";
 
 const ROLLER = [
   { deger: "admin", etiket: "Yönetici" },
+  { deger: "bakim_muduru", etiket: "Bakım Müdürü" },
   { deger: "enerji_yoneticisi", etiket: "Enerji Yöneticisi" },
   { deger: "izleyici", etiket: "İzleyici" },
 ];

@@ -31,6 +31,7 @@ import type { Kullanici, KullaniciRol } from "@/lib/types";
 
 const ROLLER = [
   { deger: "admin", etiket: "Yönetici" },
+  { deger: "bakim_muduru", etiket: "Bakım Müdürü" },
   { deger: "enerji_yoneticisi", etiket: "Enerji Yöneticisi" },
   { deger: "izleyici", etiket: "İzleyici" },
 ];
@@ -38,6 +39,7 @@ const ROLLER = [
 // UI rolü (KullaniciRol) -> DB rolü
 const DB_ROL: Record<KullaniciRol, string> = {
   yonetici: "admin",
+  bakim_muduru: "bakim_muduru",
   editor: "enerji_yoneticisi",
   goruntuleyici: "izleyici",
 };

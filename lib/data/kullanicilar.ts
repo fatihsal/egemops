@@ -14,6 +14,7 @@ import { supabaseTarayici } from "@/lib/supabase/client";
 // profiles.rol -> UI rolü
 const ROL_ESLEME: Record<string, KullaniciRol> = {
   admin: "yonetici",
+  bakim_muduru: "bakim_muduru",
   enerji_yoneticisi: "editor",
   izleyici: "goruntuleyici",
 };
@@ -83,6 +84,7 @@ export async function kullaniciAnaliziGetir(): Promise<KullaniciAnaliz> {
 
   const roller: RolDagilim[] = [
     { rol: "yonetici", adet: say("yonetici") },
+    { rol: "bakim_muduru", adet: say("bakim_muduru") },
     { rol: "editor", adet: say("editor") },
     { rol: "goruntuleyici", adet: say("goruntuleyici") },
   ];

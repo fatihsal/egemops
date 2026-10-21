@@ -1205,7 +1205,7 @@ export interface KatsayiAnaliz {
 // Kullanıcılar (kullanıcı yönetimi)
 // -----------------------------------------------------------------------------
 
-export type KullaniciRol = "yonetici" | "editor" | "goruntuleyici";
+export type KullaniciRol = "yonetici" | "bakim_muduru" | "editor" | "goruntuleyici";
 export type KullaniciDurum = "aktif" | "pasif" | "davet";
 
 export interface KullaniciKpi {

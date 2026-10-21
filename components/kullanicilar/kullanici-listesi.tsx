@@ -42,7 +42,7 @@ import { cn } from "@/lib/utils";
 import { SilmeOnay } from "@/components/ui/silme-onay";
 import type { Kullanici, KullaniciAnaliz } from "@/lib/types";
 
-const ROLLER = ["Tümü", "Yönetici", "Editör", "Görüntüleyici"];
+const ROLLER = ["Tümü", "Yönetici", "Bakım Müdürü", "Editör", "Görüntüleyici"];
 const DURUMLAR = ["Tümü", "Aktif", "Pasif", "Davet Bekliyor"];
 const SAYFA_BOYUTU = 8;
 

@@ -4,7 +4,7 @@ import { supabaseSunucu } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 
 const EPOSTA_DOMAIN = "egemops.local";
-const ROLLER = ["admin", "enerji_yoneticisi", "izleyici"];
+const ROLLER = ["admin", "enerji_yoneticisi", "bakim_muduru", "izleyici"];
 
 export async function POST(req: Request) {
   try {

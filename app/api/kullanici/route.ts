@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { supabaseSunucu } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 
-const ROLLER = ["admin", "enerji_yoneticisi", "izleyici"];
+const ROLLER = ["admin", "enerji_yoneticisi", "bakim_muduru", "izleyici"];
 
 /** Çağıranın admin olduğunu doğrular; değilse hata yanıtı döner. */
 async function adminDogrula() {

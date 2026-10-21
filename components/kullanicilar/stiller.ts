@@ -4,6 +4,7 @@ import type { KullaniciDurum, KullaniciRol } from "@/lib/types";
 
 export const ROL_META: Record<KullaniciRol, { etiket: string; sinif: string; aciklama: string }> = {
   yonetici: { etiket: "Yönetici", sinif: "bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-300", aciklama: "Tüm ayarlar ve kullanıcı yönetimi" },
+  bakim_muduru: { etiket: "Bakım Müdürü", sinif: "bg-orange-100 text-orange-700 dark:bg-orange-950 dark:text-orange-300", aciklama: "Bakım modülü yönetimi (planlar, iş emirleri, SOP)" },
   editor: { etiket: "Editör", sinif: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300", aciklama: "Veri girişi ve rapor oluşturma" },
   goruntuleyici: { etiket: "Görüntüleyici", sinif: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300", aciklama: "Yalnızca görüntüleme" },
 };

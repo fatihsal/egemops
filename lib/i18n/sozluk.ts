@@ -1490,6 +1490,8 @@ export const EN: Record<string, string> = {
   "Tam yetkili": "Full access",
   "Editör": "Editor",
   "Görüntüleyici": "Viewer",
+  "Bakım Müdürü": "Maintenance Manager",
+  "Bakım modülü yönetimi (planlar, iş emirleri, SOP)": "Maintenance module management (plans, work orders, SOP)",
   "Tüm ayarlar ve kullanıcı yönetimi": "All settings and user management",
   "Veri girişi ve rapor oluşturma": "Data entry and report creation",
   "Yalnızca görüntüleme": "View only",
