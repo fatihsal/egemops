@@ -297,10 +297,10 @@ export function MakineListesi() {
                 <div className="flex items-center justify-between gap-2"><dt className="text-muted-foreground">{t("Aktif SOP")}</dt><dd className="font-medium tabular-nums">{secili.sopSayi ?? 0} {t("adet")}</dd></div>
               </dl>
               <div className="grid grid-cols-2 gap-2 pt-1">
-                <Button variant="outline" size="sm" className="gap-1.5 bg-card" nativeButton={false} render={<Link href={`/bakim/makineler/${secili.id}`} />}><Icon icon="solar:cpu-bolt-linear" className="size-4" />{t("Makine Detayı")}</Button>
-                <Button variant="outline" size="sm" className="gap-1.5 bg-card" nativeButton={false} render={<Link href="/bakim/kayitlar" />}><Icon icon="solar:history-linear" className="size-4" />{t("Bakım Geçmişi")}</Button>
-                <Button variant="outline" size="sm" className="gap-1.5 bg-card" nativeButton={false} render={<Link href="/bakim/sop" />}><Icon icon="solar:clipboard-list-linear" className="size-4" />{t("SOP Listesi")}</Button>
-                <Button variant="outline" size="sm" className="gap-1.5 bg-card" nativeButton={false} render={<Link href="/bakim/dokumanlar" />}><Icon icon="solar:folder-linear" className="size-4" />{t("Dokümanlar")}</Button>
+                <Button size="sm" className="gap-1.5 bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow-sm shadow-blue-500/30 hover:from-blue-600 hover:to-blue-800" nativeButton={false} render={<Link href={`/bakim/makineler/${secili.id}`} />}><Icon icon="solar:cpu-bolt-bold" className="size-4" />{t("Makine Detayı")}</Button>
+                <Button variant="outline" size="sm" className="gap-1.5 border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 dark:border-amber-900 dark:bg-amber-950/50 dark:text-amber-300 dark:hover:bg-amber-950" nativeButton={false} render={<Link href="/bakim/kayitlar" />}><Icon icon="solar:history-bold" className="size-4" />{t("Bakım Geçmişi")}</Button>
+                <Button variant="outline" size="sm" className="gap-1.5 border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-emerald-900 dark:bg-emerald-950/50 dark:text-emerald-300 dark:hover:bg-emerald-950" nativeButton={false} render={<Link href="/bakim/sop" />}><Icon icon="solar:clipboard-list-bold" className="size-4" />{t("SOP Listesi")}</Button>
+                <Button variant="outline" size="sm" className="gap-1.5 border-violet-200 bg-violet-50 text-violet-700 hover:bg-violet-100 dark:border-violet-900 dark:bg-violet-950/50 dark:text-violet-300 dark:hover:bg-violet-950" nativeButton={false} render={<Link href="/bakim/dokumanlar" />}><Icon icon="solar:folder-bold" className="size-4" />{t("Dokümanlar")}</Button>
               </div>
             </CardContent>
           </Card>
