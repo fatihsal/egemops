@@ -18,6 +18,7 @@ import { useProfil } from "@/lib/hooks/use-profil";
 
 const ROL_ETIKET: Record<string, string> = {
   admin: "Yönetici",
+  bakim_muduru: "Bakım Müdürü",
   enerji_yoneticisi: "Enerji Yöneticisi",
   izleyici: "İzleyici",
 };

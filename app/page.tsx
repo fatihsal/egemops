@@ -21,6 +21,7 @@ import { moduller } from "@/lib/nav";
 
 const ROL_ETIKET: Record<string, string> = {
   admin: "Yönetici",
+  bakim_muduru: "Bakım Müdürü",
   enerji_yoneticisi: "Enerji Yöneticisi",
   izleyici: "İzleyici",
 };
