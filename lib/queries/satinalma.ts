@@ -8,6 +8,7 @@ import { taleplerGetir, talepGetir } from "@/lib/data/satinalma/talepler";
 import { tedarikcilerGetir } from "@/lib/data/satinalma/tedarikciler";
 import { rfqListele } from "@/lib/data/satinalma/rfq";
 import { teklifListele } from "@/lib/data/satinalma/teklifler";
+import { firmaProfiliGetir } from "@/lib/data/satinalma/ayarlar";
 import { queryKeys } from "@/lib/queries/keys";
 
 export function useTalepler() {
@@ -28,4 +29,8 @@ export function useTalepRfq(talepId: string) {
 
 export function useTalepTeklifler(talepId: string) {
   return useQuery({ queryKey: queryKeys.satinalma.talepTeklifler(talepId), queryFn: () => teklifListele(talepId), enabled: !!talepId });
+}
+
+export function useFirmaProfili() {
+  return useQuery({ queryKey: queryKeys.satinalma.firmaProfili, queryFn: firmaProfiliGetir });
 }

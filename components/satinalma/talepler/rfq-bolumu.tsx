@@ -20,27 +20,32 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { useDil } from "@/components/providers/dil-provider";
-import { useTalepRfq, useTedarikciler } from "@/lib/queries/satinalma";
+import { useTalepRfq, useTedarikciler, useFirmaProfili } from "@/lib/queries/satinalma";
 import { rfqOlustur, rfqGuncelle, rfqSil } from "@/lib/data/satinalma/rfq";
+import { imzaUret } from "@/lib/data/satinalma/ayarlar";
 import { queryKeys } from "@/lib/queries/keys";
 import { cn } from "@/lib/utils";
 import { RFQ_DURUM_META } from "@/components/satinalma/stiller";
 import type { Rfq, Talep, Tedarikci } from "@/lib/types/satinalma";
 
-function varsayilanKonu(talep: Talep) {
-  return `Teklif Talebi — ${talep.baslik}${talep.talepNo ? ` (${talep.talepNo})` : ""}`;
+/** Okunabilir talep referansı — Gmail thread kimliğinin yerine geçmez. */
+function talepReferans(talep: Talep) {
+  return `EGEM-RFQ-${talep.talepNo ?? talep.id.slice(0, 8)}`;
 }
-function varsayilanGovde(talep: Talep, tedarikciAd?: string) {
+function varsayilanKonu(talep: Talep) {
+  return `Teklif Talebi — ${talep.baslik} [${talepReferans(talep)}]`;
+}
+function varsayilanGovde(talep: Talep, imza: string, tedarikciAd?: string) {
   const satir = (e: string, d: string | number | null | undefined) => (d ? `- ${e}: ${d}\n` : "");
   return (
     `Sayın ${tedarikciAd || "Yetkili"},\n\n` +
-    `Aşağıdaki malzeme için fiyat teklifinizi rica ederiz:\n\n` +
+    `Aşağıdaki malzeme için fiyat teklifinizi rica ederiz (Ref: ${talepReferans(talep)}):\n\n` +
     satir("Malzeme", talep.baslik) +
     satir("Marka/Model", [talep.marka, talep.model].filter(Boolean).join(" ")) +
     satir("Adet", talep.adet != null ? `${talep.adet} ${talep.birim ?? ""}`.trim() : null) +
     satir("Teknik açıklama", talep.teknikAciklama) +
     `\nLütfen birim fiyat, para birimi, KDV durumu, termin süresi, nakliye ve garanti bilgilerini belirtiniz.\n\n` +
-    `Saygılarımızla,\nEgem Ambalaj — Satın Alma`
+    imza
   );
 }
 
@@ -49,6 +54,8 @@ export function RfqBolumu({ talep }: { talep: Talep }) {
   const qc = useQueryClient();
   const { data: rfqlar, isLoading } = useTalepRfq(talep.id);
   const { data: tedarikciler } = useTedarikciler();
+  const { data: profil } = useFirmaProfili();
+  const imza = profil ? imzaUret(profil) : "Saygılarımızla,";
   const [sheetAcik, setSheetAcik] = React.useState(false);
   const [duzenlenen, setDuzenlenen] = React.useState<Rfq | null>(null);
   const [gonderiliyor, setGonderiliyor] = React.useState<Set<string>>(new Set());
@@ -141,13 +148,13 @@ export function RfqBolumu({ talep }: { talep: Talep }) {
         )}
       </CardContent>
 
-      <RfqSheet acik={sheetAcik} setAcik={setSheetAcik} talep={talep} tedarikciler={tedarikciler ?? []} duzenlenen={duzenlenen} onKaydet={tazele} />
+      <RfqSheet acik={sheetAcik} setAcik={setSheetAcik} talep={talep} tedarikciler={tedarikciler ?? []} duzenlenen={duzenlenen} imza={imza} onKaydet={tazele} />
     </Card>
   );
 }
 
-function RfqSheet({ acik, setAcik, talep, tedarikciler, duzenlenen, onKaydet }: {
-  acik: boolean; setAcik: (o: boolean) => void; talep: Talep; tedarikciler: Tedarikci[]; duzenlenen: Rfq | null; onKaydet: () => void;
+function RfqSheet({ acik, setAcik, talep, tedarikciler, duzenlenen, imza, onKaydet }: {
+  acik: boolean; setAcik: (o: boolean) => void; talep: Talep; tedarikciler: Tedarikci[]; duzenlenen: Rfq | null; imza: string; onKaydet: () => void;
 }) {
   const { t } = useDil();
   const [tedId, setTedId] = React.useState("");
@@ -168,16 +175,16 @@ function RfqSheet({ acik, setAcik, talep, tedarikciler, duzenlenen, onKaydet }: 
       setTedId("");
       setKonu(varsayilanKonu(talep));
       setAlici("");
-      setGovde(varsayilanGovde(talep));
+      setGovde(varsayilanGovde(talep, imza));
     }
-  }, [acik, duzenlenen, talep]);
+  }, [acik, duzenlenen, talep, imza]);
 
   function tedarikciSec(id: string) {
     setTedId(id);
     const ted = tedarikciler.find((x) => x.id === id);
     if (ted?.eposta) setAlici(ted.eposta);
     // Yeni taslaksa gövdedeki hitabı güncelle.
-    if (!duzenlenen && ted) setGovde(varsayilanGovde(talep, ted.ad));
+    if (!duzenlenen && ted) setGovde(varsayilanGovde(talep, imza, ted.ad));
   }
 
   async function kaydet() {

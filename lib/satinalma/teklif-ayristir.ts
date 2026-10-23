@@ -4,7 +4,11 @@
 
 import { PDFParse } from "pdf-parse";
 
+// Gelen mesaj türü — her mail teklif değildir.
+export type MesajTuru = "teklif" | "revize" | "stok_yok" | "soru" | "bilgi" | "diger";
+
 export interface AyristirilmisTeklif {
+  tur: MesajTuru;
   fiyat: number | null;
   paraBirimi: string | null;
   kdvDahil: boolean | null;
@@ -19,7 +23,7 @@ export interface AyristirilmisTeklif {
 }
 
 const BOS: AyristirilmisTeklif = {
-  fiyat: null, paraBirimi: null, kdvDahil: null, kdvOran: null, terminGun: null,
+  tur: "diger", fiyat: null, paraBirimi: null, kdvDahil: null, kdvOran: null, terminGun: null,
   nakliye: null, garantiAy: null, teknikUygun: null, teknikNot: null, ozet: null, okunamadi: false,
 };
 
@@ -33,10 +37,15 @@ export async function pdfMetinCikar(buf: Buffer): Promise<string> {
   }
 }
 
-const SISTEM = `Sen teknik satın alma için teklif (fiyat teklifi) ayrıştırma asistanısın.
-Verilen teklif metninden aşağıdaki alanları çıkar. Metinde AÇIKÇA yoksa null bırak; ASLA uydurma/tahmin etme.
+const SISTEM = `Sen teknik satın alma için gelen e-posta/teklif ayrıştırma asistanısın.
+Önce mesajın TÜRÜNÜ belirle, sonra fiyat teklifi ise alanlarını çıkar.
+Metinde AÇIKÇA yoksa null bırak; ASLA uydurma/tahmin etme.
+tur değerleri: "teklif" (fiyat teklifi), "revize" (güncellenmiş/revize teklif),
+"stok_yok" (ürün yok/tedarik edilemiyor), "soru" (bilgi istiyor/soru soruyor),
+"bilgi" (genel bilgilendirme, fiyat yok), "diger".
 Yalnızca şu şemada GEÇERLİ JSON döndür:
 {
+  "tur": "teklif"|"revize"|"stok_yok"|"soru"|"bilgi"|"diger",
   "fiyat": number|null,            // toplam veya birim fiyat (sayı, binlik ayırıcı olmadan)
   "paraBirimi": "TRY"|"USD"|"EUR"|null,
   "kdvDahil": boolean|null,        // fiyat KDV dahil mi
@@ -81,7 +90,9 @@ export async function teklifAiAyristir(metin: string, baglam?: string): Promise<
   if (!icerik) return { ...BOS };
   try {
     const p = JSON.parse(icerik);
+    const gecerliTur: MesajTuru[] = ["teklif", "revize", "stok_yok", "soru", "bilgi", "diger"];
     return {
+      tur: gecerliTur.includes(p.tur) ? p.tur : "diger",
       fiyat: typeof p.fiyat === "number" ? p.fiyat : null,
       paraBirimi: p.paraBirimi ?? null,
       kdvDahil: typeof p.kdvDahil === "boolean" ? p.kdvDahil : null,

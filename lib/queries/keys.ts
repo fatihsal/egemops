@@ -97,5 +97,6 @@ export const queryKeys = {
     tedarikciler: ["satinalma", "tedarikciler"] as const,
     talepRfq: (talepId: string) => ["satinalma", "rfq", talepId] as const,
     talepTeklifler: (talepId: string) => ["satinalma", "teklifler", talepId] as const,
+    firmaProfili: ["satinalma", "firma-profili"] as const,
   },
 } as const;

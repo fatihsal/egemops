@@ -17,6 +17,14 @@ export type RfqDurum = "taslak" | "onay_bekliyor" | "gonderildi" | "yanitlandi" 
 export type TeklifKaynak = "gmail" | "manuel";
 export type MailProviderTuru = "gmail" | "microsoft";
 
+export interface FirmaProfili {
+  firmaAdi: string;
+  gonderenAdi: string;
+  departman: string;
+  telefon: string;
+  imza: string;
+}
+
 /** AI'nın görselden çıkardığı yapısal öneri (ai_cikarim jsonb). */
 export interface AiCikarim {
   marka?: string;

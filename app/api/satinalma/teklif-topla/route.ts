@@ -9,6 +9,14 @@ import { pdfMetinCikar, teklifAiAyristir } from "@/lib/satinalma/teklif-ayristir
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
+// Teslim edilemedi / otomatik bildirim mesajı mı?
+function iadeMi(from: string, konu: string): boolean {
+  const f = from.toLowerCase();
+  const k = konu.toLowerCase();
+  if (f.includes("mailer-daemon") || f.includes("postmaster") || f.includes("no-reply") || f.includes("noreply")) return true;
+  return /undeliver|delivery status|delivery failure|failure notice|returned mail|teslim edilemedi|iletilemedi/.test(k);
+}
+
 // Gelen e-postalardaki teklifleri OTOMATIK toplar: RFQ thread'lerini okur,
 // tedarikçi cevaplarındaki PDF/metni ayrıştırır, sa_teklifler'e yazar.
 export async function POST(req: Request) {
@@ -74,6 +82,7 @@ export async function POST(req: Request) {
 
     let yeni = 0;
     let yanitliThread = 0;
+    let digerYanit = 0;
 
     for (const rfq of rfqlar) {
       let mesajlar;
@@ -87,13 +96,13 @@ export async function POST(req: Request) {
         continue;
       }
 
-      const gelenler = mesajlar.filter((m) => !m.from.toLowerCase().includes(bizimEposta));
+      const gelenler = mesajlar.filter((m) => !m.from.toLowerCase().includes(bizimEposta) && !iadeMi(m.from, m.konu));
       if (gelenler.length > 0) yanitliThread++;
 
       for (const msg of gelenler) {
         const pdfEkler = msg.ekler.filter((e) => e.mimeType === "application/pdf" || e.dosyaAd.toLowerCase().endsWith(".pdf"));
 
-        // 1) PDF ekleri
+        // 1) PDF ekleri — yalnızca teklif/revize ya da fiyat içeren PDF kaydedilir.
         for (const ek of pdfEkler) {
           const anahtar = `${msg.id}:${ek.ekId}`;
           if (eklenmis.has(anahtar)) continue;
@@ -101,6 +110,7 @@ export async function POST(req: Request) {
             const buf = await gmailEkIndir(accessToken, msg.id, ek.ekId);
             const metin = await pdfMetinCikar(buf);
             const a = await teklifAiAyristir(metin, baglam);
+            if (!(a.tur === "teklif" || a.tur === "revize" || a.fiyat != null || a.okunamadi)) continue;
             await db.from("sa_teklifler").insert({
               talep_id: talepId, tedarikci_id: rfq.tedarikci_id, rfq_id: rfq.id, kaynak: "gmail",
               fiyat: a.fiyat, para_birimi: a.paraBirimi, kdv_dahil: a.kdvDahil, kdv_oran: a.kdvOran,
@@ -113,14 +123,13 @@ export async function POST(req: Request) {
           } catch { /* tek ek hatası tüm işlemi durdurmasın */ }
         }
 
-        // 2) PDF yoksa, gövde metninden teklif (fiyat e-postada yazılmış olabilir)
+        // 2) PDF yoksa, gövde metni — yalnızca teklif/revize türündeyse kaydet.
         if (pdfEkler.length === 0 && msg.metin.length > 30) {
           const anahtar = `${msg.id}:body`;
           if (eklenmis.has(anahtar)) continue;
           try {
             const a = await teklifAiAyristir(msg.metin, baglam);
-            // Gövdeden anlamlı bir fiyat/özet çıkmadıysa kaydetme (gürültü olmasın).
-            if (a.fiyat != null || a.ozet) {
+            if ((a.tur === "teklif" || a.tur === "revize") && (a.fiyat != null || a.ozet)) {
               await db.from("sa_teklifler").insert({
                 talep_id: talepId, tedarikci_id: rfq.tedarikci_id, rfq_id: rfq.id, kaynak: "gmail",
                 fiyat: a.fiyat, para_birimi: a.paraBirimi, kdv_dahil: a.kdvDahil, kdv_oran: a.kdvOran,
@@ -130,6 +139,9 @@ export async function POST(req: Request) {
               });
               eklenmis.add(anahtar);
               yeni++;
+            } else if (a.tur === "stok_yok" || a.tur === "soru") {
+              // Fiyat olmayan yanıtlar: teklif oluşturulmaz (brifing §8).
+              digerYanit++;
             }
           } catch { /* yut */ }
         }
@@ -141,7 +153,7 @@ export async function POST(req: Request) {
       }
     }
 
-    return NextResponse.json({ yeni, yanitliThread });
+    return NextResponse.json({ yeni, yanitliThread, digerYanit });
   } catch (e) {
     console.error("[teklif-topla] hata:", e);
     return NextResponse.json({ hata: e instanceof Error ? e.message : "Sunucu hatası." }, { status: 500 });
