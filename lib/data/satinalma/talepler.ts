@@ -2,8 +2,20 @@
 // VERİ KATMANI — Satın Alma / Malzeme Talepleri (Supabase: public.sa_talepler)
 // -----------------------------------------------------------------------------
 
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+
 import type { AiCikarim, AiDurum, Talep, TalepDurum } from "@/lib/types/satinalma";
+import { firebaseStorage } from "@/lib/firebase/client";
 import { supabaseTarayici } from "@/lib/supabase/client";
+
+/** Talep fotoğrafını Firebase Storage'a yükler, indirme URL'ini döndürür. */
+export async function talepFotoYukle(dosya: File): Promise<string> {
+  const guvenliAd = dosya.name.replace(/[^\w.\-]+/g, "_");
+  const yol = `satinalma/talepler/${Date.now()}_${guvenliAd}`;
+  const depoRef = ref(firebaseStorage, yol);
+  await uploadBytes(depoRef, dosya, { contentType: dosya.type || undefined });
+  return getDownloadURL(depoRef);
+}
 
 type Satir = {
   id: string;

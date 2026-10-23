@@ -41,6 +41,7 @@ const META: Record<string, SayfaMeta> = {
   // ------------------------- SATIN ALMA -------------------------
   "/satinalma": { baslik: "Akıllı Teknik Satın Alma", altBaslik: "Malzeme taleplerinin, tedarikçi tekliflerinin ve karşılaştırmaların genel görünümü." },
   "/satinalma/talepler": { baslik: "Malzeme Talepleri", altBaslik: "Teknik malzeme taleplerini oluşturun, AI önerileriyle tamamlayın ve takip edin." },
+  "/satinalma/talepler/yeni": { baslik: "Yeni Malzeme Talebi", altBaslik: "Fotoğraf, marka, model, adet ve teknik açıklamayla yeni bir talep oluşturun." },
   "/satinalma/tedarikciler": { baslik: "Tedarikçiler", altBaslik: "Doğrulanabilir kaynaklara dayalı tedarikçi adaylarını yönetin." },
   "/satinalma/ayarlar": { baslik: "Satın Alma Ayarları", altBaslik: "E-posta (Gmail) bağlantısı ve izinli test alıcıları." },
 };

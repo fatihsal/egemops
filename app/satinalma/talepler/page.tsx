@@ -1,11 +1,5 @@
-import { Yakinda } from "@/components/satinalma/yakinda";
+import { TalepListesi } from "@/components/satinalma/talepler/talep-listesi";
 
 export default function TaleplerPage() {
-  return (
-    <Yakinda
-      ikon="solar:clipboard-list-bold-duotone"
-      baslik="Malzeme Talepleri"
-      aciklama="Talep oluşturma ve listeleme Faz 2'de eklenecek. Şu an modül iskeleti hazır."
-    />
-  );
+  return <TalepListesi />;
 }
