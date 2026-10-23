@@ -7,6 +7,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import type { AiCikarim, AiDurum, Talep, TalepDurum } from "@/lib/types/satinalma";
 import { firebaseStorage } from "@/lib/firebase/client";
 import { supabaseTarayici } from "@/lib/supabase/client";
+import { kalemSayilari } from "@/lib/data/satinalma/kalemler";
 
 /** Talep fotoğrafını Firebase Storage'a yükler, indirme URL'ini döndürür. */
 export async function talepFotoYukle(dosya: File): Promise<string> {
@@ -76,7 +77,9 @@ export async function taleplerGetir(): Promise<Talep[]> {
     isimHaritasi(),
   ]);
   if (error) throw new Error(error.message);
-  return ((data ?? []) as Satir[]).map((s) => modele(s, isimAl));
+  const satirlar = (data ?? []) as Satir[];
+  const sayilar = await kalemSayilari(satirlar.map((s) => s.id));
+  return satirlar.map((s) => ({ ...modele(s, isimAl), kalemSayisi: sayilar.get(s.id) ?? 0 }));
 }
 
 export async function talepGetir(id: string): Promise<Talep | null> {

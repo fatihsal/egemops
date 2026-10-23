@@ -17,6 +17,29 @@ export type RfqDurum = "taslak" | "onay_bekliyor" | "gonderildi" | "yanitlandi" 
 export type TeklifKaynak = "gmail" | "manuel";
 export type MailProviderTuru = "gmail" | "microsoft";
 
+export type UrunDurumu = "yeni" | "ikinci_el_kabul" | "farketmez";
+export type Kapsam = "parca" | "komple" | "farketmez";
+
+export interface TalepKalem {
+  id: string;
+  talepId: string;
+  sira: number;
+  ad: string;
+  marka: string | null;
+  model: string | null;
+  siparisKodu: string | null;
+  adet: number | null;
+  birim: string | null;
+  urunDurumu: UrunDurumu;
+  kapsam: Kapsam;
+  alternatifKabul: boolean;
+  teknikAciklama: string | null;
+  aiCikarim: AiCikarim | null;
+  aiDurum: AiDurum;
+  notlar: string | null;
+  createdAt: string;
+}
+
 export interface FirmaProfili {
   firmaAdi: string;
   gonderenAdi: string;
@@ -51,6 +74,7 @@ export interface Talep {
   durum: TalepDurum;
   olusturan: string | null;
   olusturanAd?: string;
+  kalemSayisi?: number;
   createdAt: string;
   updatedAt: string;
 }

@@ -23,7 +23,8 @@ import { talepGuncelle, talepSil } from "@/lib/data/satinalma/talepler";
 import { useDil } from "@/components/providers/dil-provider";
 import { queryKeys } from "@/lib/queries/keys";
 import { cn } from "@/lib/utils";
-import { AI_DURUM_META, TALEP_DURUM_META, tarihKisa } from "@/components/satinalma/stiller";
+import { TALEP_DURUM_META, tarihKisa } from "@/components/satinalma/stiller";
+import { KalemlerBolumu } from "@/components/satinalma/talepler/kalemler-bolumu";
 import { RfqBolumu } from "@/components/satinalma/talepler/rfq-bolumu";
 import { TeklifBolumu } from "@/components/satinalma/talepler/teklif-bolumu";
 import type { TalepDurum } from "@/lib/types/satinalma";
@@ -73,7 +74,6 @@ export function TalepDetay({ id }: { id: string }) {
   }
 
   const dm = TALEP_DURUM_META[talep.durum];
-  const am = AI_DURUM_META[talep.aiDurum];
 
   return (
     <div className="space-y-5">
@@ -101,43 +101,8 @@ export function TalepDetay({ id }: { id: string }) {
       <div className="grid gap-5 lg:grid-cols-[1fr_340px]">
         {/* Sol: bilgiler + AI + sonraki fazlar */}
         <div className="space-y-5">
-          <Card>
-            <CardHeader><h3 className="font-heading text-base font-bold tracking-tight">{t("Malzeme Bilgileri")}</h3></CardHeader>
-            <CardContent>
-              <dl className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
-                {[
-                  { e: "Marka", d: talep.marka },
-                  { e: "Model", d: talep.model },
-                  { e: "Adet", d: talep.adet != null ? `${talep.adet} ${talep.birim ?? ""}`.trim() : null },
-                ].map((r) => (
-                  <div key={r.e}><dt className="text-xs text-muted-foreground">{t(r.e)}</dt><dd className="mt-0.5 font-medium">{r.d || "—"}</dd></div>
-                ))}
-              </dl>
-              {talep.teknikAciklama ? (
-                <div className="mt-4 border-t pt-4"><dt className="text-xs text-muted-foreground">{t("Teknik Açıklama")}</dt><dd className="mt-1 text-sm whitespace-pre-wrap">{talep.teknikAciklama}</dd></div>
-              ) : null}
-            </CardContent>
-          </Card>
-
-          {/* AI çıkarımı — Faz 3'te dolacak; şimdi dürüst durum */}
-          <Card>
-            <CardHeader className="flex-row items-center justify-between gap-2 space-y-0">
-              <h3 className="font-heading text-base font-bold tracking-tight">{t("Yapay Zekâ Önerisi")}</h3>
-              <span className={cn("inline-flex rounded-full px-2.5 py-0.5 text-[11px] font-medium", am.sinif)}>{t(am.etiket)}</span>
-            </CardHeader>
-            <CardContent>
-              {talep.aiCikarim ? (
-                <div className="space-y-2 text-sm">
-                  {talep.aiCikarim.ozet ? <p className="text-muted-foreground">{talep.aiCikarim.ozet}</p> : null}
-                  {(talep.aiCikarim.ozellikler ?? []).map((o) => (
-                    <div key={o.ad} className="flex justify-between border-b border-dashed py-1"><span className="text-muted-foreground">{o.ad}</span><span className="font-medium">{o.deger}</span></div>
-                  ))}
-                </div>
-              ) : (
-                <BosDurum ikon="solar:magic-stick-3-bold-duotone" baslik={t("Henüz AI önerisi yok")} aciklama={t("Görselden otomatik ürün çıkarımı sonraki aşamada (Faz 3) devreye girecek.")} />
-              )}
-            </CardContent>
-          </Card>
+          {/* Kalemler (çok kalemli talep) */}
+          <KalemlerBolumu talep={talep} />
 
           {/* Tedarikçi adayları — aktif (Faz 4) */}
           <Link

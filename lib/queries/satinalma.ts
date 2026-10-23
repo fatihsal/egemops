@@ -9,6 +9,7 @@ import { tedarikcilerGetir } from "@/lib/data/satinalma/tedarikciler";
 import { rfqListele } from "@/lib/data/satinalma/rfq";
 import { teklifListele } from "@/lib/data/satinalma/teklifler";
 import { firmaProfiliGetir } from "@/lib/data/satinalma/ayarlar";
+import { kalemListele } from "@/lib/data/satinalma/kalemler";
 import { queryKeys } from "@/lib/queries/keys";
 
 export function useTalepler() {
@@ -33,4 +34,8 @@ export function useTalepTeklifler(talepId: string) {
 
 export function useFirmaProfili() {
   return useQuery({ queryKey: queryKeys.satinalma.firmaProfili, queryFn: firmaProfiliGetir });
+}
+
+export function useTalepKalemler(talepId: string) {
+  return useQuery({ queryKey: queryKeys.satinalma.talepKalemler(talepId), queryFn: () => kalemListele(talepId), enabled: !!talepId });
 }

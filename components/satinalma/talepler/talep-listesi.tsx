@@ -135,7 +135,7 @@ export function TalepListesi() {
                             ) : (
                               <span className="flex size-9 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground"><Icon icon="solar:box-bold-duotone" className="size-5" /></span>
                             )}
-                            <div className="min-w-0"><span className="block truncate font-medium">{x.baslik}</span><span className="block truncate text-[11px] text-muted-foreground">{[x.marka, x.model].filter(Boolean).join(" · ") || "—"}</span></div>
+                            <div className="min-w-0"><span className="block truncate font-medium">{x.baslik}</span><span className="block truncate text-[11px] text-muted-foreground">{x.kalemSayisi && x.kalemSayisi > 0 ? `${x.kalemSayisi} ${t("kalem")}` : [x.marka, x.model].filter(Boolean).join(" · ") || "—"}</span></div>
                           </div>
                         </TableCell>
                         <TableCell className="text-center tabular-nums whitespace-nowrap">{x.adet != null ? `${x.adet} ${x.birim ?? ""}`.trim() : "—"}</TableCell>

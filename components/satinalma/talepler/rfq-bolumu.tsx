@@ -20,13 +20,13 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { useDil } from "@/components/providers/dil-provider";
-import { useTalepRfq, useTedarikciler, useFirmaProfili } from "@/lib/queries/satinalma";
+import { useTalepRfq, useTedarikciler, useFirmaProfili, useTalepKalemler } from "@/lib/queries/satinalma";
 import { rfqOlustur, rfqGuncelle, rfqSil } from "@/lib/data/satinalma/rfq";
 import { imzaUret } from "@/lib/data/satinalma/ayarlar";
 import { queryKeys } from "@/lib/queries/keys";
 import { cn } from "@/lib/utils";
 import { RFQ_DURUM_META } from "@/components/satinalma/stiller";
-import type { Rfq, Talep, Tedarikci } from "@/lib/types/satinalma";
+import type { Rfq, Talep, TalepKalem, Tedarikci } from "@/lib/types/satinalma";
 
 /** Okunabilir talep referansı — Gmail thread kimliğinin yerine geçmez. */
 function talepReferans(talep: Talep) {
@@ -35,16 +35,26 @@ function talepReferans(talep: Talep) {
 function varsayilanKonu(talep: Talep) {
   return `Teklif Talebi — ${talep.baslik} [${talepReferans(talep)}]`;
 }
-function varsayilanGovde(talep: Talep, imza: string, tedarikciAd?: string) {
-  const satir = (e: string, d: string | number | null | undefined) => (d ? `- ${e}: ${d}\n` : "");
+function kalemSatiri(k: TalepKalem): string {
+  const kod = [k.marka, k.model, k.siparisKodu].filter(Boolean).join(" ");
+  const parcalar = [
+    `${k.sira}. ${k.ad}`,
+    kod ? `(${kod})` : "",
+    k.adet != null ? `${k.adet} ${k.birim ?? ""}`.trim() : "",
+    k.urunDurumu === "yeni" ? "yeni/orijinal" : "",
+    k.kapsam === "parca" ? "yalnızca parça" : k.kapsam === "komple" ? "komple montaj" : "",
+  ].filter(Boolean);
+  return `- ${parcalar.join(" · ")}`;
+}
+function varsayilanGovde(talep: Talep, imza: string, kalemler: TalepKalem[], tedarikciAd?: string) {
+  const malzemeler = kalemler.length > 0
+    ? kalemler.map(kalemSatiri).join("\n")
+    : [`- ${talep.baslik}`, [talep.marka, talep.model].filter(Boolean).join(" "), talep.adet != null ? `${talep.adet} ${talep.birim ?? ""}`.trim() : ""].filter(Boolean).join(" · ");
   return (
     `Sayın ${tedarikciAd || "Yetkili"},\n\n` +
-    `Aşağıdaki malzeme için fiyat teklifinizi rica ederiz (Ref: ${talepReferans(talep)}):\n\n` +
-    satir("Malzeme", talep.baslik) +
-    satir("Marka/Model", [talep.marka, talep.model].filter(Boolean).join(" ")) +
-    satir("Adet", talep.adet != null ? `${talep.adet} ${talep.birim ?? ""}`.trim() : null) +
-    satir("Teknik açıklama", talep.teknikAciklama) +
-    `\nLütfen birim fiyat, para birimi, KDV durumu, termin süresi, nakliye ve garanti bilgilerini belirtiniz.\n\n` +
+    `Aşağıdaki malzeme(ler) için fiyat teklifinizi rica ederiz (Ref: ${talepReferans(talep)}):\n\n` +
+    `${malzemeler}\n\n` +
+    `Lütfen her kalem için birim fiyat, para birimi, KDV durumu, termin süresi, nakliye ve garanti bilgilerini belirtiniz.\n\n` +
     imza
   );
 }
@@ -54,6 +64,7 @@ export function RfqBolumu({ talep }: { talep: Talep }) {
   const qc = useQueryClient();
   const { data: rfqlar, isLoading } = useTalepRfq(talep.id);
   const { data: tedarikciler } = useTedarikciler();
+  const { data: kalemler } = useTalepKalemler(talep.id);
   const { data: profil } = useFirmaProfili();
   const imza = profil ? imzaUret(profil) : "Saygılarımızla,";
   const [sheetAcik, setSheetAcik] = React.useState(false);
@@ -148,13 +159,13 @@ export function RfqBolumu({ talep }: { talep: Talep }) {
         )}
       </CardContent>
 
-      <RfqSheet acik={sheetAcik} setAcik={setSheetAcik} talep={talep} tedarikciler={tedarikciler ?? []} duzenlenen={duzenlenen} imza={imza} onKaydet={tazele} />
+      <RfqSheet acik={sheetAcik} setAcik={setSheetAcik} talep={talep} tedarikciler={tedarikciler ?? []} kalemler={kalemler ?? []} duzenlenen={duzenlenen} imza={imza} onKaydet={tazele} />
     </Card>
   );
 }
 
-function RfqSheet({ acik, setAcik, talep, tedarikciler, duzenlenen, imza, onKaydet }: {
-  acik: boolean; setAcik: (o: boolean) => void; talep: Talep; tedarikciler: Tedarikci[]; duzenlenen: Rfq | null; imza: string; onKaydet: () => void;
+function RfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, duzenlenen, imza, onKaydet }: {
+  acik: boolean; setAcik: (o: boolean) => void; talep: Talep; tedarikciler: Tedarikci[]; kalemler: TalepKalem[]; duzenlenen: Rfq | null; imza: string; onKaydet: () => void;
 }) {
   const { t } = useDil();
   const [tedId, setTedId] = React.useState("");
@@ -175,16 +186,16 @@ function RfqSheet({ acik, setAcik, talep, tedarikciler, duzenlenen, imza, onKayd
       setTedId("");
       setKonu(varsayilanKonu(talep));
       setAlici("");
-      setGovde(varsayilanGovde(talep, imza));
+      setGovde(varsayilanGovde(talep, imza, kalemler));
     }
-  }, [acik, duzenlenen, talep, imza]);
+  }, [acik, duzenlenen, talep, imza, kalemler]);
 
   function tedarikciSec(id: string) {
     setTedId(id);
     const ted = tedarikciler.find((x) => x.id === id);
     if (ted?.eposta) setAlici(ted.eposta);
     // Yeni taslaksa gövdedeki hitabı güncelle.
-    if (!duzenlenen && ted) setGovde(varsayilanGovde(talep, imza, ted.ad));
+    if (!duzenlenen && ted) setGovde(varsayilanGovde(talep, imza, kalemler, ted.ad));
   }
 
   async function kaydet() {
