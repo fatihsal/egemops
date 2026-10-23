@@ -23,13 +23,15 @@ import {
   PencilLine,
   PieChart,
   Settings,
+  ShoppingCart,
   SlidersHorizontal,
+  Truck,
   Users,
   Wrench,
   Zap,
 } from "lucide-react";
 
-export type ModulAnahtar = "enerji" | "bakim";
+export type ModulAnahtar = "enerji" | "bakim" | "satinalma";
 
 export interface NavOgesi {
   baslik: string;
@@ -84,6 +86,19 @@ export const moduller: ModulBilgi[] = [
     ctaMetin: "Bakım Yönetimine Git",
     oneCikanlar: ["Bakım planları ve takvimi", "SOP / checklist yönetimi", "Bakım kayıtları ve raporlar"],
     gorsel: "/kart-bakim.png",
+  },
+  {
+    anahtar: "satinalma",
+    ad: "Akıllı Teknik Satın Alma",
+    aciklama: "Malzeme taleplerini yapay zekâ ile oluşturun, tedarikçi tekliflerini toplayın ve karşılaştırın.",
+    ikon: ShoppingCart,
+    href: "/satinalma",
+    renk: "#f97316",
+    renk2: "#ea580c",
+    rozet: "MVP",
+    ctaMetin: "Satın Almaya Git",
+    oneCikanlar: ["Görselden AI ürün önerisi", "Tedarikçi teklif talepleri", "Teklif karşılaştırma"],
+    gorsel: "/kart-satinalma.png",
   },
 ];
 
@@ -160,15 +175,33 @@ export const navGruplari: NavGrup[] = [
     modul: "bakim",
     ogeler: [{ baslik: "Ayarlar", href: "/bakim/ayarlar", ikon: Settings }],
   },
+
+  // -------------------------- SATIN ALMA --------------------------
+  {
+    baslik: "Satın Alma",
+    modul: "satinalma",
+    ogeler: [
+      { baslik: "Dashboard", href: "/satinalma", ikon: LayoutDashboard },
+      { baslik: "Malzeme Talepleri", href: "/satinalma/talepler", ikon: ClipboardList },
+      { baslik: "Tedarikçiler", href: "/satinalma/tedarikciler", ikon: Truck },
+    ],
+  },
+  {
+    baslik: "Ayarlar",
+    modul: "satinalma",
+    ogeler: [{ baslik: "Ayarlar", href: "/satinalma/ayarlar", ikon: Settings }],
+  },
 ];
 
 /** Verilen yola göre aktif modülü döndürür. */
 export function aktifModul(pathname: string): ModulAnahtar {
-  return pathname === "/bakim" || pathname.startsWith("/bakim/") ? "bakim" : "enerji";
+  if (pathname === "/satinalma" || pathname.startsWith("/satinalma/")) return "satinalma";
+  if (pathname === "/bakim" || pathname.startsWith("/bakim/")) return "bakim";
+  return "enerji";
 }
 
 /** Modül kök rotaları (sidebar'da yalnızca tam eşleşmede aktif). */
-export const MODUL_KOKLERI = ["/enerji", "/bakim"];
+export const MODUL_KOKLERI = ["/enerji", "/bakim", "/satinalma"];
 
 /** Aktif modülün nav gruplarını döndürür. */
 export function modulGruplari(modul: ModulAnahtar): NavGrup[] {

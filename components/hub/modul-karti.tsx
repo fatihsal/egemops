@@ -11,10 +11,12 @@ import type { ModulBilgi } from "@/lib/nav";
 const ROZET_IKON: Record<string, string> = {
   enerji: "solar:bolt-bold",
   bakim: "solar:magic-stick-3-bold",
+  satinalma: "solar:cart-large-2-bold",
 };
 const FILIGRAN: Record<string, string> = {
   enerji: "solar:chart-2-bold-duotone",
   bakim: "solar:settings-bold-duotone",
+  satinalma: "solar:cart-large-minimalistic-bold-duotone",
 };
 
 export function ModulKarti({ modul }: { modul: ModulBilgi }) {

@@ -37,6 +37,12 @@ const META: Record<string, SayfaMeta> = {
   "/bakim/dokumanlar": { baslik: "Dokümanlar", altBaslik: "Makine ve bakım planlarına bağlı teknik dokümanlar." },
   "/bakim/raporlar": { baslik: "KPI & Raporlar", altBaslik: "Planlı bakım performans göstergeleri ve raporları." },
   "/bakim/ayarlar": { baslik: "Bakım Ayarları", altBaslik: "Bölüm, makine grubu, periyot ve kritiklik tanımları." },
+
+  // ------------------------- SATIN ALMA -------------------------
+  "/satinalma": { baslik: "Akıllı Teknik Satın Alma", altBaslik: "Malzeme taleplerinin, tedarikçi tekliflerinin ve karşılaştırmaların genel görünümü." },
+  "/satinalma/talepler": { baslik: "Malzeme Talepleri", altBaslik: "Teknik malzeme taleplerini oluşturun, AI önerileriyle tamamlayın ve takip edin." },
+  "/satinalma/tedarikciler": { baslik: "Tedarikçiler", altBaslik: "Doğrulanabilir kaynaklara dayalı tedarikçi adaylarını yönetin." },
+  "/satinalma/ayarlar": { baslik: "Satın Alma Ayarları", altBaslik: "E-posta (Gmail) bağlantısı ve izinli test alıcıları." },
 };
 
 const VARSAYILAN: SayfaMeta = META["/enerji"];
@@ -60,6 +66,9 @@ export function sayfaMeta(pathname: string): SayfaMeta {
   }
   if (pathname.startsWith("/bakim/operator-kontrolleri/")) {
     return { baslik: "Operatör Kontrolü", altBaslik: "Haftalık kontrol uygulama ekranı." };
+  }
+  if (pathname.startsWith("/satinalma/talepler/")) {
+    return { baslik: "Talep Detayı", altBaslik: "AI çıkarımı, tedarikçi adayları, teklif talepleri ve karşılaştırma." };
   }
   return VARSAYILAN;
 }
