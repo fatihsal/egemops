@@ -45,14 +45,13 @@ export async function POST(req: Request) {
     const alici = (rfq.alici_eposta ?? "").trim();
     if (!alici) return NextResponse.json({ hata: "Alıcı e-posta adresi boş." }, { status: 400 });
 
-    // GÜVENLİK: yalnızca izinli test alıcılarına gönderim.
+    // GÜVENLİK: SATINALMA_IZINLI_ALICILAR doluysa yalnızca o adreslere gönderilir
+    // (test kalkanı). Boşsa kısıt yoktur (canlı) — her gönderim UI'da kullanıcı
+    // onayından geçer. Gerçek tedarikçilere göndermek için listeyi boşaltın.
     const izinli = izinliAlicilar();
-    if (izinli.length === 0) {
-      return NextResponse.json({ hata: "İzinli alıcı tanımlı değil (SATINALMA_IZINLI_ALICILAR boş)." }, { status: 403 });
-    }
-    if (!izinli.includes(alici.toLowerCase())) {
+    if (izinli.length > 0 && !izinli.includes(alici.toLowerCase())) {
       return NextResponse.json(
-        { hata: `"${alici}" izinli test alıcıları arasında değil. Google Test users + SATINALMA_IZINLI_ALICILAR listesine ekleyin.` },
+        { hata: `"${alici}" izinli test alıcıları arasında değil. Gerçek tedarikçilere göndermek için .env.local'deki SATINALMA_IZINLI_ALICILAR'ı boşaltın ya da bu adresi ekleyin.` },
         { status: 403 },
       );
     }

@@ -156,6 +156,7 @@ function AdayAraSheet({ acik, setAcik, ilkSorgu, onKaydet }: { acik: boolean; se
   const [araniyor, setAraniyor] = React.useState(false);
   const [sonuclar, setSonuclar] = React.useState<AramaSonucu[] | null>(null);
   const [kaydedilen, setKaydedilen] = React.useState<Set<string>>(new Set());
+  const [ekleniyor, setEkleniyor] = React.useState<Set<string>>(new Set());
 
   React.useEffect(() => { if (acik) setSorgu(ilkSorgu); }, [acik, ilkSorgu]);
 
@@ -181,13 +182,38 @@ function AdayAraSheet({ acik, setAcik, ilkSorgu, onKaydet }: { acik: boolean; se
   }
 
   async function kaydet(r: AramaSonucu) {
+    if (ekleniyor.has(r.url)) return;
+    setEkleniyor((o) => new Set(o).add(r.url));
     try {
-      await tedarikciOlustur({ ad: r.baslik.slice(0, 120), kaynakUrl: r.url, webSitesi: `https://${r.alanAdi}`, notlar: r.ozet?.slice(0, 500) || null });
+      // Gerçek siteden iletişim bilgisi bul (e-posta UYDURULMAZ; sayfadan kazınır).
+      let eposta: string | null = null;
+      let telefon: string | null = null;
+      let digerEpostalar: string[] = [];
+      try {
+        const il = await fetch("/api/satinalma/tedarikci-iletisim", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: r.url }),
+        });
+        if (il.ok) {
+          const d = await il.json();
+          const eps: { eposta: string }[] = d.epostalar ?? [];
+          eposta = eps[0]?.eposta ?? null;
+          digerEpostalar = eps.slice(1).map((x) => x.eposta);
+          telefon = (d.telefonlar ?? [])[0] ?? null;
+        }
+      } catch { /* iletişim bulunamazsa yine de kaydet */ }
+
+      const notlar = [r.ozet?.slice(0, 400) || "", digerEpostalar.length ? `Diğer e-postalar: ${digerEpostalar.join(", ")}` : ""].filter(Boolean).join("\n") || null;
+      await tedarikciOlustur({ ad: r.baslik.slice(0, 120), kaynakUrl: r.url, webSitesi: `https://${r.alanAdi}`, eposta, telefon, notlar });
       setKaydedilen((o) => new Set(o).add(r.url));
-      toast.success(t("Tedarikçi eklendi"));
       onKaydet();
+      if (eposta) toast.success(`${t("Tedarikçi eklendi")} — ${eposta}`);
+      else toast.warning(t("Tedarikçi eklendi, e-posta bulunamadı (Düzenle ile ekleyin)."));
     } catch (e) {
       toast.error(t("Eklenemedi"), { description: e instanceof Error ? e.message : undefined });
+    } finally {
+      setEkleniyor((o) => { const n = new Set(o); n.delete(r.url); return n; });
     }
   }
 
@@ -214,6 +240,7 @@ function AdayAraSheet({ acik, setAcik, ilkSorgu, onKaydet }: { acik: boolean; se
           ) : (
             sonuclar.map((r) => {
               const eklendi = kaydedilen.has(r.url);
+              const ekleniyorMu = ekleniyor.has(r.url);
               return (
                 <div key={r.url} className="rounded-xl border p-3">
                   <div className="flex items-start justify-between gap-2">
@@ -221,8 +248,8 @@ function AdayAraSheet({ acik, setAcik, ilkSorgu, onKaydet }: { acik: boolean; se
                       <p className="truncate font-medium">{r.baslik}</p>
                       <a href={r.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-blue-600 hover:underline dark:text-blue-400"><Icon icon="solar:link-linear" className="size-3.5" />{r.alanAdi}</a>
                     </div>
-                    <Button size="sm" variant={eklendi ? "outline" : "default"} className={cn("shrink-0 gap-1", !eklendi && "bg-orange-600 text-white hover:bg-orange-700")} disabled={eklendi} onClick={() => kaydet(r)}>
-                      <Icon icon={eklendi ? "solar:check-circle-bold" : "solar:add-circle-linear"} className="size-4" />{t(eklendi ? "Eklendi" : "Ekle")}
+                    <Button size="sm" variant={eklendi ? "outline" : "default"} className={cn("shrink-0 gap-1", !eklendi && "bg-orange-600 text-white hover:bg-orange-700")} disabled={eklendi || ekleniyorMu} onClick={() => kaydet(r)}>
+                      <Icon icon={ekleniyorMu ? "svg-spinners:180-ring" : eklendi ? "solar:check-circle-bold" : "solar:add-circle-linear"} className="size-4" />{t(ekleniyorMu ? "Bulunuyor…" : eklendi ? "Eklendi" : "Ekle")}
                     </Button>
                   </div>
                   {r.ozet ? <p className="mt-1.5 line-clamp-2 text-xs text-muted-foreground">{r.ozet}</p> : null}

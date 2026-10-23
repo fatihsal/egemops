@@ -113,9 +113,9 @@ export function GmailAyar() {
       <Card>
         <CardHeader><h3 className="font-heading text-base font-bold tracking-tight">{t("İzinli Test Alıcıları")}</h3></CardHeader>
         <CardContent>
-          <p className="mb-3 text-sm text-muted-foreground">{t("Teklif e-postaları YALNIZCA bu adreslere gönderilebilir. Değiştirmek için .env.local içindeki SATINALMA_IZINLI_ALICILAR değerini güncelleyin.")}</p>
+          <p className="mb-3 text-sm text-muted-foreground">{t("Bu liste DOLUYSA teklif e-postaları yalnızca bu adreslere gönderilebilir (test kalkanı). BOŞSA kısıtlama yoktur ve gerçek tedarikçilere gönderilebilir — her gönderim yine onayınızdan geçer. Değiştirmek için .env.local içindeki SATINALMA_IZINLI_ALICILAR değerini güncelleyin.")}</p>
           {!durum || durum.izinliAlicilar.length === 0 ? (
-            <p className="rounded-lg border border-dashed p-3 text-sm text-amber-600 dark:text-amber-400">{t("Henüz izinli alıcı tanımlı değil — gönderim engellenir.")}</p>
+            <p className="rounded-lg border border-dashed p-3 text-sm text-muted-foreground">{t("Liste boş — kısıtlama yok, her adrese gönderilebilir (gönderim onayla).")}</p>
           ) : (
             <div className="flex flex-wrap gap-2">
               {durum.izinliAlicilar.map((a) => (
