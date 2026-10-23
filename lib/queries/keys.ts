@@ -91,4 +91,11 @@ export const queryKeys = {
     dokumanlar: ["bakim", "dokumanlar"] as const,
     raporlar: ["bakim", "raporlar"] as const,
   },
+  satinalma: {
+    talepler: ["satinalma", "talepler"] as const,
+    talep: (id: string) => ["satinalma", "talep", id] as const,
+    tedarikciler: ["satinalma", "tedarikciler"] as const,
+    talepRfq: (talepId: string) => ["satinalma", "rfq", talepId] as const,
+    talepTeklifler: (talepId: string) => ["satinalma", "teklifler", talepId] as const,
+  },
 } as const;
