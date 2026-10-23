@@ -51,9 +51,29 @@ export function RfqBolumu({ talep }: { talep: Talep }) {
   const { data: tedarikciler } = useTedarikciler();
   const [sheetAcik, setSheetAcik] = React.useState(false);
   const [duzenlenen, setDuzenlenen] = React.useState<Rfq | null>(null);
+  const [gonderiliyor, setGonderiliyor] = React.useState<Set<string>>(new Set());
 
   function tazele() {
     qc.invalidateQueries({ queryKey: queryKeys.satinalma.talepRfq(talep.id) });
+  }
+
+  async function gonder(r: Rfq) {
+    if (!r.aliciEposta) { toast.error(t("Önce alıcı e-posta ekleyin (Düzenle).")); return; }
+    if (gonderiliyor.has(r.id)) return;
+    if (!window.confirm(`${t("Şu adrese teklif e-postası gönderilsin mi?")}\n\n${r.aliciEposta}\n${r.konu ?? ""}`)) return;
+    setGonderiliyor((o) => new Set(o).add(r.id));
+    try {
+      const resp = await fetch("/api/satinalma/rfq-gonder", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ rfqId: r.id }) });
+      const metin = await resp.text();
+      const sonuc = metin ? JSON.parse(metin) : {};
+      if (!resp.ok) { toast.error(t("Gönderilemedi"), { description: sonuc?.hata ?? `HTTP ${resp.status}` }); return; }
+      toast.success(t("Teklif e-postası gönderildi"));
+      tazele();
+    } catch (e) {
+      toast.error(t("Gönderilemedi"), { description: e instanceof Error ? e.message : undefined });
+    } finally {
+      setGonderiliyor((o) => { const n = new Set(o); n.delete(r.id); return n; });
+    }
   }
 
   function yeni() { setDuzenlenen(null); setSheetAcik(true); }
@@ -103,9 +123,14 @@ export function RfqBolumu({ talep }: { talep: Talep }) {
                   </div>
                   <span className={cn("shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-medium", dm.sinif)}>{t(dm.etiket)}</span>
                   {(r.durum === "taslak" || r.durum === "onay_bekliyor") ? (
-                    <button type="button" onClick={() => durumToggle(r)} title={t(r.durum === "taslak" ? "Onaya Al" : "Taslağa Al")} className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
-                      <Icon icon={r.durum === "taslak" ? "solar:check-circle-linear" : "solar:undo-left-linear"} className="size-4" />
-                    </button>
+                    <>
+                      <button type="button" onClick={() => durumToggle(r)} title={t(r.durum === "taslak" ? "Onaya Al" : "Taslağa Al")} className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
+                        <Icon icon={r.durum === "taslak" ? "solar:check-circle-linear" : "solar:undo-left-linear"} className="size-4" />
+                      </button>
+                      <Button size="sm" className="h-7 gap-1 bg-emerald-600 px-2 text-xs text-white hover:bg-emerald-700" disabled={gonderiliyor.has(r.id)} onClick={() => gonder(r)}>
+                        <Icon icon={gonderiliyor.has(r.id) ? "svg-spinners:180-ring" : "solar:plain-2-bold"} className="size-3.5" />{t("Gönder")}
+                      </Button>
+                    </>
                   ) : null}
                   <button type="button" onClick={() => duzenle(r)} aria-label={t("Düzenle")} className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"><Icon icon="solar:pen-linear" className="size-4" /></button>
                   <button type="button" onClick={() => sil(r.id)} aria-label={t("Sil")} className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950"><Icon icon="solar:trash-bin-trash-linear" className="size-4" /></button>
