@@ -24,6 +24,7 @@ import { useDil } from "@/components/providers/dil-provider";
 import { queryKeys } from "@/lib/queries/keys";
 import { cn } from "@/lib/utils";
 import { AI_DURUM_META, TALEP_DURUM_META, tarihKisa } from "@/components/satinalma/stiller";
+import { RfqBolumu } from "@/components/satinalma/talepler/rfq-bolumu";
 import type { TalepDurum } from "@/lib/types/satinalma";
 
 export function TalepDetay({ id }: { id: string }) {
@@ -147,10 +148,12 @@ export function TalepDetay({ id }: { id: string }) {
             <Icon icon="solar:alt-arrow-right-linear" className="size-4 text-muted-foreground" />
           </Link>
 
+          {/* Teklif talepleri (RFQ) — aktif (Faz 5) */}
+          <RfqBolumu talep={talep} />
+
           {/* Sonraki fazlar — dürüst yer tutucular */}
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2">
             {[
-              { ik: "solar:letter-bold-duotone", b: "Teklif Talepleri (RFQ)", a: "Faz 5–6" },
               { ik: "solar:inbox-in-bold-duotone", b: "Gelen Teklifler", a: "Faz 7" },
               { ik: "solar:chart-square-bold-duotone", b: "Karşılaştırma", a: "Faz 8" },
             ].map((s) => (

@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { taleplerGetir, talepGetir } from "@/lib/data/satinalma/talepler";
 import { tedarikcilerGetir } from "@/lib/data/satinalma/tedarikciler";
+import { rfqListele } from "@/lib/data/satinalma/rfq";
 import { queryKeys } from "@/lib/queries/keys";
 
 export function useTalepler() {
@@ -18,4 +19,8 @@ export function useTalep(id: string) {
 
 export function useTedarikciler() {
   return useQuery({ queryKey: queryKeys.satinalma.tedarikciler, queryFn: tedarikcilerGetir });
+}
+
+export function useTalepRfq(talepId: string) {
+  return useQuery({ queryKey: queryKeys.satinalma.talepRfq(talepId), queryFn: () => rfqListele(talepId), enabled: !!talepId });
 }
