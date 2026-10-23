@@ -4,6 +4,7 @@ import { supabaseSunucu } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { gmailAyarVar, gmailProvider, gmailTokenYenile } from "@/lib/satinalma/mail/gmail";
 import { hesapGetir, hesapAccessGuncelle } from "@/lib/satinalma/mail/mail-hesabi";
+import { rfqIcerikHash } from "@/lib/satinalma/rfq-hash";
 
 // RFQ gönderimi — GERÇEK e-posta. Kullanıcı onayı UI'da alınır; burada
 // alıcının İZİNLİ TEST ALICILARI arasında olması zorunlu kılınır.
@@ -23,7 +24,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ hata: "Gmail yapılandırılmamış (.env.local eksik)." }, { status: 503 });
     }
 
-    let govde: { rfqId?: string };
+    let govde: { rfqId?: string; onayHash?: string };
     try {
       govde = await req.json();
     } catch {
@@ -31,6 +32,8 @@ export async function POST(req: Request) {
     }
     const rfqId = (govde.rfqId ?? "").trim();
     if (!rfqId) return NextResponse.json({ hata: "rfqId gerekli." }, { status: 400 });
+    const onayHash = (govde.onayHash ?? "").trim();
+    if (!onayHash) return NextResponse.json({ hata: "Onay gerekli." }, { status: 400 });
 
     // RFQ'yu getir
     const { data: rfq, error: rfqHata } = await sb
@@ -41,6 +44,16 @@ export async function POST(req: Request) {
       .maybeSingle();
     if (rfqHata) return NextResponse.json({ hata: rfqHata.message }, { status: 500 });
     if (!rfq) return NextResponse.json({ hata: "RFQ bulunamadı." }, { status: 404 });
+
+    // Onay içeriğe bağlı: onaylanan içerik ile DB'deki içerik aynı olmalı.
+    const guncelHash = rfqIcerikHash(rfq.alici_eposta, rfq.konu, rfq.govde);
+    if (onayHash !== guncelHash) {
+      return NextResponse.json({ hata: "RFQ içeriği onaydan sonra değişmiş. Lütfen önizleyip yeniden onaylayın." }, { status: 409 });
+    }
+
+    if (rfq.durum === "gonderildi" || rfq.durum === "yanitlandi") {
+      return NextResponse.json({ hata: "Bu RFQ zaten gönderilmiş." }, { status: 409 });
+    }
 
     const alici = (rfq.alici_eposta ?? "").trim();
     if (!alici) return NextResponse.json({ hata: "Alıcı e-posta adresi boş." }, { status: 400 });
@@ -85,7 +98,7 @@ export async function POST(req: Request) {
         konu: rfq.konu ?? "(konu yok)",
         govde: rfq.govde ?? "",
       });
-      await db.from("sa_rfq").update({ durum: "gonderildi", provider: "gmail", message_id: messageId, thread_id: threadId ?? null, gonderildi_at: new Date().toISOString() }).eq("id", rfqId);
+      await db.from("sa_rfq").update({ durum: "gonderildi", provider: "gmail", message_id: messageId, thread_id: threadId ?? null, onaylayan: user.id, gonderildi_at: new Date().toISOString() }).eq("id", rfqId);
       await db.from("sa_mail_log").insert({ rfq_id: rfqId, provider: "gmail", message_id: messageId, durum: "gonderildi" });
       return NextResponse.json({ ok: true, messageId });
     } catch (e) {
