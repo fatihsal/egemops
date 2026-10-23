@@ -1,11 +1,11 @@
-import { Yakinda } from "@/components/satinalma/yakinda";
+import { Suspense } from "react";
+
+import { TedarikciListesi } from "@/components/satinalma/tedarikciler/tedarikci-listesi";
 
 export default function TedarikcilerPage() {
   return (
-    <Yakinda
-      ikon="solar:shop-2-bold-duotone"
-      baslik="Tedarikçiler"
-      aciklama="Doğrulanabilir kaynaklı tedarikçi yönetimi Faz 4'te eklenecek."
-    />
+    <Suspense>
+      <TedarikciListesi />
+    </Suspense>
   );
 }

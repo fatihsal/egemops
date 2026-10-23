@@ -83,6 +83,12 @@ export async function tedarikciOlustur(girdi: TedarikciOlusturGirdi): Promise<st
   return (data as { id: string }).id;
 }
 
+export async function tedarikciDogrulamaAyarla(id: string, deger: boolean): Promise<void> {
+  const supabase = supabaseTarayici();
+  const { error } = await supabase.from("sa_tedarikciler").update({ dogrulanmis: deger }).eq("id", id);
+  if (error) throw new Error(error.message);
+}
+
 export async function tedarikciSil(id: string): Promise<void> {
   const supabase = supabaseTarayici();
   const { error } = await supabase.from("sa_tedarikciler").update({ deleted_at: new Date().toISOString() }).eq("id", id);
