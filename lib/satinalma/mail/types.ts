@@ -9,5 +9,5 @@ export interface GidenMail {
 
 export interface MailProvider {
   ad: string;
-  gonder(mail: GidenMail): Promise<{ messageId: string }>;
+  gonder(mail: GidenMail): Promise<{ messageId: string; threadId?: string }>;
 }

@@ -92,5 +92,7 @@ export interface Teklif {
   teknikUygun: boolean | null;
   teknikNot: string | null;
   notlar: string | null;
+  aiOzet: string | null;
+  okunamadi: boolean;
   createdAt: string;
 }

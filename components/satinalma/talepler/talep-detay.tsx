@@ -25,6 +25,7 @@ import { queryKeys } from "@/lib/queries/keys";
 import { cn } from "@/lib/utils";
 import { AI_DURUM_META, TALEP_DURUM_META, tarihKisa } from "@/components/satinalma/stiller";
 import { RfqBolumu } from "@/components/satinalma/talepler/rfq-bolumu";
+import { TeklifBolumu } from "@/components/satinalma/talepler/teklif-bolumu";
 import type { TalepDurum } from "@/lib/types/satinalma";
 
 export function TalepDetay({ id }: { id: string }) {
@@ -151,18 +152,8 @@ export function TalepDetay({ id }: { id: string }) {
           {/* Teklif talepleri (RFQ) — aktif (Faz 5) */}
           <RfqBolumu talep={talep} />
 
-          {/* Sonraki fazlar — dürüst yer tutucular */}
-          <div className="grid gap-4 sm:grid-cols-2">
-            {[
-              { ik: "solar:inbox-in-bold-duotone", b: "Gelen Teklifler", a: "Faz 7" },
-              { ik: "solar:chart-square-bold-duotone", b: "Karşılaştırma", a: "Faz 8" },
-            ].map((s) => (
-              <div key={s.b} className="flex items-center gap-3 rounded-xl border border-dashed p-4 text-sm text-muted-foreground">
-                <Icon icon={s.ik} className="size-7 opacity-60" />
-                <div><p className="font-medium text-foreground/80">{t(s.b)}</p><p className="text-xs">{t("Sonraki aşamada")} · {s.a}</p></div>
-              </div>
-            ))}
-          </div>
+          {/* Gelen teklifler + karşılaştırma — otomatik (Faz 7-8) */}
+          <TeklifBolumu talepId={talep.id} />
         </div>
 
         {/* Sağ: fotoğraflar */}

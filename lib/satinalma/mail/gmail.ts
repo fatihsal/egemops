@@ -8,8 +8,13 @@ const TOKEN_URL = "https://oauth2.googleapis.com/token";
 const USERINFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo";
 const GONDER_URL = "https://gmail.googleapis.com/gmail/v1/users/me/messages/send";
 
-// Faz 6: yalnızca gönderme. (gmail.readonly Faz 9'da eklenecek.)
-const SCOPES = ["openid", "email", "https://www.googleapis.com/auth/gmail.send"];
+// gönderme + gelen teklifleri okuma (otomatik toplama için).
+const SCOPES = [
+  "openid",
+  "email",
+  "https://www.googleapis.com/auth/gmail.send",
+  "https://www.googleapis.com/auth/gmail.readonly",
+];
 
 export function gmailAyarVar(): boolean {
   return !!(process.env.GMAIL_CLIENT_ID && process.env.GMAIL_CLIENT_SECRET && process.env.GMAIL_REDIRECT_URI);
@@ -120,7 +125,86 @@ export function gmailProvider(accessToken: string): MailProvider {
       });
       if (!r.ok) throw new Error(`Gmail gönderim hatası (HTTP ${r.status}): ${await r.text()}`);
       const d = await r.json();
-      return { messageId: d?.id ?? "" };
+      return { messageId: d?.id ?? "", threadId: d?.threadId };
     },
   };
+}
+
+// ---------------------------------------------------------------------------
+// OKUMA (gmail.readonly) — gelen teklifleri otomatik toplamak için
+// ---------------------------------------------------------------------------
+
+export interface GmailEk {
+  ekId: string;
+  dosyaAd: string;
+  mimeType: string;
+}
+export interface GmailMesaj {
+  id: string;
+  threadId: string;
+  from: string;
+  tarih: string;
+  konu: string;
+  metin: string;
+  ekler: GmailEk[];
+}
+
+function base64urlCoz(s: string): Buffer {
+  return Buffer.from(s.replace(/-/g, "+").replace(/_/g, "/"), "base64");
+}
+
+function basligiBul(headers: { name: string; value: string }[], ad: string): string {
+  return headers.find((h) => h.name.toLowerCase() === ad.toLowerCase())?.value ?? "";
+}
+
+// payload parçalarını gezerek düz metin gövdesini ve ekleri toplar.
+function parcalariGez(part: Record<string, unknown> | undefined, metin: { v: string }, ekler: GmailEk[]) {
+  if (!part) return;
+  const mimeType = (part.mimeType as string) ?? "";
+  const filename = (part.filename as string) ?? "";
+  const body = part.body as { data?: string; attachmentId?: string } | undefined;
+
+  if (filename && body?.attachmentId) {
+    ekler.push({ ekId: body.attachmentId, dosyaAd: filename, mimeType });
+  } else if (mimeType === "text/plain" && body?.data) {
+    metin.v += base64urlCoz(body.data).toString("utf8") + "\n";
+  }
+  const parts = part.parts as Record<string, unknown>[] | undefined;
+  if (parts) for (const p of parts) parcalariGez(p, metin, ekler);
+}
+
+/** Bir thread'deki tüm mesajları (gövde + ek listesi) döndürür. */
+export async function gmailThreadMesajlari(accessToken: string, threadId: string): Promise<GmailMesaj[]> {
+  const r = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/threads/${threadId}?format=full`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!r.ok) throw new Error(`Gmail thread okunamadı (HTTP ${r.status}): ${await r.text()}`);
+  const d = await r.json();
+  const mesajlar: GmailMesaj[] = [];
+  for (const m of d?.messages ?? []) {
+    const headers = (m.payload?.headers ?? []) as { name: string; value: string }[];
+    const metin = { v: "" };
+    const ekler: GmailEk[] = [];
+    parcalariGez(m.payload, metin, ekler);
+    mesajlar.push({
+      id: m.id,
+      threadId: m.threadId,
+      from: basligiBul(headers, "From"),
+      tarih: basligiBul(headers, "Date"),
+      konu: basligiBul(headers, "Subject"),
+      metin: metin.v.trim(),
+      ekler,
+    });
+  }
+  return mesajlar;
+}
+
+/** Bir ekin ikili içeriğini indirir. */
+export async function gmailEkIndir(accessToken: string, mesajId: string, ekId: string): Promise<Buffer> {
+  const r = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${mesajId}/attachments/${ekId}`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!r.ok) throw new Error(`Ek indirilemedi (HTTP ${r.status})`);
+  const d = await r.json();
+  return base64urlCoz(d?.data ?? "");
 }

@@ -80,12 +80,12 @@ export async function POST(req: Request) {
     // Gönder
     const db = supabaseAdmin();
     try {
-      const { messageId } = await gmailProvider(accessToken).gonder({
+      const { messageId, threadId } = await gmailProvider(accessToken).gonder({
         alici,
         konu: rfq.konu ?? "(konu yok)",
         govde: rfq.govde ?? "",
       });
-      await db.from("sa_rfq").update({ durum: "gonderildi", provider: "gmail", message_id: messageId, gonderildi_at: new Date().toISOString() }).eq("id", rfqId);
+      await db.from("sa_rfq").update({ durum: "gonderildi", provider: "gmail", message_id: messageId, thread_id: threadId ?? null, gonderildi_at: new Date().toISOString() }).eq("id", rfqId);
       await db.from("sa_mail_log").insert({ rfq_id: rfqId, provider: "gmail", message_id: messageId, durum: "gonderildi" });
       return NextResponse.json({ ok: true, messageId });
     } catch (e) {

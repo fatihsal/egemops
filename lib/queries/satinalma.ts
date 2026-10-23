@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { taleplerGetir, talepGetir } from "@/lib/data/satinalma/talepler";
 import { tedarikcilerGetir } from "@/lib/data/satinalma/tedarikciler";
 import { rfqListele } from "@/lib/data/satinalma/rfq";
+import { teklifListele } from "@/lib/data/satinalma/teklifler";
 import { queryKeys } from "@/lib/queries/keys";
 
 export function useTalepler() {
@@ -23,4 +24,8 @@ export function useTedarikciler() {
 
 export function useTalepRfq(talepId: string) {
   return useQuery({ queryKey: queryKeys.satinalma.talepRfq(talepId), queryFn: () => rfqListele(talepId), enabled: !!talepId });
+}
+
+export function useTalepTeklifler(talepId: string) {
+  return useQuery({ queryKey: queryKeys.satinalma.talepTeklifler(talepId), queryFn: () => teklifListele(talepId), enabled: !!talepId });
 }
