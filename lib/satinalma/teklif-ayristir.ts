@@ -18,13 +18,14 @@ export interface AyristirilmisTeklif {
   garantiAy: number | null;
   teknikUygun: boolean | null;
   teknikNot: string | null;
+  gecerlilik: string | null;
   ozet: string | null;
   okunamadi: boolean;
 }
 
 const BOS: AyristirilmisTeklif = {
   tur: "diger", fiyat: null, paraBirimi: null, kdvDahil: null, kdvOran: null, terminGun: null,
-  nakliye: null, garantiAy: null, teknikUygun: null, teknikNot: null, ozet: null, okunamadi: false,
+  nakliye: null, garantiAy: null, teknikUygun: null, teknikNot: null, gecerlilik: null, ozet: null, okunamadi: false,
 };
 
 export async function pdfMetinCikar(buf: Buffer): Promise<string> {
@@ -55,6 +56,7 @@ Yalnızca şu şemada GEÇERLİ JSON döndür:
   "garantiAy": number|null,        // garanti ay cinsinden
   "teknikUygun": boolean|null,     // istenen malzemeye teknik olarak uygun mu (bağlam verildiyse)
   "teknikNot": string|null,        // kısa teknik değerlendirme/uyum notu
+  "gecerlilik": string|null,       // teklif geçerlilik süresi/tarihi (ör. "15 gün", "31.12.2026")
   "ozet": string|null              // 1 cümle Türkçe özet
 }
 Tüm metinler Türkçe. Sadece JSON döndür.`;
@@ -102,6 +104,7 @@ export async function teklifAiAyristir(metin: string, baglam?: string): Promise<
       garantiAy: typeof p.garantiAy === "number" ? p.garantiAy : null,
       teknikUygun: typeof p.teknikUygun === "boolean" ? p.teknikUygun : null,
       teknikNot: p.teknikNot ?? null,
+      gecerlilik: p.gecerlilik ?? null,
       ozet: p.ozet ?? null,
       okunamadi: false,
     };

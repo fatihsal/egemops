@@ -26,11 +26,13 @@ type Satir = {
   notlar: string | null;
   ai_ozet: string | null;
   okunamadi: boolean | null;
+  surum: number | null;
+  gecerlilik: string | null;
   created_at: string;
 };
 
 const SECIM =
-  "id, talep_id, tedarikci_id, rfq_id, pdf_url, depolama_yolu, kaynak, fiyat, para_birimi, kdv_dahil, kdv_oran, termin_gun, nakliye, garanti_ay, teknik_uygun, teknik_not, notlar, ai_ozet, okunamadi, created_at";
+  "id, talep_id, tedarikci_id, rfq_id, pdf_url, depolama_yolu, kaynak, fiyat, para_birimi, kdv_dahil, kdv_oran, termin_gun, nakliye, garanti_ay, teknik_uygun, teknik_not, notlar, ai_ozet, okunamadi, surum, gecerlilik, created_at";
 
 function modele(s: Satir): Teklif {
   return {
@@ -53,6 +55,8 @@ function modele(s: Satir): Teklif {
     notlar: s.notlar,
     aiOzet: s.ai_ozet,
     okunamadi: !!s.okunamadi,
+    surum: s.surum ?? 1,
+    gecerlilik: s.gecerlilik,
     createdAt: s.created_at,
   };
 }
@@ -64,7 +68,7 @@ export async function teklifListele(talepId: string): Promise<Teklif[]> {
     .select(SECIM)
     .eq("talep_id", talepId)
     .is("deleted_at", null)
-    .order("fiyat", { ascending: true, nullsFirst: false });
+    .order("surum", { ascending: false });
   if (error) throw new Error(error.message);
   return ((data ?? []) as Satir[]).map(modele);
 }

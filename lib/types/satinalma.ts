@@ -126,5 +126,7 @@ export interface Teklif {
   notlar: string | null;
   aiOzet: string | null;
   okunamadi: boolean;
+  surum: number;
+  gecerlilik: string | null;
   createdAt: string;
 }

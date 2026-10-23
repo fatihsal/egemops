@@ -80,6 +80,24 @@ export async function POST(req: Request) {
       .is("deleted_at", null);
     const eklenmis = new Set((mevcut ?? []).map((m) => `${m.kaynak_mesaj_id ?? ""}:${m.kaynak_ek_id ?? ""}`));
 
+    // Her tedarikçinin mevcut teklif sayısı -> yeni teklif sürümü (revizyon)
+    const { data: surumVerisi } = await sb
+      .from("sa_teklifler")
+      .select("tedarikci_id")
+      .eq("talep_id", talepId)
+      .is("deleted_at", null);
+    const surumHarita = new Map<string, number>();
+    for (const s of (surumVerisi ?? []) as { tedarikci_id: string | null }[]) {
+      const k = s.tedarikci_id ?? "null";
+      surumHarita.set(k, (surumHarita.get(k) ?? 0) + 1);
+    }
+    const siradakiSurum = (tedId: string | null) => {
+      const k = tedId ?? "null";
+      const s = (surumHarita.get(k) ?? 0) + 1;
+      surumHarita.set(k, s);
+      return s;
+    };
+
     let yeni = 0;
     let yanitliThread = 0;
     let digerYanit = 0;
@@ -115,8 +133,8 @@ export async function POST(req: Request) {
               talep_id: talepId, tedarikci_id: rfq.tedarikci_id, rfq_id: rfq.id, kaynak: "gmail",
               fiyat: a.fiyat, para_birimi: a.paraBirimi, kdv_dahil: a.kdvDahil, kdv_oran: a.kdvOran,
               termin_gun: a.terminGun, nakliye: a.nakliye, garanti_ay: a.garantiAy,
-              teknik_uygun: a.teknikUygun, teknik_not: a.teknikNot, ai_ozet: a.ozet, okunamadi: a.okunamadi,
-              notlar: `${ek.dosyaAd} · ${msg.from}`, kaynak_mesaj_id: msg.id, kaynak_ek_id: ek.ekId,
+              teknik_uygun: a.teknikUygun, teknik_not: a.teknikNot, gecerlilik: a.gecerlilik, ai_ozet: a.ozet, okunamadi: a.okunamadi,
+              surum: siradakiSurum(rfq.tedarikci_id), notlar: `${ek.dosyaAd} · ${msg.from}`, kaynak_mesaj_id: msg.id, kaynak_ek_id: ek.ekId,
             });
             eklenmis.add(anahtar);
             yeni++;
@@ -134,8 +152,8 @@ export async function POST(req: Request) {
                 talep_id: talepId, tedarikci_id: rfq.tedarikci_id, rfq_id: rfq.id, kaynak: "gmail",
                 fiyat: a.fiyat, para_birimi: a.paraBirimi, kdv_dahil: a.kdvDahil, kdv_oran: a.kdvOran,
                 termin_gun: a.terminGun, nakliye: a.nakliye, garanti_ay: a.garantiAy,
-                teknik_uygun: a.teknikUygun, teknik_not: a.teknikNot, ai_ozet: a.ozet, okunamadi: false,
-                notlar: `E-posta gövdesi · ${msg.from}`, kaynak_mesaj_id: msg.id, kaynak_ek_id: "body",
+                teknik_uygun: a.teknikUygun, teknik_not: a.teknikNot, gecerlilik: a.gecerlilik, ai_ozet: a.ozet, okunamadi: false,
+                surum: siradakiSurum(rfq.tedarikci_id), notlar: `E-posta gövdesi · ${msg.from}`, kaynak_mesaj_id: msg.id, kaynak_ek_id: "body",
               });
               eklenmis.add(anahtar);
               yeni++;
