@@ -20,42 +20,12 @@ import { rfqOlustur, rfqGuncelle, rfqSil } from "@/lib/data/satinalma/rfq";
 import { tedarikciOlustur } from "@/lib/data/satinalma/tedarikciler";
 import { imzaUret } from "@/lib/data/satinalma/ayarlar";
 import { rfqIcerikHash } from "@/lib/satinalma/rfq-hash";
+import { varsayilanKonu, govdeUret, SABLONLAR, type SablonAnahtar } from "@/lib/satinalma/rfq-sablonlar";
 import { alanAdiCikar, type AramaSonucu } from "@/lib/satinalma/arama/types";
 import { queryKeys } from "@/lib/queries/keys";
 import { cn } from "@/lib/utils";
 import { RFQ_DURUM_META } from "@/components/satinalma/stiller";
 import type { Rfq, Talep, TalepKalem, Tedarikci } from "@/lib/types/satinalma";
-
-/** Okunabilir talep referansı — Gmail thread kimliğinin yerine geçmez. */
-function talepReferans(talep: Talep) {
-  return `EGEM-RFQ-${talep.talepNo ?? talep.id.slice(0, 8)}`;
-}
-function varsayilanKonu(talep: Talep) {
-  return `Teklif Talebi — ${talep.baslik} [${talepReferans(talep)}]`;
-}
-function kalemSatiri(k: TalepKalem): string {
-  const kod = [k.marka, k.model, k.siparisKodu].filter(Boolean).join(" ");
-  const parcalar = [
-    `${k.sira}. ${k.ad}`,
-    kod ? `(${kod})` : "",
-    k.adet != null ? `${k.adet} ${k.birim ?? ""}`.trim() : "",
-    k.urunDurumu === "yeni" ? "yeni/orijinal" : "",
-    k.kapsam === "parca" ? "yalnızca parça" : k.kapsam === "komple" ? "komple montaj" : "",
-  ].filter(Boolean);
-  return `- ${parcalar.join(" · ")}`;
-}
-function varsayilanGovde(talep: Talep, imza: string, kalemler: TalepKalem[], tedarikciAd?: string) {
-  const malzemeler = kalemler.length > 0
-    ? kalemler.map(kalemSatiri).join("\n")
-    : [`- ${talep.baslik}`, [talep.marka, talep.model].filter(Boolean).join(" "), talep.adet != null ? `${talep.adet} ${talep.birim ?? ""}`.trim() : ""].filter(Boolean).join(" · ");
-  return (
-    `Sayın ${tedarikciAd || "Yetkili"},\n\n` +
-    `Aşağıdaki malzeme(ler) için fiyat teklifinizi rica ederiz (Ref: ${talepReferans(talep)}):\n\n` +
-    `${malzemeler}\n\n` +
-    `Lütfen her kalem için birim fiyat, para birimi, KDV durumu, termin süresi, nakliye ve garanti bilgilerini belirtiniz.\n\n` +
-    imza
-  );
-}
 
 export function RfqBolumu({ talep }: { talep: Talep }) {
   const { t } = useDil();
@@ -280,6 +250,7 @@ function TopluRfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, mevcutRfq
   const { t } = useDil();
   const zatenVar = new Set(mevcutRfq.map((r) => r.tedarikciId).filter(Boolean) as string[]);
   const [secili, setSecili] = React.useState<Set<string>>(new Set());
+  const [sablon, setSablon] = React.useState<SablonAnahtar>("standart");
   const [kaydediliyor, setKaydediliyor] = React.useState(false);
 
   React.useEffect(() => {
@@ -298,7 +269,7 @@ function TopluRfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, mevcutRfq
     setKaydediliyor(true);
     try {
       for (const ted of hedef) {
-        await rfqOlustur({ talepId: talep.id, tedarikciId: ted.id, konu: varsayilanKonu(talep), govde: varsayilanGovde(talep, imza, kalemler, ted.ad), aliciEposta: ted.eposta ?? null });
+        await rfqOlustur({ talepId: talep.id, tedarikciId: ted.id, konu: varsayilanKonu(talep), govde: govdeUret(sablon, { talep, imza, kalemler, tedAd: ted.ad }), aliciEposta: ted.eposta ?? null });
       }
       toast.success(`${hedef.length} ${t("teklif talebi taslağı oluşturuldu")}`);
       onKaydet();
@@ -317,6 +288,14 @@ function TopluRfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, mevcutRfq
           <SheetTitle>{t("Toplu Teklif Talebi Oluştur")}</SheetTitle>
           <SheetDescription>{t("Göndermek istemediğin firmaların işaretini kaldır (yalnızca bu talep için hariç tutulur). Her firma için ayrı taslak oluşturulur.")}</SheetDescription>
         </SheetHeader>
+        <div className="border-b p-4">
+          <Label className="text-xs text-muted-foreground">{t("E-posta Şablonu")}</Label>
+          <div className="mt-1.5 flex flex-wrap gap-1.5">
+            {SABLONLAR.map((s) => (
+              <button key={s.anahtar} type="button" onClick={() => setSablon(s.anahtar)} title={t(s.aciklama)} className={cn("rounded-full border px-3 py-1 text-xs font-medium transition-colors", sablon === s.anahtar ? "border-orange-500 bg-orange-500 text-white" : "bg-card hover:bg-muted")}>{t(s.ad)}</button>
+            ))}
+          </div>
+        </div>
         <div className="flex-1 space-y-1 overflow-y-auto p-4">
           {tedarikciler.length === 0 ? (
             <p className="py-8 text-center text-sm text-muted-foreground">{t("Önce tedarikçi ekleyin.")}</p>
@@ -352,6 +331,7 @@ function AraRfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, mevcutRfq, 
   const [araniyor, setAraniyor] = React.useState(false);
   const [sonuclar, setSonuclar] = React.useState<AramaSonucu[] | null>(null);
   const [secili, setSecili] = React.useState<Set<string>>(new Set());
+  const [sablon, setSablon] = React.useState<SablonAnahtar>("standart");
   const [olusturuluyor, setOlusturuluyor] = React.useState(false);
   const [durumlar, setDurumlar] = React.useState<Record<string, { durum: AraDurum; not?: string }>>({});
 
@@ -402,7 +382,7 @@ function AraRfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, mevcutRfq, 
           tedId = await tedarikciOlustur({ ad: r.baslik.slice(0, 120), kaynakUrl: r.url, webSitesi: `https://${r.alanAdi}`, eposta, telefon, notlar: r.ozet?.slice(0, 400) || null });
           tedEposta = eposta;
         }
-        await rfqOlustur({ talepId: talep.id, tedarikciId: tedId, konu: varsayilanKonu(talep), govde: varsayilanGovde(talep, imza, kalemler, tedAd), aliciEposta: tedEposta });
+        await rfqOlustur({ talepId: talep.id, tedarikciId: tedId, konu: varsayilanKonu(talep), govde: govdeUret(sablon, { talep, imza, kalemler, tedAd }), aliciEposta: tedEposta });
         setDurumlar((o) => ({ ...o, [r.url]: { durum: tedEposta ? "ok" : "epostasiz" } }));
         basarili++;
       } catch (e) {
@@ -434,6 +414,12 @@ function AraRfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, mevcutRfq, 
         <div className="flex gap-2 border-b p-4">
           <Input value={sorgu} onChange={(e) => setSorgu(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") ara(); }} placeholder={t("Örn. Festo DSBC-50 tedarikçi")} className="h-9" />
           <Button className="h-9 shrink-0 gap-1.5 bg-orange-600 text-white hover:bg-orange-700" disabled={araniyor} onClick={ara}><Icon icon={araniyor ? "svg-spinners:180-ring" : "solar:magnifer-bold"} className="size-4" />{t("Ara")}</Button>
+        </div>
+        <div className="flex flex-wrap items-center gap-1.5 border-b px-4 py-2.5">
+          <span className="text-xs text-muted-foreground">{t("Şablon")}:</span>
+          {SABLONLAR.map((s) => (
+            <button key={s.anahtar} type="button" onClick={() => setSablon(s.anahtar)} title={t(s.aciklama)} className={cn("rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors", sablon === s.anahtar ? "border-orange-500 bg-orange-500 text-white" : "bg-card hover:bg-muted")}>{t(s.ad)}</button>
+          ))}
         </div>
 
         <div className="flex-1 space-y-2 overflow-y-auto p-4">
@@ -491,6 +477,7 @@ function RfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, duzenlenen, im
   const [konu, setKonu] = React.useState("");
   const [alici, setAlici] = React.useState("");
   const [govde, setGovde] = React.useState("");
+  const [sablon, setSablon] = React.useState<SablonAnahtar>("standart");
   const [kaydediliyor, setKaydediliyor] = React.useState(false);
 
   React.useEffect(() => {
@@ -498,7 +485,7 @@ function RfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, duzenlenen, im
     if (duzenlenen) {
       setTedId(duzenlenen.tedarikciId ?? ""); setKonu(duzenlenen.konu ?? ""); setAlici(duzenlenen.aliciEposta ?? ""); setGovde(duzenlenen.govde ?? "");
     } else {
-      setTedId(""); setKonu(varsayilanKonu(talep)); setAlici(""); setGovde(varsayilanGovde(talep, imza, kalemler));
+      setTedId(""); setKonu(varsayilanKonu(talep)); setAlici(""); setSablon("standart"); setGovde(govdeUret("standart", { talep, imza, kalemler }));
     }
   }, [acik, duzenlenen, talep, imza, kalemler]);
 
@@ -506,7 +493,12 @@ function RfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, duzenlenen, im
     setTedId(id);
     const ted = tedarikciler.find((x) => x.id === id);
     if (ted?.eposta) setAlici(ted.eposta);
-    if (!duzenlenen && ted) setGovde(varsayilanGovde(talep, imza, kalemler, ted.ad));
+    if (!duzenlenen && ted) setGovde(govdeUret(sablon, { talep, imza, kalemler, tedAd: ted.ad }));
+  }
+  function sablonDegistir(yeni: SablonAnahtar) {
+    setSablon(yeni);
+    const tedAd = tedarikciler.find((x) => x.id === tedId)?.ad;
+    setGovde(govdeUret(yeni, { talep, imza, kalemler, tedAd }));
   }
 
   async function kaydet() {
@@ -543,6 +535,16 @@ function RfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, duzenlenen, im
           </div>
           <div className="space-y-1.5"><Label className="text-xs text-muted-foreground">{t("Alıcı E-posta")}</Label><Input value={alici} onChange={(e) => setAlici(e.target.value)} placeholder="satis@tedarikci.com" /></div>
           <div className="space-y-1.5"><Label className="text-xs text-muted-foreground">{t("Konu")} *</Label><Input value={konu} onChange={(e) => setKonu(e.target.value)} /></div>
+          {!duzenlenen ? (
+            <div className="space-y-1.5">
+              <Label className="text-xs text-muted-foreground">{t("E-posta Şablonu")}</Label>
+              <div className="flex flex-wrap gap-1.5">
+                {SABLONLAR.map((s) => (
+                  <button key={s.anahtar} type="button" onClick={() => sablonDegistir(s.anahtar)} title={t(s.aciklama)} className={cn("rounded-full border px-3 py-1 text-xs font-medium transition-colors", sablon === s.anahtar ? "border-orange-500 bg-orange-500 text-white" : "bg-card hover:bg-muted")}>{t(s.ad)}</button>
+                ))}
+              </div>
+            </div>
+          ) : null}
           <div className="space-y-1.5"><Label className="text-xs text-muted-foreground">{t("E-posta Metni")}</Label><Textarea value={govde} onChange={(e) => setGovde(e.target.value)} rows={12} className="font-mono text-xs" /></div>
         </div>
         <SheetFooter className="flex-row justify-end gap-2 border-t">
