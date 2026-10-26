@@ -40,6 +40,25 @@ function anaEtiket(host: string): string {
   return p[0] ?? host;
 }
 
+// Cloudflare e-posta gizleme çözümü (data-cfemail="HEX").
+function cfCoz(hex: string): string {
+  try {
+    const r = parseInt(hex.substr(0, 2), 16);
+    let e = "";
+    for (let i = 2; i < hex.length; i += 2) e += String.fromCharCode(parseInt(hex.substr(i, 2), 16) ^ r);
+    return e;
+  } catch {
+    return "";
+  }
+}
+
+// HTML sayısal varlıkları (&#64; &#x40;) düz karaktere çevir — entity ile gizlenmiş e-postalar için.
+function varliklariCoz(html: string): string {
+  return html
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => { try { return String.fromCodePoint(parseInt(h, 16)); } catch { return _; } })
+    .replace(/&#(\d+);/g, (_, d) => { try { return String.fromCodePoint(parseInt(d, 10)); } catch { return _; } });
+}
+
 function puan(eposta: string, siteAna: string): number {
   const [yerel, alan] = eposta.toLowerCase().split("@");
   let s = 0;
@@ -103,14 +122,17 @@ export async function POST(req: Request) {
   const bulunan = new Map<string, string>(); // eposta -> bulunduğu sayfa
   const telefonlar = new Set<string>();
 
+  const ekle = (e: string, u: string) => { if (e && temizEposta(e) && !bulunan.has(e.toLowerCase())) bulunan.set(e.toLowerCase(), u); };
+
   for (const s of sonuclar) {
     if (s.status !== "fulfilled" || !s.value.h) continue;
-    const { u, h } = s.value;
-    const html = h.replace(/&#64;|&commat;/gi, "@");
-    for (const m of html.matchAll(EPOSTA_RE)) {
-      const e = m[0];
-      if (temizEposta(e) && !bulunan.has(e.toLowerCase())) bulunan.set(e.toLowerCase(), u);
-    }
+    const { u } = s.value;
+    const html = varliklariCoz(s.value.h.replace(/&commat;/gi, "@"));
+    // 1) Düz metin / mailto / entity-çözülmüş e-postalar
+    for (const m of html.matchAll(EPOSTA_RE)) ekle(m[0], u);
+    // 2) Cloudflare gizli e-postalar (data-cfemail="HEX")
+    for (const m of html.matchAll(/data-cfemail="([0-9a-fA-F]{6,})"/g)) ekle(cfCoz(m[1]), u);
+    for (const m of html.matchAll(/\/cdn-cgi\/l\/email-protection#([0-9a-fA-F]{6,})/g)) ekle(cfCoz(m[1]), u);
     for (const m of (html.replace(/<[^>]+>/g, " ").matchAll(TEL_RE))) {
       const tel = m[0].trim();
       if (tel.replace(/\D/g, "").length >= 10 && telefonlar.size < 3) telefonlar.add(tel);
