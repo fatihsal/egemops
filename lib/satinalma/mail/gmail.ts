@@ -101,15 +101,46 @@ function base64url(buf: Buffer): string {
 function mimeKur(mail: GidenMail): string {
   const konuEnc = `=?UTF-8?B?${Buffer.from(mail.konu, "utf8").toString("base64")}?=`;
   const govdeEnc = Buffer.from(mail.govde, "utf8").toString("base64");
-  return [
+  const ekler = mail.ekler ?? [];
+
+  if (ekler.length === 0) {
+    return [
+      `To: ${mail.alici}`,
+      `Subject: ${konuEnc}`,
+      "MIME-Version: 1.0",
+      'Content-Type: text/plain; charset="UTF-8"',
+      "Content-Transfer-Encoding: base64",
+      "",
+      govdeEnc,
+    ].join("\r\n");
+  }
+
+  const sinir = `===egemops_${Date.now().toString(36)}===`;
+  const parcalar: string[] = [
     `To: ${mail.alici}`,
     `Subject: ${konuEnc}`,
     "MIME-Version: 1.0",
+    `Content-Type: multipart/mixed; boundary="${sinir}"`,
+    "",
+    `--${sinir}`,
     'Content-Type: text/plain; charset="UTF-8"',
     "Content-Transfer-Encoding: base64",
     "",
     govdeEnc,
-  ].join("\r\n");
+  ];
+  for (const ek of ekler) {
+    const ad = ek.dosyaAd.replace(/"/g, "");
+    parcalar.push(
+      `--${sinir}`,
+      `Content-Type: ${ek.mimeType}; name="${ad}"`,
+      "Content-Transfer-Encoding: base64",
+      `Content-Disposition: attachment; filename="${ad}"`,
+      "",
+      ek.icerik.toString("base64"),
+    );
+  }
+  parcalar.push(`--${sinir}--`);
+  return parcalar.join("\r\n");
 }
 
 /** Verilen access token ile gönderim yapan MailProvider. */

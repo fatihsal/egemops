@@ -38,7 +38,7 @@ export async function POST(req: Request) {
     // RFQ'yu getir
     const { data: rfq, error: rfqHata } = await sb
       .from("sa_rfq")
-      .select("id, konu, govde, alici_eposta, durum")
+      .select("id, konu, govde, alici_eposta, durum, talep_id")
       .eq("id", rfqId)
       .is("deleted_at", null)
       .maybeSingle();
@@ -90,6 +90,25 @@ export async function POST(req: Request) {
       }
     }
 
+    // Talep fotoğraflarını ek olarak hazırla (en fazla 5)
+    const ekler: { dosyaAd: string; mimeType: string; icerik: Buffer }[] = [];
+    try {
+      const { data: talep } = await sb.from("sa_talepler").select("foto_url").eq("id", rfq.talep_id).maybeSingle();
+      const fotolar: string[] = (talep?.foto_url ?? []).slice(0, 5);
+      for (let i = 0; i < fotolar.length; i++) {
+        try {
+          const fr = await fetch(fotolar[i]);
+          if (!fr.ok) continue;
+          const mime = fr.headers.get("content-type")?.split(";")[0] || "image/jpeg";
+          if (!mime.startsWith("image/")) continue;
+          const buf = Buffer.from(await fr.arrayBuffer());
+          if (buf.length > 8 * 1024 * 1024) continue; // 8MB üstünü atla
+          const uzanti = mime.split("/")[1] || "jpg";
+          ekler.push({ dosyaAd: `malzeme-${i + 1}.${uzanti}`, mimeType: mime, icerik: buf });
+        } catch { /* tek foto hatası gönderimi durdurmasın */ }
+      }
+    } catch { /* foto yoksa eksiz gönder */ }
+
     // Gönder
     const db = supabaseAdmin();
     try {
@@ -97,6 +116,7 @@ export async function POST(req: Request) {
         alici,
         konu: rfq.konu ?? "(konu yok)",
         govde: rfq.govde ?? "",
+        ekler,
       });
       await db.from("sa_rfq").update({ durum: "gonderildi", provider: "gmail", message_id: messageId, thread_id: threadId ?? null, onaylayan: user.id, gonderildi_at: new Date().toISOString() }).eq("id", rfqId);
       await db.from("sa_mail_log").insert({ rfq_id: rfqId, provider: "gmail", message_id: messageId, durum: "gonderildi" });
