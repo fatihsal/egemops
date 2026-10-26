@@ -46,8 +46,8 @@ export const SABLONLAR: { anahtar: SablonAnahtar; ad: string; aciklama: string }
   { anahtar: "samimi", ad: "Samimi", aciklama: "Daha sıcak, günlük dil" },
 ];
 
-function hitap(tedAd?: string): string {
-  return tedAd ? `Sayın ${tedAd} Yetkilisi,` : "Sayın Yetkili,";
+function hitap(_tedAd?: string): string {
+  return "Merhabalar,";
 }
 
 export function govdeUret(anahtar: SablonAnahtar, b: SablonBaglam): string {
@@ -83,7 +83,9 @@ export function govdeUret(anahtar: SablonAnahtar, b: SablonBaglam): string {
       );
     case "samimi":
       return (
-        `Merhaba,\n\n` +
+        `Merhabalar,
+
+` +
         `Aşağıdaki ürün(ler)de bize yardımcı olabileceğinizi düşünüyoruz (Ref: ${ref}):\n\n` +
         `${liste}\n\n` +
         `Uygun fiyat, termin, KDV ve garanti bilgisiyle bir teklif paylaşabilirseniz çok memnun oluruz.\n\n` +
