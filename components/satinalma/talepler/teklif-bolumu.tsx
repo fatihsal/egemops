@@ -118,7 +118,7 @@ export function TeklifBolumu({ talepId }: { talepId: string }) {
         {isLoading ? (
           <p className="py-6 text-center text-sm text-muted-foreground">{t("Yükleniyor…")}</p>
         ) : guncel.length === 0 ? (
-          <p className="py-6 text-center text-sm text-muted-foreground">{senkron ? t("Gelen kutusu taranıyor…") : t("Henüz teklif toplanmadı. Tedarikçiler RFQ'ya cevap verince burada otomatik görünür.")}</p>
+          <p className="py-6 text-center text-sm text-muted-foreground">{senkron ? t("Gelen kutusu taranıyor…") : t("Henüz teklif toplanmadı. Tedarikçiler teklif talebine cevap verince burada otomatik görünür.")}</p>
         ) : (
           <>
             {paraBirimleri.size > 1 ? (

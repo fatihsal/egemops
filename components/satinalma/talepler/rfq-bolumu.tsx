@@ -87,7 +87,7 @@ export function RfqBolumu({ talep }: { talep: Talep }) {
     catch (e) { toast.error(t("Güncellenemedi"), { description: e instanceof Error ? e.message : undefined }); }
   }
   async function sil(id: string) {
-    try { await rfqSil(id); toast.success(t("RFQ silindi")); tazele(); }
+    try { await rfqSil(id); toast.success(t("Teklif talebi silindi")); tazele(); }
     catch (e) { toast.error(t("Silinemedi"), { description: e instanceof Error ? e.message : undefined }); }
   }
 
@@ -122,11 +122,11 @@ export function RfqBolumu({ talep }: { talep: Talep }) {
     <Card>
       <CardHeader className="flex-row flex-wrap items-center justify-between gap-2 space-y-0">
         <div>
-          <h3 className="font-heading text-base font-bold tracking-tight">{t("Teklif Talepleri (RFQ)")}</h3>
+          <h3 className="font-heading text-base font-bold tracking-tight">{t("Teklif Talepleri")}</h3>
           <p className="mt-0.5 text-xs text-muted-foreground">{t("Her tedarikçiye ayrı e-posta gider (birbirlerini görmezler). Gönderim öncesi içeriği önizleyip onaylarsınız.")}</p>
         </div>
         <div className="flex shrink-0 flex-wrap gap-2">
-          <Button size="sm" className="gap-1.5 bg-orange-600 text-white hover:bg-orange-700" onClick={() => setAraRfqAcik(true)}><Icon icon="solar:magnifer-bold" className="size-4" />{t("Tedarikçi Ara & RFQ")}</Button>
+          <Button size="sm" className="gap-1.5 bg-orange-600 text-white hover:bg-orange-700" onClick={() => setAraRfqAcik(true)}><Icon icon="solar:magnifer-bold" className="size-4" />{t("Tedarikçi Ara & Teklif Talebi")}</Button>
           {(tedarikciler?.length ?? 0) > 0 ? (
             <Button size="sm" variant="outline" className="gap-1.5 bg-card" onClick={() => setTopluCreateAcik(true)}><Icon icon="solar:users-group-rounded-bold" className="size-4" />{t("Kayıtlılardan")}</Button>
           ) : null}
@@ -136,7 +136,7 @@ export function RfqBolumu({ talep }: { talep: Talep }) {
       <CardContent>
         {gonderilebilir.length > 0 ? (
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-emerald-200/70 bg-emerald-50/50 p-3 dark:border-emerald-900/40 dark:bg-emerald-950/20">
-            <span className="text-sm">{gonderilebilir.length} {t("RFQ gönderilmeye hazır")}</span>
+            <span className="text-sm">{gonderilebilir.length} {t("teklif talebi gönderilmeye hazır")}</span>
             <Button size="sm" className="gap-1.5 bg-emerald-600 text-white hover:bg-emerald-700" onClick={() => setTopluGonderAcik(true)}><Icon icon="solar:plain-2-bold" className="size-4" />{t("Onayla ve Toplu Gönder")}</Button>
           </div>
         ) : null}
@@ -300,7 +300,7 @@ function TopluRfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, mevcutRfq
       for (const ted of hedef) {
         await rfqOlustur({ talepId: talep.id, tedarikciId: ted.id, konu: varsayilanKonu(talep), govde: varsayilanGovde(talep, imza, kalemler, ted.ad), aliciEposta: ted.eposta ?? null });
       }
-      toast.success(`${hedef.length} ${t("RFQ taslağı oluşturuldu")}`);
+      toast.success(`${hedef.length} ${t("teklif talebi taslağı oluşturuldu")}`);
       onKaydet();
       setAcik(false);
     } catch (e) {
@@ -314,7 +314,7 @@ function TopluRfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, mevcutRfq
     <Sheet open={acik} onOpenChange={setAcik}>
       <SheetContent side="right" className="flex w-full flex-col gap-0 p-0 sm:max-w-md">
         <SheetHeader className="border-b p-5">
-          <SheetTitle>{t("Toplu RFQ Oluştur")}</SheetTitle>
+          <SheetTitle>{t("Toplu Teklif Talebi Oluştur")}</SheetTitle>
           <SheetDescription>{t("Göndermek istemediğin firmaların işaretini kaldır (yalnızca bu talep için hariç tutulur). Her firma için ayrı taslak oluşturulur.")}</SheetDescription>
         </SheetHeader>
         <div className="flex-1 space-y-1 overflow-y-auto p-4">
@@ -341,7 +341,7 @@ function TopluRfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, mevcutRfq
 }
 
 // ---------------------------------------------------------------------------
-// Tedarikçi Ara & RFQ — tek akışta: ara → çoklu seç → e-posta bul + kaydet + RFQ
+// Tedarikçi Ara & Teklif Talebi — tek akışta: ara → çoklu seç → e-posta bul + kaydet + RFQ
 // ---------------------------------------------------------------------------
 type AraDurum = "islen" | "ok" | "epostasiz" | "zaten" | "hata";
 function AraRfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, mevcutRfq, imza, ilkSorgu, onKaydet }: {
@@ -411,13 +411,13 @@ function AraRfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, mevcutRfq, 
     }
     setOlusturuluyor(false);
     onKaydet();
-    if (basarili > 0) toast.success(`${basarili} ${t("RFQ taslağı oluşturuldu")}`);
+    if (basarili > 0) toast.success(`${basarili} ${t("teklif talebi taslağı oluşturuldu")}`);
   }
 
   const dmeta: Record<AraDurum, { ik: string; renk: string; et: string }> = {
     islen: { ik: "svg-spinners:180-ring", renk: "text-blue-500", et: "" },
-    ok: { ik: "solar:check-circle-bold", renk: "text-emerald-500", et: "RFQ + e-posta" },
-    epostasiz: { ik: "solar:letter-unread-linear", renk: "text-amber-500", et: "RFQ (e-posta yok)" },
+    ok: { ik: "solar:check-circle-bold", renk: "text-emerald-500", et: "Talep + e-posta" },
+    epostasiz: { ik: "solar:letter-unread-linear", renk: "text-amber-500", et: "Talep (e-posta yok)" },
     zaten: { ik: "solar:info-circle-linear", renk: "text-muted-foreground", et: "zaten var" },
     hata: { ik: "solar:close-circle-bold", renk: "text-red-500", et: "hata" },
   };
@@ -427,8 +427,8 @@ function AraRfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, mevcutRfq, 
     <Sheet open={acik} onOpenChange={setAcik}>
       <SheetContent side="right" className="flex w-full flex-col gap-0 p-0 sm:max-w-lg">
         <SheetHeader className="border-b p-5">
-          <SheetTitle>{t("Tedarikçi Ara & RFQ Oluştur")}</SheetTitle>
-          <SheetDescription>{t("Ürün koduyla Türkiye öncelikli ara, firmaları seç; tek tıkla e-postalarını bulup bu talebe RFQ taslağı aç. İstemediğin firmanın işaretini kaldır.")}</SheetDescription>
+          <SheetTitle>{t("Tedarikçi Ara & Teklif Talebi Oluştur")}</SheetTitle>
+          <SheetDescription>{t("Ürün koduyla Türkiye öncelikli ara, firmaları seç; tek tıkla e-postalarını bulup bu talebe teklif talebi taslağı aç. İstemediğin firmanın işaretini kaldır.")}</SheetDescription>
         </SheetHeader>
 
         <div className="flex gap-2 border-b p-4">
@@ -471,7 +471,7 @@ function AraRfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, mevcutRfq, 
           <SheetClose render={<Button variant="outline" />}>{t(bittiMi ? "Kapat" : "İptal")}</SheetClose>
           {sonuclar && sonuclar.length > 0 ? (
             <Button className="gap-1.5 bg-orange-600 text-white hover:bg-orange-700" disabled={olusturuluyor || secili.size === 0} onClick={olustur}>
-              <Icon icon={olusturuluyor ? "svg-spinners:180-ring" : "solar:letter-opened-bold"} className="size-4" />{t("Seçilenlere RFQ")} ({secili.size})
+              <Icon icon={olusturuluyor ? "svg-spinners:180-ring" : "solar:letter-opened-bold"} className="size-4" />{t("Seçilenlere Teklif Talebi")} ({secili.size})
             </Button>
           ) : null}
         </SheetFooter>
@@ -514,8 +514,8 @@ function RfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, duzenlenen, im
     if (kaydediliyor) return;
     setKaydediliyor(true);
     try {
-      if (duzenlenen) { await rfqGuncelle(duzenlenen.id, { konu: konu.trim(), govde, aliciEposta: alici.trim() || null, tedarikciId: tedId || null }); toast.success(t("RFQ güncellendi")); }
-      else { await rfqOlustur({ talepId: talep.id, tedarikciId: tedId || null, konu: konu.trim(), govde, aliciEposta: alici.trim() || null }); toast.success(t("RFQ taslağı oluşturuldu")); }
+      if (duzenlenen) { await rfqGuncelle(duzenlenen.id, { konu: konu.trim(), govde, aliciEposta: alici.trim() || null, tedarikciId: tedId || null }); toast.success(t("Teklif talebi güncellendi")); }
+      else { await rfqOlustur({ talepId: talep.id, tedarikciId: tedId || null, konu: konu.trim(), govde, aliciEposta: alici.trim() || null }); toast.success(t("teklif talebi taslağı oluşturuldu")); }
       onKaydet();
       setAcik(false);
     } catch (e) {
@@ -529,7 +529,7 @@ function RfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, duzenlenen, im
     <Sheet open={acik} onOpenChange={setAcik}>
       <SheetContent side="right" className="flex w-full flex-col gap-0 p-0 sm:max-w-lg">
         <SheetHeader className="border-b p-5">
-          <SheetTitle>{duzenlenen ? t("RFQ Düzenle") : t("Yeni RFQ Taslağı")}</SheetTitle>
+          <SheetTitle>{duzenlenen ? t("Teklif Talebi Düzenle") : t("Yeni Teklif Talebi Taslağı")}</SheetTitle>
           <SheetDescription>{t("Teklif talebi e-postasının taslağı. Gönderim önizleme+onaydan sonra yapılır.")}</SheetDescription>
         </SheetHeader>
         <div className="flex-1 space-y-4 overflow-y-auto p-5">

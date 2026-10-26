@@ -16,7 +16,7 @@ const ADIMLAR = [
   { ik: "solar:camera-bold-duotone", renk: "#f97316", baslik: "Talep & Fotoğraf", metin: "Marka, model, adet ve teknik açıklamayla malzeme talebi oluşturun." },
   { ik: "solar:magic-stick-3-bold-duotone", renk: "#8b5cf6", baslik: "AI Önerisi", metin: "Yapay zekâ görselden ürün bilgisini önerir; belirsiz alanları siz doğrularsınız." },
   { ik: "solar:shop-2-bold-duotone", renk: "#0ea5e9", baslik: "Tedarikçi Adayları", metin: "Yalnızca doğrulanabilir kaynaklı tedarikçiler listelenir — uydurma yok." },
-  { ik: "solar:letter-bold-duotone", renk: "#14b8a6", baslik: "Teklif E-postası", metin: "RFQ taslağı hazırlanır; onayınız olmadan e-posta gönderilmez." },
+  { ik: "solar:letter-bold-duotone", renk: "#14b8a6", baslik: "Teklif E-postası", metin: "Teklif talebi taslağı hazırlanır; onayınız olmadan e-posta gönderilmez." },
   { ik: "solar:inbox-in-bold-duotone", renk: "#eab308", baslik: "Teklif Toplama", metin: "Gelen yanıtlar ve PDF teklifler talebe bağlanır (şimdilik manuel yükleme)." },
   { ik: "solar:chart-square-bold-duotone", renk: "#22c55e", baslik: "Karşılaştırma", metin: "Teknik uygunluk, fiyat, KDV, termin, nakliye ve garanti yan yana." },
 ];
