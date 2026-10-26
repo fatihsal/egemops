@@ -22,7 +22,7 @@ export async function POST(req: Request) {
       );
     }
 
-    let govde: { sorgu?: string };
+    let govde: { sorgu?: string; haric?: string[] };
     try {
       govde = await req.json();
     } catch {
@@ -30,17 +30,19 @@ export async function POST(req: Request) {
     }
     const sorgu = (govde.sorgu ?? "").trim();
     if (!sorgu) return NextResponse.json({ hata: "Arama sorgusu gerekli." }, { status: 400 });
+    // Daha önce gösterilen firmalar (alan adı) — "daha fazla bul" için hariç tut.
+    const haric = new Set((govde.haric ?? []).map((d) => d.toLowerCase().replace(/^www\./, "")));
 
     // İlk hedef Türkiye: sorguya ülke bağlamı ekle, sonra .tr alan adlarını öne al.
     const sorguTR = /t[üu]rkiye|turkey/i.test(sorgu) ? sorgu : `${sorgu} Türkiye tedarikçi distribütör`;
-    const sonuclar = await saglayici.ara(sorguTR, 10);
+    const sonuclar = await saglayici.ara(sorguTR, haric.size > 0 ? 25 : 12);
     const trMi = (h: string) => /\.tr$/i.test(h);
     const sirali = [...sonuclar].sort((a, b) => (trMi(b.alanAdi) ? 1 : 0) - (trMi(a.alanAdi) ? 1 : 0));
-    // Aynı firmayı (alan adı) tek kez göster — pazar yeri/alt sayfa tekrarını birleştir.
+    // Aynı firmayı (alan adı) tek kez göster + daha önce gösterilenleri atla.
     const gorulen = new Set<string>();
     const tekil = sirali.filter((r) => {
       const d = r.alanAdi.toLowerCase().replace(/^www\./, "");
-      if (gorulen.has(d)) return false;
+      if (gorulen.has(d) || haric.has(d)) return false;
       gorulen.add(d);
       return true;
     });

@@ -333,6 +333,7 @@ function AraRfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, mevcutRfq, 
   const [secili, setSecili] = React.useState<Set<string>>(new Set());
   const [sablon, setSablon] = React.useState<SablonAnahtar>("standart");
   const [olusturuluyor, setOlusturuluyor] = React.useState(false);
+  const [dahaAraniyor, setDahaAraniyor] = React.useState(false);
   const [durumlar, setDurumlar] = React.useState<Record<string, { durum: AraDurum; not?: string }>>({});
 
   React.useEffect(() => { if (acik) { setSorgu(ilkSorgu); setSonuclar(null); setSecili(new Set()); setDurumlar({}); } }, [acik, ilkSorgu]);
@@ -355,6 +356,23 @@ function AraRfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, mevcutRfq, 
     } catch (e) {
       toast.error(t("Arama başarısız"), { description: e instanceof Error ? e.message : undefined });
     } finally { setAraniyor(false); }
+  }
+
+  async function dahaFazla() {
+    if (dahaAraniyor || !sonuclar) return;
+    setDahaAraniyor(true);
+    try {
+      const haric = sonuclar.map((x) => x.alanAdi);
+      const r = await fetch("/api/satinalma/tedarikci-ara", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sorgu: sorgu.trim(), haric }) });
+      const metin = await r.text(); const sonuc = metin ? JSON.parse(metin) : {};
+      if (!r.ok) { toast.error(t("Arama başarısız"), { description: sonuc?.hata ?? `HTTP ${r.status}` }); return; }
+      const yeni: AramaSonucu[] = sonuc.sonuclar ?? [];
+      if (yeni.length === 0) { toast(t("Daha fazla sonuç bulunamadı.")); return; }
+      setSonuclar((o) => [...(o ?? []), ...yeni]);
+      setSecili((o) => { const n = new Set(o); yeni.forEach((x) => { if (!rfqDomainleri.has(dom(x.url))) n.add(x.url); }); return n; });
+    } catch (e) {
+      toast.error(t("Arama başarısız"), { description: e instanceof Error ? e.message : undefined });
+    } finally { setDahaAraniyor(false); }
   }
 
   function toggle(url: string) { setSecili((o) => { const n = new Set(o); if (n.has(url)) n.delete(url); else n.add(url); return n; }); }
@@ -449,6 +467,9 @@ function AraRfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, mevcutRfq, 
                   </label>
                 );
               })}
+              <Button variant="outline" className="w-full gap-1.5 bg-card" disabled={dahaAraniyor || olusturuluyor} onClick={dahaFazla}>
+                <Icon icon={dahaAraniyor ? "svg-spinners:180-ring" : "solar:add-circle-linear"} className="size-4" />{t("8 Tane Daha Bul")}
+              </Button>
             </>
           )}
         </div>

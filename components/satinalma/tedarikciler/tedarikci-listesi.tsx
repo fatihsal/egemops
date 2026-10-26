@@ -157,8 +157,25 @@ function AdayAraSheet({ acik, setAcik, ilkSorgu, onKaydet }: { acik: boolean; se
   const [sonuclar, setSonuclar] = React.useState<AramaSonucu[] | null>(null);
   const [kaydedilen, setKaydedilen] = React.useState<Set<string>>(new Set());
   const [ekleniyor, setEkleniyor] = React.useState<Set<string>>(new Set());
+  const [dahaAraniyor, setDahaAraniyor] = React.useState(false);
 
   React.useEffect(() => { if (acik) setSorgu(ilkSorgu); }, [acik, ilkSorgu]);
+
+  async function dahaFazla() {
+    if (dahaAraniyor || !sonuclar) return;
+    setDahaAraniyor(true);
+    try {
+      const haric = sonuclar.map((x) => x.alanAdi);
+      const yanit = await fetch("/api/satinalma/tedarikci-ara", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sorgu: sorgu.trim(), haric }) });
+      const metin = await yanit.text(); const sonuc = metin ? JSON.parse(metin) : {};
+      if (!yanit.ok) { toast.error(t("Arama başarısız"), { description: sonuc?.hata ?? `HTTP ${yanit.status}` }); return; }
+      const yeni: AramaSonucu[] = sonuc.sonuclar ?? [];
+      if (yeni.length === 0) { toast(t("Daha fazla sonuç bulunamadı.")); return; }
+      setSonuclar((o) => [...(o ?? []), ...yeni]);
+    } catch (e) {
+      toast.error(t("Arama başarısız"), { description: e instanceof Error ? e.message : undefined });
+    } finally { setDahaAraniyor(false); }
+  }
 
   async function ara() {
     if (!sorgu.trim() || araniyor) return;
@@ -238,7 +255,8 @@ function AdayAraSheet({ acik, setAcik, ilkSorgu, onKaydet }: { acik: boolean; se
           ) : sonuclar.length === 0 ? (
             <p className="px-2 py-10 text-center text-sm text-muted-foreground">{t("Sonuç bulunamadı.")}</p>
           ) : (
-            sonuclar.map((r) => {
+            <>
+            {sonuclar.map((r) => {
               const eklendi = kaydedilen.has(r.url);
               const ekleniyorMu = ekleniyor.has(r.url);
               return (
@@ -255,7 +273,11 @@ function AdayAraSheet({ acik, setAcik, ilkSorgu, onKaydet }: { acik: boolean; se
                   {r.ozet ? <p className="mt-1.5 line-clamp-2 text-xs text-muted-foreground">{r.ozet}</p> : null}
                 </div>
               );
-            })
+            })}
+              <Button variant="outline" className="w-full gap-1.5 bg-card" disabled={dahaAraniyor} onClick={dahaFazla}>
+                <Icon icon={dahaAraniyor ? "svg-spinners:180-ring" : "solar:add-circle-linear"} className="size-4" />{t("8 Tane Daha Bul")}
+              </Button>
+            </>
           )}
         </div>
       </SheetContent>
