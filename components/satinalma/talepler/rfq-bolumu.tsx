@@ -259,7 +259,7 @@ function TopluRfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, mevcutRfq
   const gosterilecek = katFiltre === "hepsi" ? tedarikciler : tedarikciler.filter((x) => (x.kategoriler ?? []).includes(katFiltre));
 
   React.useEffect(() => {
-    if (acik) setSecili(new Set(tedarikciler.filter((x) => !zatenVar.has(x.id)).map((x) => x.id)));
+    if (acik) setSecili(new Set());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [acik]);
 
@@ -308,6 +308,15 @@ function TopluRfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, mevcutRfq
             {KATEGORILER.filter((k) => kullanilanKats.includes(k.anahtar)).map((k) => (
               <button key={k.anahtar} type="button" onClick={() => setKatFiltre(k.anahtar)} className={cn("rounded-full border px-2.5 py-0.5 text-xs font-medium", katFiltre === k.anahtar ? "border-orange-500 bg-orange-500 text-white" : "bg-card hover:bg-muted")}>{k.ad}</button>
             ))}
+          </div>
+        ) : null}
+        {tedarikciler.length > 0 ? (
+          <div className="flex items-center justify-between gap-2 border-b px-4 py-2 text-xs">
+            <span className="text-muted-foreground">{secili.size} {t("seçili")}</span>
+            <div className="flex gap-3">
+              <button type="button" className="font-medium text-orange-600 hover:underline dark:text-orange-400" onClick={() => setSecili((o) => { const n = new Set(o); gosterilecek.forEach((x) => { if (!zatenVar.has(x.id) && x.eposta) n.add(x.id); }); return n; })}>{t("Görünenleri Seç")}</button>
+              <button type="button" className="text-muted-foreground hover:underline" onClick={() => setSecili(new Set())}>{t("Temizle")}</button>
+            </div>
           </div>
         ) : null}
         <div className="flex-1 space-y-1 overflow-y-auto p-4">
