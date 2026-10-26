@@ -31,8 +31,12 @@ export async function POST(req: Request) {
     const sorgu = (govde.sorgu ?? "").trim();
     if (!sorgu) return NextResponse.json({ hata: "Arama sorgusu gerekli." }, { status: 400 });
 
-    const sonuclar = await saglayici.ara(sorgu, 8);
-    return NextResponse.json({ saglayici: saglayici.ad, sonuclar });
+    // İlk hedef Türkiye: sorguya ülke bağlamı ekle, sonra .tr alan adlarını öne al.
+    const sorguTR = /t[üu]rkiye|turkey/i.test(sorgu) ? sorgu : `${sorgu} Türkiye tedarikçi distribütör`;
+    const sonuclar = await saglayici.ara(sorguTR, 10);
+    const trMi = (h: string) => /\.tr$/i.test(h);
+    const sirali = [...sonuclar].sort((a, b) => (trMi(b.alanAdi) ? 1 : 0) - (trMi(a.alanAdi) ? 1 : 0));
+    return NextResponse.json({ saglayici: saglayici.ad, sonuclar: sirali });
   } catch (e) {
     console.error("[tedarikci-ara] hata:", e);
     return NextResponse.json({ hata: e instanceof Error ? e.message : "Arama başarısız." }, { status: 502 });

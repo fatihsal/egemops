@@ -8,7 +8,7 @@ export function tavilySaglayici(anahtar: string): AramaSaglayici {
       const r = await fetch("https://api.tavily.com/search", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${anahtar}` },
-        body: JSON.stringify({ query: sorgu, max_results: enCok, search_depth: "basic" }),
+        body: JSON.stringify({ query: sorgu, max_results: enCok, search_depth: "basic", country: "turkey" }),
       });
       if (!r.ok) throw new Error(`Tavily HTTP ${r.status}`);
       const d = await r.json();

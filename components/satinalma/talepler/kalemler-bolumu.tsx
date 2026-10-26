@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { Icon } from "@iconify/react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
@@ -81,6 +82,7 @@ export function KalemlerBolumu({ talep }: { talep: Talep }) {
                   <p className="text-[11px] text-muted-foreground">{[k.marka, k.model, k.siparisKodu].filter(Boolean).join(" · ") || "—"}</p>
                 </div>
                 <div className="flex shrink-0 items-center gap-1">
+                  <Link href={`/satinalma/tedarikciler?q=${encodeURIComponent([k.marka, k.siparisKodu || k.model, k.ad, "tedarikçi"].filter(Boolean).join(" "))}`} title={t("Tedarikçi Ara")} className="flex size-7 items-center justify-center rounded-md text-orange-600 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-orange-950"><Icon icon="solar:magnifer-linear" className="size-4" /></Link>
                   <button type="button" onClick={() => duzenle(k)} aria-label={t("Düzenle")} className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"><Icon icon="solar:pen-linear" className="size-4" /></button>
                   <button type="button" onClick={() => sil(k.id)} aria-label={t("Sil")} className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950"><Icon icon="solar:trash-bin-trash-linear" className="size-4" /></button>
                 </div>

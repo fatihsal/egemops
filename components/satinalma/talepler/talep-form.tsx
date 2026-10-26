@@ -88,6 +88,7 @@ export function TalepForm() {
         ad: k.ad || [c.marka, c.kategori].filter(Boolean).join(" ") || c.kategori || "",
         marka: k.marka || c.marka || "",
         model: k.model || c.model || "",
+        siparisKodu: k.siparisKodu || c.urunKodu || "",
         teknikAciklama: k.teknikAciklama || c.ozet || "",
       });
       toast.success(`${t("AI önerisi uygulandı")} (${t("kalem")} ${i + 1}) — ${t("lütfen kontrol edin")}`);

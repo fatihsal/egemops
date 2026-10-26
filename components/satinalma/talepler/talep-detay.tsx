@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { BosDurum } from "@/components/common/bos-durum";
-import { useTalep } from "@/lib/queries/satinalma";
+import { useTalep, useTalepKalemler } from "@/lib/queries/satinalma";
 import { talepGuncelle, talepSil } from "@/lib/data/satinalma/talepler";
 import { useDil } from "@/components/providers/dil-provider";
 import { queryKeys } from "@/lib/queries/keys";
@@ -32,6 +32,7 @@ import type { TalepDurum } from "@/lib/types/satinalma";
 
 export function TalepDetay({ id }: { id: string }) {
   const { data: talep, isLoading, isError } = useTalep(id);
+  const { data: kalemler } = useTalepKalemler(id);
   const { t } = useDil();
   const router = useRouter();
   const qc = useQueryClient();
@@ -107,7 +108,7 @@ export function TalepDetay({ id }: { id: string }) {
 
           {/* Tedarikçi adayları — aktif (Faz 4) */}
           <Link
-            href={`/satinalma/tedarikciler?q=${encodeURIComponent([talep.marka, talep.model, talep.aiCikarim?.kategori ?? talep.baslik, "tedarikçi"].filter(Boolean).join(" "))}`}
+            href={`/satinalma/tedarikciler?q=${encodeURIComponent((() => { const k = kalemler?.[0]; return k ? [k.marka, k.siparisKodu || k.model, k.ad, "tedarikçi"].filter(Boolean).join(" ") : [talep.baslik, "tedarikçi"].filter(Boolean).join(" "); })())}`}
             className="flex items-center gap-3 rounded-xl border border-orange-200/70 bg-orange-50/50 p-4 text-sm transition-colors hover:bg-orange-100/60 dark:border-orange-900/40 dark:bg-orange-950/20 dark:hover:bg-orange-950/40"
           >
             <Icon icon="solar:shop-2-bold-duotone" className="size-7 text-orange-600 dark:text-orange-400" />

@@ -11,10 +11,12 @@ const VARSAYILAN_MODEL = "gpt-4o-mini";
 const SISTEM_TALIMATI = `Sen teknik satın alma için bir ürün tanımlama asistanısın.
 Verilen fotoğraftan endüstriyel/teknik malzemenin bilgilerini çıkar.
 SADECE görselde görünen veya makul biçimde çıkarılabilen bilgileri yaz; EMİN DEĞİLSEN uydurma, ilgili alanı boş bırak ve "belirsizAlanlar" listesine ekle.
+Ürün/sipariş kodunu TAM oku; son ekleri (ör. /TT) silme, seri numarasıyla karıştırma, kendiliğinden başka kodla değiştirme. Emin değilsen boş bırak ve belirsizAlanlar'a ekle.
 Yanıtı yalnızca şu şemada GEÇERLİ JSON olarak ver:
 {
   "marka": string,            // emin değilsen ""
   "model": string,            // emin değilsen ""
+  "urunKodu": string,         // tam sipariş/ürün kodu (etiketteki haliyle); emin değilsen ""
   "kategori": string,         // ör. "Pnömatik silindir", "Rulman", "Sensör"
   "ozet": string,             // 1-2 cümle Türkçe açıklama
   "ozellikler": [ { "ad": string, "deger": string } ],  // görülebilen teknik özellikler

@@ -52,6 +52,7 @@ export interface FirmaProfili {
 export interface AiCikarim {
   marka?: string;
   model?: string;
+  urunKodu?: string; // tam sipariş/ürün kodu (kesilmeden, seri no ile karıştırmadan)
   kategori?: string;
   ozellikler?: { ad: string; deger: string }[];
   guven?: number; // 0..1
