@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { createPortal } from "react-dom";
 import { Icon } from "@iconify/react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
@@ -177,7 +178,8 @@ export function RfqBolumu({ talep }: { talep: Talep }) {
 // ---------------------------------------------------------------------------
 function GonderOnayModal({ rfq, tedAd, gonderiliyor, onOnayla, onKapat }: { rfq: Rfq; tedAd?: string; gonderiliyor: boolean; onOnayla: () => void; onKapat: () => void }) {
   const { t } = useDil();
-  return (
+  if (typeof document === "undefined") return null;
+  return createPortal(
     <div role="dialog" aria-modal className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onKapat}>
       <div className="flex max-h-[85vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-card shadow-xl" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between border-b p-4"><h3 className="font-heading font-bold">{t("Gönderim Önizleme")}</h3><button type="button" onClick={onKapat} className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted"><Icon icon="solar:close-circle-linear" className="size-5" /></button></div>
@@ -195,7 +197,8 @@ function GonderOnayModal({ rfq, tedAd, gonderiliyor, onOnayla, onKapat }: { rfq:
           <Button className="gap-1.5 bg-emerald-600 text-white hover:bg-emerald-700" disabled={gonderiliyor || !rfq.aliciEposta} onClick={onOnayla}><Icon icon={gonderiliyor ? "svg-spinners:180-ring" : "solar:plain-2-bold"} className="size-4" />{t("Onayla ve Gönder")}</Button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
@@ -227,7 +230,8 @@ function TopluGonderModal({ rfqlar, tedAd, gonderTek, onBitti, onKapat }: { rfql
   const ikon: Record<GonderimSonuc, string> = { bekliyor: "solar:clock-circle-linear", gonderiliyor: "svg-spinners:180-ring", ok: "solar:check-circle-bold", hata: "solar:close-circle-bold" };
   const renk: Record<GonderimSonuc, string> = { bekliyor: "text-muted-foreground", gonderiliyor: "text-blue-500", ok: "text-emerald-500", hata: "text-red-500" };
 
-  return (
+  if (typeof document === "undefined") return null;
+  return createPortal(
     <div role="dialog" aria-modal className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onKapat}>
       <div className="flex max-h-[85vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-card shadow-xl" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between border-b p-4"><h3 className="font-heading font-bold">{t("Toplu Gönderim")} ({rfqlar.length})</h3><button type="button" onClick={onKapat} className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted"><Icon icon="solar:close-circle-linear" className="size-5" /></button></div>
@@ -253,7 +257,8 @@ function TopluGonderModal({ rfqlar, tedAd, gonderTek, onBitti, onKapat }: { rfql
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

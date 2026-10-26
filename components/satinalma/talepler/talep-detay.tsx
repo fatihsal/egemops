@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Icon } from "@iconify/react";
@@ -141,13 +142,14 @@ export function TalepDetay({ id }: { id: string }) {
         </Card>
       </div>
 
-      {/* Foto büyük önizleme */}
-      {buyukFoto ? (
+      {/* Foto büyük önizleme (portal: transform'lu ebeveynden kaçar) */}
+      {buyukFoto && typeof document !== "undefined" ? createPortal(
         <div role="dialog" aria-modal className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-6" onClick={() => setBuyukFoto(null)}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={buyukFoto} alt="" className="max-h-full max-w-full rounded-lg object-contain" />
           <button type="button" aria-label={t("Kapat")} className="absolute top-5 right-5 flex size-9 items-center justify-center rounded-full bg-white/15 text-white hover:bg-white/25"><Icon icon="solar:close-circle-bold" className="size-6" /></button>
-        </div>
+        </div>,
+        document.body,
       ) : null}
     </div>
   );
