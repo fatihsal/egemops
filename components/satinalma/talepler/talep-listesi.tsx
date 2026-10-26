@@ -86,7 +86,7 @@ export function TalepListesi() {
       {/* Araç çubuğu */}
       <div className="flex flex-wrap items-center gap-2">
         <Select value={durum} onValueChange={(v) => setDurum(v ?? "hepsi")}>
-          <SelectTrigger size="sm" className="w-[170px] bg-card"><SelectValue placeholder={t("Tüm Durumlar")} /></SelectTrigger>
+          <SelectTrigger size="sm" className="w-[170px] bg-card"><SelectValue placeholder={t("Tüm Durumlar")}>{(v) => !v || v === "hepsi" ? t("Tüm Durumlar") : t(TALEP_DURUM_META[v as TalepDurum]?.etiket ?? String(v))}</SelectValue></SelectTrigger>
           <SelectContent>
             <SelectItem value="hepsi">{t("Tüm Durumlar")}</SelectItem>
             {(Object.keys(TALEP_DURUM_META) as TalepDurum[]).map((d) => <SelectItem key={d} value={d}>{t(TALEP_DURUM_META[d].etiket)}</SelectItem>)}

@@ -93,7 +93,7 @@ export function TalepDetay({ id }: { id: string }) {
         </div>
         <div className="flex items-center gap-2">
           <Select value={talep.durum} onValueChange={(v) => v && durumDegistir(v as TalepDurum)}>
-            <SelectTrigger size="sm" className="w-[170px] bg-card"><SelectValue /></SelectTrigger>
+            <SelectTrigger size="sm" className="w-[170px] bg-card"><SelectValue>{(v) => t(TALEP_DURUM_META[v as TalepDurum]?.etiket ?? String(v ?? ""))}</SelectValue></SelectTrigger>
             <SelectContent>{(Object.keys(TALEP_DURUM_META) as TalepDurum[]).map((d) => <SelectItem key={d} value={d}>{t(TALEP_DURUM_META[d].etiket)}</SelectItem>)}</SelectContent>
           </Select>
           <Button variant="outline" size="sm" className="gap-1.5 bg-card text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950" disabled={siliniyor} onClick={sil}><Icon icon="solar:trash-bin-trash-linear" className="size-4" />{t("Sil")}</Button>
