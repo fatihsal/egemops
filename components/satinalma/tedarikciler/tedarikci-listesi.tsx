@@ -24,7 +24,13 @@ import {
 import { TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { BosDurum } from "@/components/common/bos-durum";
 import { useTedarikciler } from "@/lib/queries/satinalma";
-import { tedarikciOlustur, tedarikciSil, tedarikciDogrulamaAyarla } from "@/lib/data/satinalma/tedarikciler";
+import { tedarikciOlustur, tedarikciSil, tedarikciDogrulamaAyarla, tedarikciGuncelle } from "@/lib/data/satinalma/tedarikciler";
+import { kategoriTahmin } from "@/lib/satinalma/kategori";
+import { KATEGORILER, KATEGORI_META } from "@/components/satinalma/stiller";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
+import type { Tedarikci } from "@/lib/types/satinalma";
 import { useDil } from "@/components/providers/dil-provider";
 import { queryKeys } from "@/lib/queries/keys";
 import { cn } from "@/lib/utils";
@@ -39,6 +45,8 @@ export function TedarikciListesi() {
 
   const [araAcik, setAraAcik] = React.useState(!!ilkSorgu);
   const [manuelAcik, setManuelAcik] = React.useState(false);
+  const [kategoriFiltre, setKategoriFiltre] = React.useState("hepsi");
+  const [duzenlenen, setDuzenlenen] = React.useState<Tedarikci | null>(null);
 
   function tazele() {
     qc.invalidateQueries({ queryKey: queryKeys.satinalma.tedarikciler });
@@ -64,6 +72,8 @@ export function TedarikciListesi() {
   }
 
   const tumu = data ?? [];
+  const kullanilanKats = Array.from(new Set(tumu.flatMap((x) => x.kategoriler)));
+  const filtreli = kategoriFiltre === "hepsi" ? tumu : tumu.filter((x) => x.kategoriler.includes(kategoriFiltre));
 
   return (
     <div className="space-y-5">
@@ -75,6 +85,13 @@ export function TedarikciListesi() {
           {t("Doğrulanmış")}: <span className="font-semibold tabular-nums text-foreground">{tumu.filter((x) => x.dogrulanmis).length}</span>
         </p>
         <div className="flex gap-2">
+          <Select value={kategoriFiltre} onValueChange={(v) => setKategoriFiltre(v ?? "hepsi")}>
+            <SelectTrigger size="sm" className="h-9 w-[160px] bg-card"><SelectValue>{(v) => !v || v === "hepsi" ? t("Tüm Kategoriler") : (KATEGORI_META[v as string]?.ad ?? String(v))}</SelectValue></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="hepsi">{t("Tüm Kategoriler")}</SelectItem>
+              {KATEGORILER.filter((k) => kullanilanKats.includes(k.anahtar)).map((k) => <SelectItem key={k.anahtar} value={k.anahtar}>{k.ad}</SelectItem>)}
+            </SelectContent>
+          </Select>
           <Button className="h-9 gap-1.5 bg-orange-600 text-white shadow-sm hover:bg-orange-700" onClick={() => setAraAcik(true)}>
             <Icon icon="solar:magnifer-bold" className="size-4" />{t("Aday Ara")}
           </Button>
@@ -102,25 +119,29 @@ export function TedarikciListesi() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>{t("Tedarikçi")}</TableHead>
+                    <TableHead>{t("Kategoriler")}</TableHead>
                     <TableHead>{t("Kaynak")}</TableHead>
-                    <TableHead>{t("Ülke")}</TableHead>
                     <TableHead>{t("Durum")}</TableHead>
                     <TableHead className="text-right">{t("Aksiyon")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {tumu.map((x) => (
+                  {filtreli.map((x) => (
                     <TableRow key={x.id}>
                       <TableCell>
-                        <div className="min-w-0"><span className="block font-medium">{x.ad}</span>{x.eposta ? <span className="block truncate text-[11px] text-muted-foreground">{x.eposta}</span> : null}</div>
+                        <div className="min-w-0"><span className="block font-medium">{x.ad}</span>{x.eposta ? <span className="block truncate text-[11px] text-muted-foreground">{x.eposta}</span> : <span className="block text-[11px] text-amber-600 dark:text-amber-400">{t("e-posta yok")}</span>}</div>
                       </TableCell>
                       <TableCell>
-                        <a href={x.kaynakUrl} target="_blank" rel="noopener noreferrer" className="inline-flex max-w-[220px] items-center gap-1 truncate text-xs text-blue-600 hover:underline dark:text-blue-400" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex max-w-[220px] flex-wrap gap-1">
+                          {x.kategoriler.length ? x.kategoriler.map((k) => <span key={k} className={cn("rounded px-1.5 py-0.5 text-[10px] font-medium", KATEGORI_META[k]?.sinif ?? "bg-muted")}>{KATEGORI_META[k]?.ad ?? k}</span>) : <span className="text-[11px] text-muted-foreground">—</span>}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <a href={x.kaynakUrl} target="_blank" rel="noopener noreferrer" className="inline-flex max-w-[200px] items-center gap-1 truncate text-xs text-blue-600 hover:underline dark:text-blue-400" onClick={(e) => e.stopPropagation()}>
                           <Icon icon="solar:link-linear" className="size-3.5 shrink-0" />
                           <span className="truncate">{x.webSitesi || x.kaynakUrl}</span>
                         </a>
                       </TableCell>
-                      <TableCell className="whitespace-nowrap text-muted-foreground">{x.ulke || "—"}</TableCell>
                       <TableCell>
                         <button type="button" onClick={() => dogrulamaToggle(x.id, x.dogrulanmis)} className={cn("inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium transition-colors", x.dogrulanmis ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300" : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300")}>
                           <Icon icon={x.dogrulanmis ? "solar:verified-check-bold" : "solar:question-circle-linear"} className="size-3.5" />
@@ -128,7 +149,8 @@ export function TedarikciListesi() {
                         </button>
                       </TableCell>
                       <TableCell>
-                        <div className="flex justify-end">
+                        <div className="flex justify-end gap-1">
+                          <button type="button" onClick={() => setDuzenlenen(x)} aria-label={t("Düzenle")} className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"><Icon icon="solar:pen-linear" className="size-4" /></button>
                           <button type="button" onClick={() => sil(x.id)} aria-label={t("Sil")} className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950"><Icon icon="solar:trash-bin-trash-linear" className="size-4" /></button>
                         </div>
                       </TableCell>
@@ -143,7 +165,82 @@ export function TedarikciListesi() {
 
       <AdayAraSheet acik={araAcik} setAcik={setAraAcik} ilkSorgu={ilkSorgu} onKaydet={tazele} />
       <ManuelEkleSheet acik={manuelAcik} setAcik={setManuelAcik} onKaydet={tazele} />
+      <TedarikciDuzenleSheet tedarikci={duzenlenen} kapat={() => setDuzenlenen(null)} onKaydet={tazele} />
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Tedarikçi düzenle (e-posta, bilgiler, kategoriler)
+// ---------------------------------------------------------------------------
+function TedarikciDuzenleSheet({ tedarikci, kapat, onKaydet }: { tedarikci: Tedarikci | null; kapat: () => void; onKaydet: () => void }) {
+  const { t } = useDil();
+  const [ad, setAd] = React.useState("");
+  const [eposta, setEposta] = React.useState("");
+  const [telefon, setTelefon] = React.useState("");
+  const [web, setWeb] = React.useState("");
+  const [ulke, setUlke] = React.useState("");
+  const [notlar, setNotlar] = React.useState("");
+  const [kats, setKats] = React.useState<string[]>([]);
+  const [kaydediliyor, setKaydediliyor] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!tedarikci) return;
+    setAd(tedarikci.ad); setEposta(tedarikci.eposta ?? ""); setTelefon(tedarikci.telefon ?? "");
+    setWeb(tedarikci.webSitesi ?? ""); setUlke(tedarikci.ulke ?? ""); setNotlar(tedarikci.notlar ?? "");
+    setKats(tedarikci.kategoriler ?? []);
+  }, [tedarikci]);
+
+  function katToggle(k: string) { setKats((o) => (o.includes(k) ? o.filter((x) => x !== k) : [...o, k])); }
+
+  async function kaydet() {
+    if (!tedarikci || kaydediliyor) return;
+    if (!ad.trim()) { toast.error(t("Tedarikçi adı gerekli.")); return; }
+    setKaydediliyor(true);
+    try {
+      await tedarikciGuncelle(tedarikci.id, { ad: ad.trim(), eposta: eposta.trim() || null, telefon: telefon.trim() || null, webSitesi: web.trim() || null, ulke: ulke.trim() || null, notlar: notlar.trim() || null, kategoriler: kats });
+      toast.success(t("Tedarikçi güncellendi"));
+      onKaydet();
+      kapat();
+    } catch (e) {
+      toast.error(t("Güncellenemedi"), { description: e instanceof Error ? e.message : undefined });
+    } finally {
+      setKaydediliyor(false);
+    }
+  }
+
+  return (
+    <Sheet open={!!tedarikci} onOpenChange={(o) => { if (!o) kapat(); }}>
+      <SheetContent side="right" className="flex w-full flex-col gap-0 p-0 sm:max-w-md">
+        <SheetHeader className="border-b p-5">
+          <SheetTitle>{t("Tedarikçi Düzenle")}</SheetTitle>
+          <SheetDescription>{t("E-posta, bilgiler ve kategorileri güncelleyin.")}</SheetDescription>
+        </SheetHeader>
+        <div className="flex-1 space-y-4 overflow-y-auto p-5">
+          <div className="space-y-1.5"><Label className="text-xs text-muted-foreground">{t("Tedarikçi Adı")} *</Label><Input value={ad} onChange={(e) => setAd(e.target.value)} /></div>
+          <div className="space-y-1.5"><Label className="text-xs text-muted-foreground">{t("E-posta")}</Label><Input value={eposta} onChange={(e) => setEposta(e.target.value)} placeholder="satis@firma.com" /></div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1.5"><Label className="text-xs text-muted-foreground">{t("Telefon")}</Label><Input value={telefon} onChange={(e) => setTelefon(e.target.value)} /></div>
+            <div className="space-y-1.5"><Label className="text-xs text-muted-foreground">{t("Ülke")}</Label><Input value={ulke} onChange={(e) => setUlke(e.target.value)} /></div>
+          </div>
+          <div className="space-y-1.5"><Label className="text-xs text-muted-foreground">{t("Web Sitesi")}</Label><Input value={web} onChange={(e) => setWeb(e.target.value)} /></div>
+          <div className="space-y-1.5">
+            <Label className="text-xs text-muted-foreground">{t("Kategoriler")}</Label>
+            <div className="flex flex-wrap gap-1.5">
+              {KATEGORILER.map((k) => (
+                <button key={k.anahtar} type="button" onClick={() => katToggle(k.anahtar)} className={cn("rounded-full border px-2.5 py-1 text-xs font-medium transition-colors", kats.includes(k.anahtar) ? cn("border-transparent", k.sinif) : "bg-card text-muted-foreground hover:bg-muted")}>{k.ad}</button>
+              ))}
+            </div>
+            <p className="text-[11px] text-muted-foreground">{t("Birden fazla kategori seçebilirsin (ör. hem elektrik hem mekanik satan firma).")}</p>
+          </div>
+          <div className="space-y-1.5"><Label className="text-xs text-muted-foreground">{t("Notlar")}</Label><Textarea value={notlar} onChange={(e) => setNotlar(e.target.value)} rows={3} /></div>
+        </div>
+        <SheetFooter className="flex-row justify-end gap-2 border-t">
+          <SheetClose render={<Button variant="outline" />}>{t("İptal")}</SheetClose>
+          <Button className="gap-1.5 bg-orange-600 text-white hover:bg-orange-700" disabled={kaydediliyor} onClick={kaydet}><Icon icon={kaydediliyor ? "svg-spinners:180-ring" : "solar:diskette-bold-duotone"} className="size-4" />{t("Kaydet")}</Button>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
   );
 }
 
@@ -222,7 +319,7 @@ function AdayAraSheet({ acik, setAcik, ilkSorgu, onKaydet }: { acik: boolean; se
       } catch { /* iletişim bulunamazsa yine de kaydet */ }
 
       const notlar = [r.ozet?.slice(0, 400) || "", digerEpostalar.length ? `Diğer e-postalar: ${digerEpostalar.join(", ")}` : ""].filter(Boolean).join("\n") || null;
-      await tedarikciOlustur({ ad: r.baslik.slice(0, 120), kaynakUrl: r.url, webSitesi: `https://${r.alanAdi}`, eposta, telefon, notlar });
+      await tedarikciOlustur({ ad: r.baslik.slice(0, 120), kaynakUrl: r.url, webSitesi: `https://${r.alanAdi}`, eposta, telefon, notlar, kategoriler: kategoriTahmin(`${r.baslik} ${r.ozet ?? ""}`) });
       setKaydedilen((o) => new Set(o).add(r.url));
       onKaydet();
       if (eposta) toast.success(`${t("Tedarikçi eklendi")} — ${eposta}`);

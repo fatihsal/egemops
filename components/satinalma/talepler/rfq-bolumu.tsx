@@ -22,6 +22,8 @@ import { imzaUret } from "@/lib/data/satinalma/ayarlar";
 import { rfqIcerikHash } from "@/lib/satinalma/rfq-hash";
 import { varsayilanKonu, govdeUret, SABLONLAR, type SablonAnahtar } from "@/lib/satinalma/rfq-sablonlar";
 import { alanAdiCikar, type AramaSonucu } from "@/lib/satinalma/arama/types";
+import { kategoriTahmin } from "@/lib/satinalma/kategori";
+import { KATEGORILER, KATEGORI_META } from "@/components/satinalma/stiller";
 import { queryKeys } from "@/lib/queries/keys";
 import { cn } from "@/lib/utils";
 import { RFQ_DURUM_META } from "@/components/satinalma/stiller";
@@ -251,7 +253,10 @@ function TopluRfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, mevcutRfq
   const zatenVar = new Set(mevcutRfq.map((r) => r.tedarikciId).filter(Boolean) as string[]);
   const [secili, setSecili] = React.useState<Set<string>>(new Set());
   const [sablon, setSablon] = React.useState<SablonAnahtar>("standart");
+  const [katFiltre, setKatFiltre] = React.useState("hepsi");
   const [kaydediliyor, setKaydediliyor] = React.useState(false);
+  const kullanilanKats = Array.from(new Set(tedarikciler.flatMap((x) => x.kategoriler)));
+  const gosterilecek = katFiltre === "hepsi" ? tedarikciler : tedarikciler.filter((x) => x.kategoriler.includes(katFiltre));
 
   React.useEffect(() => {
     if (acik) setSecili(new Set(tedarikciler.filter((x) => !zatenVar.has(x.id)).map((x) => x.id)));
@@ -296,15 +301,30 @@ function TopluRfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, mevcutRfq
             ))}
           </div>
         </div>
+        {kullanilanKats.length > 0 ? (
+          <div className="flex flex-wrap items-center gap-1.5 border-b px-4 py-2.5">
+            <span className="text-xs text-muted-foreground">{t("Kategori")}:</span>
+            <button type="button" onClick={() => setKatFiltre("hepsi")} className={cn("rounded-full border px-2.5 py-0.5 text-xs font-medium", katFiltre === "hepsi" ? "border-orange-500 bg-orange-500 text-white" : "bg-card hover:bg-muted")}>{t("Tümü")}</button>
+            {KATEGORILER.filter((k) => kullanilanKats.includes(k.anahtar)).map((k) => (
+              <button key={k.anahtar} type="button" onClick={() => setKatFiltre(k.anahtar)} className={cn("rounded-full border px-2.5 py-0.5 text-xs font-medium", katFiltre === k.anahtar ? "border-orange-500 bg-orange-500 text-white" : "bg-card hover:bg-muted")}>{k.ad}</button>
+            ))}
+          </div>
+        ) : null}
         <div className="flex-1 space-y-1 overflow-y-auto p-4">
           {tedarikciler.length === 0 ? (
             <p className="py-8 text-center text-sm text-muted-foreground">{t("Önce tedarikçi ekleyin.")}</p>
-          ) : tedarikciler.map((x) => {
+          ) : gosterilecek.length === 0 ? (
+            <p className="py-8 text-center text-sm text-muted-foreground">{t("Bu kategoride tedarikçi yok.")}</p>
+          ) : gosterilecek.map((x) => {
             const eklendi = zatenVar.has(x.id);
             return (
               <label key={x.id} className={cn("flex items-center gap-3 rounded-lg border p-2.5 text-sm", eklendi && "opacity-50")}>
                 <input type="checkbox" checked={eklendi ? true : secili.has(x.id)} disabled={eklendi || !x.eposta} onChange={() => degistir(x.id)} className="size-4 rounded border-input" />
-                <div className="min-w-0 flex-1"><p className="truncate font-medium">{x.ad}</p><p className="truncate text-[11px] text-muted-foreground">{x.eposta || t("e-posta yok — gönderilemez")}</p></div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-medium">{x.ad}</p>
+                  <p className="truncate text-[11px] text-muted-foreground">{x.eposta || t("e-posta yok — gönderilemez")}</p>
+                  {x.kategoriler.length ? <div className="mt-1 flex flex-wrap gap-1">{x.kategoriler.map((k) => <span key={k} className={cn("rounded px-1.5 py-0.5 text-[9px] font-medium", KATEGORI_META[k]?.sinif ?? "bg-muted")}>{KATEGORI_META[k]?.ad ?? k}</span>)}</div> : null}
+                </div>
                 {eklendi ? <span className="shrink-0 text-[11px] text-muted-foreground">{t("zaten eklendi")}</span> : null}
               </label>
             );
@@ -397,7 +417,7 @@ function AraRfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, mevcutRfq, 
             const il = await fetch("/api/satinalma/tedarikci-iletisim", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url: r.url }) });
             if (il.ok) { const dj = await il.json(); eposta = dj.epostalar?.[0]?.eposta ?? null; telefon = (dj.telefonlar ?? [])[0] ?? null; }
           } catch { /* iletişim bulunamazsa devam */ }
-          tedId = await tedarikciOlustur({ ad: r.baslik.slice(0, 120), kaynakUrl: r.url, webSitesi: `https://${r.alanAdi}`, eposta, telefon, notlar: r.ozet?.slice(0, 400) || null });
+          tedId = await tedarikciOlustur({ ad: r.baslik.slice(0, 120), kaynakUrl: r.url, webSitesi: `https://${r.alanAdi}`, eposta, telefon, notlar: r.ozet?.slice(0, 400) || null, kategoriler: kategoriTahmin(`${r.baslik} ${r.ozet ?? ""}`) });
           tedEposta = eposta;
         }
         await rfqOlustur({ talepId: talep.id, tedarikciId: tedId, konu: varsayilanKonu(talep), govde: govdeUret(sablon, { talep, imza, kalemler, tedAd }), aliciEposta: tedEposta });

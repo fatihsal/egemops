@@ -90,6 +90,7 @@ export interface Tedarikci {
   kaynakUrl: string; // zorunlu
   dogrulanmis: boolean;
   notlar: string | null;
+  kategoriler: string[];
   createdAt: string;
 }
 

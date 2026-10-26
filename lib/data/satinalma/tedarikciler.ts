@@ -16,10 +16,11 @@ type Satir = {
   kaynak_url: string;
   dogrulanmis: boolean;
   notlar: string | null;
+  kategoriler: string[] | null;
   created_at: string;
 };
 
-const SECIM = "id, ad, web_sitesi, eposta, telefon, ulke, kaynak_url, dogrulanmis, notlar, created_at";
+const SECIM = "id, ad, web_sitesi, eposta, telefon, ulke, kaynak_url, dogrulanmis, notlar, kategoriler, created_at";
 
 function modele(s: Satir): Tedarikci {
   return {
@@ -32,6 +33,7 @@ function modele(s: Satir): Tedarikci {
     kaynakUrl: s.kaynak_url,
     dogrulanmis: s.dogrulanmis,
     notlar: s.notlar,
+    kategoriler: s.kategoriler ?? [],
     createdAt: s.created_at,
   };
 }
@@ -56,6 +58,7 @@ export type TedarikciOlusturGirdi = {
   ulke?: string | null;
   dogrulanmis?: boolean;
   notlar?: string | null;
+  kategoriler?: string[];
 };
 
 export async function tedarikciOlustur(girdi: TedarikciOlusturGirdi): Promise<string> {
@@ -76,12 +79,34 @@ export async function tedarikciOlustur(girdi: TedarikciOlusturGirdi): Promise<st
       ulke: girdi.ulke ?? null,
       dogrulanmis: girdi.dogrulanmis ?? false,
       notlar: girdi.notlar ?? null,
+      kategoriler: girdi.kategoriler ?? [],
       olusturan: user?.id ?? null,
     })
     .select("id")
     .single();
   if (error) throw new Error(error.message);
   return (data as { id: string }).id;
+}
+
+export type TedarikciGuncelleGirdi = Partial<{
+  ad: string; webSitesi: string | null; eposta: string | null; telefon: string | null;
+  ulke: string | null; kaynakUrl: string; dogrulanmis: boolean; notlar: string | null; kategoriler: string[];
+}>;
+
+export async function tedarikciGuncelle(id: string, g: TedarikciGuncelleGirdi): Promise<void> {
+  const supabase = supabaseTarayici();
+  const o: Record<string, unknown> = {};
+  if (g.ad !== undefined) o.ad = g.ad;
+  if (g.webSitesi !== undefined) o.web_sitesi = g.webSitesi;
+  if (g.eposta !== undefined) o.eposta = g.eposta;
+  if (g.telefon !== undefined) o.telefon = g.telefon;
+  if (g.ulke !== undefined) o.ulke = g.ulke;
+  if (g.kaynakUrl !== undefined) o.kaynak_url = g.kaynakUrl;
+  if (g.dogrulanmis !== undefined) o.dogrulanmis = g.dogrulanmis;
+  if (g.notlar !== undefined) o.notlar = g.notlar;
+  if (g.kategoriler !== undefined) o.kategoriler = g.kategoriler;
+  const { error } = await supabase.from("sa_tedarikciler").update(o).eq("id", id);
+  if (error) throw new Error(error.message);
 }
 
 export async function tedarikciDogrulamaAyarla(id: string, deger: boolean): Promise<void> {
