@@ -36,7 +36,15 @@ export async function POST(req: Request) {
     const sonuclar = await saglayici.ara(sorguTR, 10);
     const trMi = (h: string) => /\.tr$/i.test(h);
     const sirali = [...sonuclar].sort((a, b) => (trMi(b.alanAdi) ? 1 : 0) - (trMi(a.alanAdi) ? 1 : 0));
-    return NextResponse.json({ saglayici: saglayici.ad, sonuclar: sirali });
+    // Aynı firmayı (alan adı) tek kez göster — pazar yeri/alt sayfa tekrarını birleştir.
+    const gorulen = new Set<string>();
+    const tekil = sirali.filter((r) => {
+      const d = r.alanAdi.toLowerCase().replace(/^www\./, "");
+      if (gorulen.has(d)) return false;
+      gorulen.add(d);
+      return true;
+    });
+    return NextResponse.json({ saglayici: saglayici.ad, sonuclar: tekil.slice(0, 8) });
   } catch (e) {
     console.error("[tedarikci-ara] hata:", e);
     return NextResponse.json({ hata: e instanceof Error ? e.message : "Arama başarısız." }, { status: 502 });
