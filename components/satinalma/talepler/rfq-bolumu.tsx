@@ -256,7 +256,7 @@ function TopluRfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, mevcutRfq
   const [katFiltre, setKatFiltre] = React.useState("hepsi");
   const [kaydediliyor, setKaydediliyor] = React.useState(false);
   const kullanilanKats = Array.from(new Set(tedarikciler.flatMap((x) => x.kategoriler)));
-  const gosterilecek = katFiltre === "hepsi" ? tedarikciler : tedarikciler.filter((x) => x.kategoriler.includes(katFiltre));
+  const gosterilecek = katFiltre === "hepsi" ? tedarikciler : tedarikciler.filter((x) => (x.kategoriler ?? []).includes(katFiltre));
 
   React.useEffect(() => {
     if (acik) setSecili(new Set(tedarikciler.filter((x) => !zatenVar.has(x.id)).map((x) => x.id)));
@@ -323,7 +323,7 @@ function TopluRfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, mevcutRfq
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-medium">{x.ad}</p>
                   <p className="truncate text-[11px] text-muted-foreground">{x.eposta || t("e-posta yok — gönderilemez")}</p>
-                  {x.kategoriler.length ? <div className="mt-1 flex flex-wrap gap-1">{x.kategoriler.map((k) => <span key={k} className={cn("rounded px-1.5 py-0.5 text-[9px] font-medium", KATEGORI_META[k]?.sinif ?? "bg-muted")}>{KATEGORI_META[k]?.ad ?? k}</span>)}</div> : null}
+                  {(x.kategoriler ?? []).length ? <div className="mt-1 flex flex-wrap gap-1">{(x.kategoriler ?? []).map((k) => <span key={k} className={cn("rounded px-1.5 py-0.5 text-[9px] font-medium", KATEGORI_META[k]?.sinif ?? "bg-muted")}>{KATEGORI_META[k]?.ad ?? k}</span>)}</div> : null}
                 </div>
                 {eklendi ? <span className="shrink-0 text-[11px] text-muted-foreground">{t("zaten eklendi")}</span> : null}
               </label>

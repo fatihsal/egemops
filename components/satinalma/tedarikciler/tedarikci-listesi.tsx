@@ -72,8 +72,8 @@ export function TedarikciListesi() {
   }
 
   const tumu = data ?? [];
-  const kullanilanKats = Array.from(new Set(tumu.flatMap((x) => x.kategoriler)));
-  const filtreli = kategoriFiltre === "hepsi" ? tumu : tumu.filter((x) => x.kategoriler.includes(kategoriFiltre));
+  const kullanilanKats = Array.from(new Set(tumu.flatMap((x) => x.kategoriler ?? [])));
+  const filtreli = kategoriFiltre === "hepsi" ? tumu : tumu.filter((x) => (x.kategoriler ?? []).includes(kategoriFiltre));
 
   return (
     <div className="space-y-5">
@@ -133,7 +133,7 @@ export function TedarikciListesi() {
                       </TableCell>
                       <TableCell>
                         <div className="flex max-w-[220px] flex-wrap gap-1">
-                          {x.kategoriler.length ? x.kategoriler.map((k) => <span key={k} className={cn("rounded px-1.5 py-0.5 text-[10px] font-medium", KATEGORI_META[k]?.sinif ?? "bg-muted")}>{KATEGORI_META[k]?.ad ?? k}</span>) : <span className="text-[11px] text-muted-foreground">—</span>}
+                          {(x.kategoriler ?? []).length ? (x.kategoriler ?? []).map((k) => <span key={k} className={cn("rounded px-1.5 py-0.5 text-[10px] font-medium", KATEGORI_META[k]?.sinif ?? "bg-muted")}>{KATEGORI_META[k]?.ad ?? k}</span>) : <span className="text-[11px] text-muted-foreground">—</span>}
                         </div>
                       </TableCell>
                       <TableCell>

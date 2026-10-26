@@ -34,7 +34,12 @@ export async function POST(req: Request) {
     const talepId = (govde.talepId ?? "").trim();
     if (!talepId) return NextResponse.json({ hata: "talepId gerekli." }, { status: 400 });
 
-    const hesap = await hesapGetir(user.id);
+    let hesap;
+    try {
+      hesap = await hesapGetir(user.id);
+    } catch {
+      return NextResponse.json({ hata: "Gmail oturumu çözülemedi (token anahtarı uyuşmuyor olabilir). Ayarlar'dan Gmail'i yeniden bağlayın.", yenidenBaglan: true }, { status: 401 });
+    }
     if (!hesap) return NextResponse.json({ hata: "Gmail bağlı değil." }, { status: 503 });
     if (hesap.scope && !hesap.scope.includes("gmail.readonly")) {
       return NextResponse.json({ hata: "Gmail okuma izni yok. Ayarlar'dan yeniden bağlanın.", yenidenBaglan: true }, { status: 403 });
