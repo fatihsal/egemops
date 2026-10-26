@@ -17,8 +17,10 @@ import {
 import { useDil } from "@/components/providers/dil-provider";
 import { useTalepRfq, useTedarikciler, useFirmaProfili, useTalepKalemler } from "@/lib/queries/satinalma";
 import { rfqOlustur, rfqGuncelle, rfqSil } from "@/lib/data/satinalma/rfq";
+import { tedarikciOlustur } from "@/lib/data/satinalma/tedarikciler";
 import { imzaUret } from "@/lib/data/satinalma/ayarlar";
 import { rfqIcerikHash } from "@/lib/satinalma/rfq-hash";
+import { alanAdiCikar, type AramaSonucu } from "@/lib/satinalma/arama/types";
 import { queryKeys } from "@/lib/queries/keys";
 import { cn } from "@/lib/utils";
 import { RFQ_DURUM_META } from "@/components/satinalma/stiller";
@@ -69,9 +71,14 @@ export function RfqBolumu({ talep }: { talep: Talep }) {
   const [onaylanacak, setOnaylanacak] = React.useState<Rfq | null>(null);
   const [topluCreateAcik, setTopluCreateAcik] = React.useState(false);
   const [topluGonderAcik, setTopluGonderAcik] = React.useState(false);
+  const [araRfqAcik, setAraRfqAcik] = React.useState(false);
   const [gonderiliyorTek, setGonderiliyorTek] = React.useState(false);
 
   function tazele() { qc.invalidateQueries({ queryKey: queryKeys.satinalma.talepRfq(talep.id) }); }
+  function tazeleHepsi() { tazele(); qc.invalidateQueries({ queryKey: queryKeys.satinalma.tedarikciler }); }
+
+  const ilkKalem = (kalemler ?? [])[0];
+  const ilkSorgu = ilkKalem ? [ilkKalem.marka, ilkKalem.siparisKodu || ilkKalem.model, ilkKalem.ad, "tedarikçi"].filter(Boolean).join(" ") : [talep.baslik, "tedarikçi"].filter(Boolean).join(" ");
   function yeni() { setDuzenlenen(null); setSheetAcik(true); }
   function duzenle(r: Rfq) { setDuzenlenen(r); setSheetAcik(true); }
 
@@ -118,11 +125,12 @@ export function RfqBolumu({ talep }: { talep: Talep }) {
           <h3 className="font-heading text-base font-bold tracking-tight">{t("Teklif Talepleri (RFQ)")}</h3>
           <p className="mt-0.5 text-xs text-muted-foreground">{t("Her tedarikçiye ayrı e-posta gider (birbirlerini görmezler). Gönderim öncesi içeriği önizleyip onaylarsınız.")}</p>
         </div>
-        <div className="flex shrink-0 gap-2">
+        <div className="flex shrink-0 flex-wrap gap-2">
+          <Button size="sm" className="gap-1.5 bg-orange-600 text-white hover:bg-orange-700" onClick={() => setAraRfqAcik(true)}><Icon icon="solar:magnifer-bold" className="size-4" />{t("Tedarikçi Ara & RFQ")}</Button>
           {(tedarikciler?.length ?? 0) > 0 ? (
-            <Button size="sm" variant="outline" className="gap-1.5 bg-card" onClick={() => setTopluCreateAcik(true)}><Icon icon="solar:users-group-rounded-bold" className="size-4" />{t("Toplu RFQ")}</Button>
+            <Button size="sm" variant="outline" className="gap-1.5 bg-card" onClick={() => setTopluCreateAcik(true)}><Icon icon="solar:users-group-rounded-bold" className="size-4" />{t("Kayıtlılardan")}</Button>
           ) : null}
-          <Button size="sm" className="gap-1.5 bg-orange-600 text-white hover:bg-orange-700" onClick={yeni}><Icon icon="solar:letter-opened-bold" className="size-4" />{t("RFQ Oluştur")}</Button>
+          <Button size="sm" variant="outline" className="gap-1.5 bg-card" onClick={yeni}><Icon icon="solar:letter-opened-bold" className="size-4" />{t("Tekil")}</Button>
         </div>
       </CardHeader>
       <CardContent>
@@ -167,6 +175,7 @@ export function RfqBolumu({ talep }: { talep: Talep }) {
 
       <RfqSheet acik={sheetAcik} setAcik={setSheetAcik} talep={talep} tedarikciler={tedarikciler ?? []} kalemler={kalemler ?? []} duzenlenen={duzenlenen} imza={imza} onKaydet={tazele} />
       <TopluRfqSheet acik={topluCreateAcik} setAcik={setTopluCreateAcik} talep={talep} tedarikciler={tedarikciler ?? []} kalemler={kalemler ?? []} mevcutRfq={liste} imza={imza} onKaydet={tazele} />
+      <AraRfqSheet acik={araRfqAcik} setAcik={setAraRfqAcik} talep={talep} tedarikciler={tedarikciler ?? []} kalemler={kalemler ?? []} mevcutRfq={liste} imza={imza} ilkSorgu={ilkSorgu} onKaydet={tazeleHepsi} />
       {onaylanacak ? <GonderOnayModal rfq={onaylanacak} tedAd={tedAd(onaylanacak.tedarikciId)} gonderiliyor={gonderiliyorTek} onOnayla={onayliGonder} onKapat={() => setOnaylanacak(null)} /> : null}
       {topluGonderAcik ? <TopluGonderModal rfqlar={gonderilebilir} tedAd={tedAd} gonderTek={gonderTek} onBitti={tazele} onKapat={() => setTopluGonderAcik(false)} /> : null}
     </Card>
@@ -325,6 +334,146 @@ function TopluRfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, mevcutRfq
         <SheetFooter className="flex-row justify-end gap-2 border-t">
           <SheetClose render={<Button variant="outline" />}>{t("İptal")}</SheetClose>
           <Button className="gap-1.5 bg-orange-600 text-white hover:bg-orange-700" disabled={kaydediliyor} onClick={olustur}><Icon icon={kaydediliyor ? "svg-spinners:180-ring" : "solar:letter-opened-bold"} className="size-4" />{t("Taslakları Oluştur")}</Button>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Tedarikçi Ara & RFQ — tek akışta: ara → çoklu seç → e-posta bul + kaydet + RFQ
+// ---------------------------------------------------------------------------
+type AraDurum = "islen" | "ok" | "epostasiz" | "zaten" | "hata";
+function AraRfqSheet({ acik, setAcik, talep, tedarikciler, kalemler, mevcutRfq, imza, ilkSorgu, onKaydet }: {
+  acik: boolean; setAcik: (o: boolean) => void; talep: Talep; tedarikciler: Tedarikci[]; kalemler: TalepKalem[]; mevcutRfq: Rfq[]; imza: string; ilkSorgu: string; onKaydet: () => void;
+}) {
+  const { t } = useDil();
+  const [sorgu, setSorgu] = React.useState(ilkSorgu);
+  const [araniyor, setAraniyor] = React.useState(false);
+  const [sonuclar, setSonuclar] = React.useState<AramaSonucu[] | null>(null);
+  const [secili, setSecili] = React.useState<Set<string>>(new Set());
+  const [olusturuluyor, setOlusturuluyor] = React.useState(false);
+  const [durumlar, setDurumlar] = React.useState<Record<string, { durum: AraDurum; not?: string }>>({});
+
+  React.useEffect(() => { if (acik) { setSorgu(ilkSorgu); setSonuclar(null); setSecili(new Set()); setDurumlar({}); } }, [acik, ilkSorgu]);
+
+  const dom = (u: string | null | undefined) => (u ? alanAdiCikar(u).replace(/^www\./, "").toLowerCase() : "");
+  const rfqOlanIdler = new Set(mevcutRfq.map((r) => r.tedarikciId).filter(Boolean) as string[]);
+  const rfqDomainleri = new Set(tedarikciler.filter((x) => rfqOlanIdler.has(x.id)).flatMap((x) => [dom(x.kaynakUrl), dom(x.webSitesi)]).filter(Boolean));
+
+  async function ara() {
+    if (!sorgu.trim() || araniyor) return;
+    setAraniyor(true); setSonuclar(null); setDurumlar({});
+    try {
+      const r = await fetch("/api/satinalma/tedarikci-ara", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sorgu: sorgu.trim() }) });
+      const metin = await r.text(); const sonuc = metin ? JSON.parse(metin) : {};
+      if (!r.ok) { toast.error(t("Arama başarısız"), { description: sonuc?.hata ?? `HTTP ${r.status}` }); return; }
+      const liste: AramaSonucu[] = sonuc.sonuclar ?? [];
+      setSonuclar(liste);
+      // Zaten RFQ'su olmayanları varsayılan seç.
+      setSecili(new Set(liste.filter((x) => !rfqDomainleri.has(dom(x.url))).map((x) => x.url)));
+    } catch (e) {
+      toast.error(t("Arama başarısız"), { description: e instanceof Error ? e.message : undefined });
+    } finally { setAraniyor(false); }
+  }
+
+  function toggle(url: string) { setSecili((o) => { const n = new Set(o); if (n.has(url)) n.delete(url); else n.add(url); return n; }); }
+
+  async function olustur() {
+    const hedef = (sonuclar ?? []).filter((r) => secili.has(r.url));
+    if (hedef.length === 0) { toast.error(t("En az bir firma seçin.")); return; }
+    if (olusturuluyor) return;
+    setOlusturuluyor(true);
+    let basarili = 0;
+    for (const r of hedef) {
+      const d = dom(r.url);
+      if (rfqDomainleri.has(d)) { setDurumlar((o) => ({ ...o, [r.url]: { durum: "zaten" } })); continue; }
+      setDurumlar((o) => ({ ...o, [r.url]: { durum: "islen" } }));
+      try {
+        let tedId: string; let tedAd = r.baslik; let tedEposta: string | null = null;
+        const mevcut = tedarikciler.find((x) => dom(x.kaynakUrl) === d || dom(x.webSitesi) === d);
+        if (mevcut) { tedId = mevcut.id; tedAd = mevcut.ad; tedEposta = mevcut.eposta; }
+        else {
+          let eposta: string | null = null; let telefon: string | null = null;
+          try {
+            const il = await fetch("/api/satinalma/tedarikci-iletisim", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url: r.url }) });
+            if (il.ok) { const dj = await il.json(); eposta = dj.epostalar?.[0]?.eposta ?? null; telefon = (dj.telefonlar ?? [])[0] ?? null; }
+          } catch { /* iletişim bulunamazsa devam */ }
+          tedId = await tedarikciOlustur({ ad: r.baslik.slice(0, 120), kaynakUrl: r.url, webSitesi: `https://${r.alanAdi}`, eposta, telefon, notlar: r.ozet?.slice(0, 400) || null });
+          tedEposta = eposta;
+        }
+        await rfqOlustur({ talepId: talep.id, tedarikciId: tedId, konu: varsayilanKonu(talep), govde: varsayilanGovde(talep, imza, kalemler, tedAd), aliciEposta: tedEposta });
+        setDurumlar((o) => ({ ...o, [r.url]: { durum: tedEposta ? "ok" : "epostasiz" } }));
+        basarili++;
+      } catch (e) {
+        setDurumlar((o) => ({ ...o, [r.url]: { durum: "hata", not: e instanceof Error ? e.message : undefined } }));
+      }
+    }
+    setOlusturuluyor(false);
+    onKaydet();
+    if (basarili > 0) toast.success(`${basarili} ${t("RFQ taslağı oluşturuldu")}`);
+  }
+
+  const dmeta: Record<AraDurum, { ik: string; renk: string; et: string }> = {
+    islen: { ik: "svg-spinners:180-ring", renk: "text-blue-500", et: "" },
+    ok: { ik: "solar:check-circle-bold", renk: "text-emerald-500", et: "RFQ + e-posta" },
+    epostasiz: { ik: "solar:letter-unread-linear", renk: "text-amber-500", et: "RFQ (e-posta yok)" },
+    zaten: { ik: "solar:info-circle-linear", renk: "text-muted-foreground", et: "zaten var" },
+    hata: { ik: "solar:close-circle-bold", renk: "text-red-500", et: "hata" },
+  };
+  const bittiMi = Object.keys(durumlar).length > 0 && !olusturuluyor;
+
+  return (
+    <Sheet open={acik} onOpenChange={setAcik}>
+      <SheetContent side="right" className="flex w-full flex-col gap-0 p-0 sm:max-w-lg">
+        <SheetHeader className="border-b p-5">
+          <SheetTitle>{t("Tedarikçi Ara & RFQ Oluştur")}</SheetTitle>
+          <SheetDescription>{t("Ürün koduyla Türkiye öncelikli ara, firmaları seç; tek tıkla e-postalarını bulup bu talebe RFQ taslağı aç. İstemediğin firmanın işaretini kaldır.")}</SheetDescription>
+        </SheetHeader>
+
+        <div className="flex gap-2 border-b p-4">
+          <Input value={sorgu} onChange={(e) => setSorgu(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") ara(); }} placeholder={t("Örn. Festo DSBC-50 tedarikçi")} className="h-9" />
+          <Button className="h-9 shrink-0 gap-1.5 bg-orange-600 text-white hover:bg-orange-700" disabled={araniyor} onClick={ara}><Icon icon={araniyor ? "svg-spinners:180-ring" : "solar:magnifer-bold"} className="size-4" />{t("Ara")}</Button>
+        </div>
+
+        <div className="flex-1 space-y-2 overflow-y-auto p-4">
+          {sonuclar === null ? (
+            <p className="px-2 py-10 text-center text-sm text-muted-foreground">{t("Sorguyu kontrol edip Ara'ya basın.")}</p>
+          ) : sonuclar.length === 0 ? (
+            <p className="px-2 py-10 text-center text-sm text-muted-foreground">{t("Sonuç bulunamadı.")}</p>
+          ) : (
+            <>
+              <div className="flex items-center justify-between px-1 text-xs text-muted-foreground">
+                <span>{secili.size}/{sonuclar.length} {t("seçili")}</span>
+                <button type="button" className="hover:text-foreground" onClick={() => setSecili(secili.size === sonuclar.length ? new Set() : new Set(sonuclar.map((x) => x.url)))}>{secili.size === sonuclar.length ? t("Hiçbiri") : t("Tümü")}</button>
+              </div>
+              {sonuclar.map((r) => {
+                const st = durumlar[r.url];
+                const zaten = rfqDomainleri.has(dom(r.url));
+                return (
+                  <label key={r.url} className={cn("flex items-start gap-2.5 rounded-xl border p-3 text-sm", zaten && "opacity-60")}>
+                    <input type="checkbox" checked={secili.has(r.url)} disabled={olusturuluyor || zaten} onChange={() => toggle(r.url)} className="mt-0.5 size-4 rounded border-input" />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-medium">{r.baslik}</p>
+                      <a href={r.url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="inline-flex items-center gap-1 text-xs text-blue-600 hover:underline dark:text-blue-400"><Icon icon="solar:link-linear" className="size-3.5" />{r.alanAdi}</a>
+                      {r.ozet ? <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{r.ozet}</p> : null}
+                    </div>
+                    {st ? <span className={cn("flex shrink-0 items-center gap-1 text-[11px]", dmeta[st.durum].renk)} title={st.not ?? ""}><Icon icon={dmeta[st.durum].ik} className="size-4" />{t(dmeta[st.durum].et)}</span>
+                      : zaten ? <span className="shrink-0 text-[11px] text-muted-foreground">{t("zaten var")}</span> : null}
+                  </label>
+                );
+              })}
+            </>
+          )}
+        </div>
+
+        <SheetFooter className="flex-row justify-end gap-2 border-t">
+          <SheetClose render={<Button variant="outline" />}>{t(bittiMi ? "Kapat" : "İptal")}</SheetClose>
+          {sonuclar && sonuclar.length > 0 ? (
+            <Button className="gap-1.5 bg-orange-600 text-white hover:bg-orange-700" disabled={olusturuluyor || secili.size === 0} onClick={olustur}>
+              <Icon icon={olusturuluyor ? "svg-spinners:180-ring" : "solar:letter-opened-bold"} className="size-4" />{t("Seçilenlere RFQ")} ({secili.size})
+            </Button>
+          ) : null}
         </SheetFooter>
       </SheetContent>
     </Sheet>
