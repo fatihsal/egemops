@@ -59,7 +59,8 @@ export type TedarikciOlusturGirdi = {
 };
 
 export async function tedarikciOlustur(girdi: TedarikciOlusturGirdi): Promise<string> {
-  if (!girdi.kaynakUrl?.trim()) throw new Error("Tedarikçi için doğrulanabilir bir kaynak URL'i zorunludur.");
+  // İzlenebilirlik: kaynak URL yoksa web sitesine, o da yoksa "manuel-giris"e düş.
+  const kaynak = girdi.kaynakUrl?.trim() || girdi.webSitesi?.trim() || "manuel-giris";
   const supabase = supabaseTarayici();
   const {
     data: { user },
@@ -68,7 +69,7 @@ export async function tedarikciOlustur(girdi: TedarikciOlusturGirdi): Promise<st
     .from("sa_tedarikciler")
     .insert({
       ad: girdi.ad,
-      kaynak_url: girdi.kaynakUrl,
+      kaynak_url: kaynak,
       web_sitesi: girdi.webSitesi ?? null,
       eposta: girdi.eposta ?? null,
       telefon: girdi.telefon ?? null,

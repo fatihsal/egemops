@@ -281,7 +281,6 @@ function ManuelEkleSheet({ acik, setAcik, onKaydet }: { acik: boolean; setAcik: 
 
   async function kaydet() {
     if (!ad.trim()) { toast.error(t("Tedarikçi adı gerekli.")); return; }
-    if (!kaynakUrl.trim()) { toast.error(t("Doğrulanabilir kaynak URL'i zorunludur.")); return; }
     if (kaydediliyor) return;
     setKaydediliyor(true);
     try {
@@ -302,11 +301,11 @@ function ManuelEkleSheet({ acik, setAcik, onKaydet }: { acik: boolean; setAcik: 
       <SheetContent side="right" className="flex w-full flex-col gap-0 p-0 sm:max-w-md">
         <SheetHeader className="border-b p-5">
           <SheetTitle>{t("Manuel Tedarikçi Ekle")}</SheetTitle>
-          <SheetDescription>{t("Kaynak URL'i zorunludur — tedarikçinin doğrulanabilir olması için.")}</SheetDescription>
+          <SheetDescription>{t("Web sitesi veya kaynak URL'i tedarikçinin doğrulanabilirliği için önerilir (manuel girişte zorunlu değil).")}</SheetDescription>
         </SheetHeader>
         <div className="flex-1 space-y-4 overflow-y-auto p-5">
           <div className="space-y-1.5"><Label className="text-xs text-muted-foreground">{t("Tedarikçi Adı")} *</Label><Input value={ad} onChange={(e) => setAd(e.target.value)} placeholder="Festo Türkiye" /></div>
-          <div className="space-y-1.5"><Label className="text-xs text-muted-foreground">{t("Kaynak URL")} *</Label><Input value={kaynakUrl} onChange={(e) => setKaynakUrl(e.target.value)} placeholder="https://..." /></div>
+          <div className="space-y-1.5"><Label className="text-xs text-muted-foreground">{t("Kaynak URL")}</Label><Input value={kaynakUrl} onChange={(e) => setKaynakUrl(e.target.value)} placeholder="https://... (opsiyonel)" /></div>
           <div className="space-y-1.5"><Label className="text-xs text-muted-foreground">{t("Web Sitesi")}</Label><Input value={web} onChange={(e) => setWeb(e.target.value)} placeholder="https://festo.com.tr" /></div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5"><Label className="text-xs text-muted-foreground">{t("E-posta")}</Label><Input value={eposta} onChange={(e) => setEposta(e.target.value)} placeholder="info@..." /></div>
